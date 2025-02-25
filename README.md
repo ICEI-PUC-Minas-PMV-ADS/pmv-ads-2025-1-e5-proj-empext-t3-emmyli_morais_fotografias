@@ -1,25 +1,23 @@
-# TÍTULO DO PROJETO
+# EMMYLI MORAIS FOTOGRAFIAS
 
-`CURSO`
+`Tecnólogo em Análise e Desenvolvimento de Sistemas`
 
-`DISCIPLINA`
+`EIXO 5`
 
-`SEMESTRE`
+`1º SEMESTRE/2025`
 
-Descrever resumidamente, em um ou dois parágrafos, o projeto que está sendo desenvolvido.
+Este projeto tem como objetivo criar uma plataforma completa para fotógrafos profissionais gerenciarem seus trabalhos de forma eficiente. A solução centraliza a organização de álbuns, a venda de fotos e a entrega digital de imagens, eliminando a necessidade de múltiplas plataformas.
 
 ## Integrantes
 
-* Nome completo do aluno 1
-* Nome completo do aluno 2
-* Nome completo do aluno 3
-* Nome completo do aluno 4
-* Nome completo do aluno 5
-* Nome completo do aluno 6
+* Bárbara Sena
+* Gleyston Guimarães
+* Rafael Cassiano
+* Adriel Agnes 
 
 ## Orientador
 
-* Nome completo do professor orientador
+* José Wilson da Costa
 
 ## Instruções de utilização
 
