@@ -95,6 +95,142 @@ As referências abaixo irão auxiliá-lo na geração do artefato “Diagrama de
 ## Projeto da Base de Dados
 
 O projeto da base de dados corresponde à representação das entidades e relacionamentos identificadas no Modelo ER, no formato de tabelas, com colunas e chaves primárias/estrangeiras necessárias para representar corretamente as restrições de integridade.
- 
-Para mais informações, consulte o microfundamento "Modelagem de Dados".
 
+## Modelo ER 
+
+O Modelo ER representa através de um diagrama como as entidades (coisas, objetos) se relacionam entre si na aplicação interativa.
+
+As referências abaixo irão auxiliá-lo na geração do artefato “Modelo ER”.
+
+> - 
+
+## Esquema Relacional 
+
+O Esquema Relacional corresponde à representação dos dados em tabelas juntamente com as restrições de integridade e chave primária.
+ 
+
+
+
+
+## Modelo Físico
+```
+CREATE TABLE usuarios (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(150) UNIQUE NOT NULL,
+    senha_hash TEXT NOT NULL,
+    tipo ENUM('fotografo', 'cliente') NOT NULL,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE eventos (
+    id SERIAL PRIMARY KEY,
+    fotografo_id INT NOT NULL,
+    nome VARCHAR(255) NOT NULL,
+    descricao TEXT,
+    data_evento DATE NOT NULL,
+    publico BOOLEAN DEFAULT FALSE,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (fotografo_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
+
+CREATE TABLE fotos_evento (
+    id SERIAL PRIMARY KEY,
+    evento_id INT NOT NULL,
+    url TEXT NOT NULL,
+    tem_marca_agua BOOLEAN DEFAULT TRUE,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (evento_id) REFERENCES eventos(id) ON DELETE CASCADE
+);
+
+CREATE TABLE albuns (
+    id SERIAL PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    nome VARCHAR(255) NOT NULL,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
+
+CREATE TABLE album_fotos (
+    album_id INT NOT NULL,
+    foto_id INT NOT NULL,
+    PRIMARY KEY (album_id, foto_id),
+    FOREIGN KEY (album_id) REFERENCES albuns(id) ON DELETE CASCADE,
+    FOREIGN KEY (foto_id) REFERENCES fotos_evento(id) ON DELETE CASCADE
+);
+
+CREATE TABLE itens (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    descricao TEXT,
+    preco DECIMAL(10,2) NOT NULL,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE compras (
+    id SERIAL PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    total DECIMAL(10,2) NOT NULL,
+    status ENUM('pendente', 'pago', 'cancelado') DEFAULT 'pendente',
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
+
+CREATE TABLE itens_compra (
+    compra_id INT NOT NULL,
+    item_id INT NOT NULL,
+    quantidade INT NOT NULL,
+    preco DECIMAL(10,2) NOT NULL,
+    PRIMARY KEY (compra_id, item_id),
+    FOREIGN KEY (compra_id) REFERENCES compras(id) ON DELETE CASCADE,
+    FOREIGN KEY (item_id) REFERENCES itens(id) ON DELETE CASCADE
+);
+
+CREATE TABLE pagamentos (
+    id SERIAL PRIMARY KEY,
+    compra_id INT NOT NULL,
+    metodo ENUM('pix', 'picpay') NOT NULL,
+    status ENUM('pendente', 'confirmado', 'falha') DEFAULT 'pendente',
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (compra_id) REFERENCES compras(id) ON DELETE CASCADE
+);
+
+CREATE TABLE notificacoes (
+    id SERIAL PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    mensagem TEXT NOT NULL,
+    lida BOOLEAN DEFAULT FALSE,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
+
+CREATE TABLE feedbacks (
+    id SERIAL PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    fotografo_id INT NOT NULL,
+    avaliacao INT CHECK (avaliacao BETWEEN 1 AND 5),
+    comentario TEXT,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+    FOREIGN KEY (fotografo_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
+
+CREATE TABLE backup (
+    id SERIAL PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    url_backup TEXT NOT NULL,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
+```
+## Tecnologias Utilizadas
+
+**HTML:** Linguagem de marcação usada para estruturar o conteúdo de páginas da web.
+
+**CSS:** Linguagem de estilo usada para definir a aparência visual de elementos HTML, como cores, fontes e layout.
+
+**C#**: Linguagem de programação usada para escrever a lógica do lado do servidor, geralmente em conjunto com o .NET.
+
+**.NET:** Framework da Microsoft usado para construir aplicações de software, incluindo APIs e aplicações web no lado do servidor.
+
+**SQL Server:** Sistema de gerenciamento de banco de dados relacional da Microsoft usado para armazenar e gerenciar dados estruturados.
