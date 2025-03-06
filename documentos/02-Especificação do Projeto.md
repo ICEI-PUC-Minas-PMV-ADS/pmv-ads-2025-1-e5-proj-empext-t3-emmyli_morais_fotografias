@@ -1,20 +1,13 @@
 # Especificações do Projeto
 
-<span style="color:red">Pré-requisitos: <a href="01-Documentação de Contexto.md"> Documentação de Contexto</a></span>
-
-Definição do problema e ideia de solução a partir da perspectiva do usuário. 
+A profissional da fotografia enfrenta desafios na gestão de seu trabalho devido ao uso de múltiplas plataformas que são caras, limitadas e não oferecem todas as funcionalidades necessárias. Para resolver esse problema, será desenvolvida uma plataforma digital personalizada que centraliza armazenamento, venda e entrega de fotos em um único ambiente. O sistema garantirá segurança, organização e acessibilidade, proporcionando uma experiência mais eficiente tanto para a fotógrafa quanto para seus clientes.
 
 ## Usuários
 | Tipo de Usuário   | Descrição | Responsabilidades |
 |------------------|-----------|------------------|
-| **xxx** | xxxxx | xxxxx |
+| **Administradora/Fotografa** | A fotógrafa é a administradora do sistema, responsável por gerenciar suas fotos, vendas e clientes, garantindo uma experiência eficiente e segura na plataforma. | Gerenciamento de Fotos (adicionar, organizar e configurar imagens para venda), Controle de Vendas (acompanhar pedidos, validar pagamentos e liberar downloads), Gestão de Clientes (visualizar histórico de compras e enviar notificações), Configuração do Sistema (personalizar identidade visual, definir preços e ajustar formas de pagamento).  |
+| **Clientes** | Os clientes são usuários que acessam a plataforma para visualizar, comprar e baixar fotos. | xxxxx |
 
-### Exemplo
-
-| Tipo de Usuário   | Descrição | Responsabilidades |
-|------------------|-----------|------------------|
-| **Administrador** | Gerencia a aplicação e os usuários. | Gerenciar usuários, configurar o sistema, acessar todos os relatórios. |
-| **Funcionário** | Usa a aplicação para suas tarefas principais. | Criar e editar registros, visualizar relatórios. |
 
 
 ## Arquitetura e Tecnologias
@@ -38,17 +31,19 @@ As tabelas que se seguem apresentam os requisitos funcionais e não funcionais q
 
 |ID    | Descrição do Requisito  | Prioridade |
 |------|-----------------------------------------|----|
-|RF-001| Login do fotógrafo – Controle de acesso para o fotógrafo. | ALTA | 
-|RF-002| Sistema de cadastro para os clientes – Permite que os clientes criem suas próprias contas.   | MÉDIA |
-|RF-003| Compra de fotos – Funcionalidade principal para monetização do site. | ALTA | 
+|RF-001| Login da fotógrafa – Controle de acesso para a fotógrafa. | ALTA | 
+|RF-002| Sistema de cadastro, leitura, atualização e exclusão de clientes.   | ALTA |
+|RF-003| Venda de fotos – Funcionalidade principal para monetização do site. | ALTA | 
 |RF-004| Proteção contra impressões – Evite que as fotos sejam copiadas sem autorização. | ALTA | 
-|RF-005| Download de fotos editadas – Entrega final das imagens adquiridas. | ALTA | 
+|RF-005| Permitir download de fotos editadas – Entrega final das imagens adquiridas. | ALTA | 
 |RF-006| Sistema de pagamento integrado (PicPay, Pix) – Garantir que as transações sejam realizadas. | ALTA | 
-|RF-007| Gerenciamento de pedidos – Permite que o fotógrafo acompanhe vendas e pagamentos. | MÉDIA | 
-|RF-008| Sistema de notificações – Informações automáticas para clientes e fotógrafos.| MÉDIA | 
-|RF-009| Backup automático – Segurança para evitar perda de dados e fotos | MÉDIA | 
-|RF-010| Áreas de feedbacks – Permite avaliações sobre o serviço e fotos. | BAIXA | 
-|RF-011| Galeria de amostras – Exposição do portfólio do fotógrafo para atrair novos clientes.| BAIXA | 
+|RF-007| Cadastrar fotos tiradas em eventos públicos e privados | ALTA |
+|RF-008| Gerenciamento de pedidos – Gerar relatórios de vendas e de pagamentos. | ALTA | 
+|RF-009| Permitir construção de galeria de fotos – Exposição do portfólio da fotógrafa para atrair novos clientes.| ALTA |
+|RF-010| Upload de fotos - Ver, alterar e apagar| ALTA | 
+|RF-011| Emitir notifacações automáticas para clientes e fotógrafos.| MÉDIA |  
+|RF-012| Áreas de feedbacks – Permite ao cliente avaliar sobre o serviço e fotos. | BAIXA | 
+
 
 
 ### Requisitos não Funcionais
@@ -56,8 +51,7 @@ As tabelas que se seguem apresentam os requisitos funcionais e não funcionais q
 |ID     | Descrição do Requisito  |Prioridade |
 |-------|-------------------------|----|
 |RNF-001| Segurança – Proteção dos dados dos usuários e das fotos contra acessos não autorizados. | ALTA | 
-|RNF-002| Desempenho – O site deve ser carregado rapidamente e ter alta disponibilidade.
- |  ALTA | 
+|RNF-002| Desempenho – O site deve ser carregado rapidamente e ter alta disponibilidade.|  ALTA | 
 |RNF-003| Escalabilidade – O sistema deve suportar um número crescente de usuários e fotos. |  ALTA | 
 |RNF-004| Usabilidade – A interface deve ser intuitiva e fácil de navegar em qualquer dispositivo. |  ALTA | 
 |RNF-005| Compatibilidade – O site deve ser acessível em navegadores modernos e responsivo para dispositivos móveis (iOS e Android). |  ALTA | 
