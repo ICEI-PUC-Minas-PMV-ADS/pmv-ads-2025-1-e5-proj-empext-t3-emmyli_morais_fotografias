@@ -73,7 +73,7 @@ O projeto está restrito pelos itens apresentados na tabela a seguir.
 
 ## Diagrama de Caso de Uso
 
-![Caso de Uso](img//casodeuso_1.png)
+![Caso de Uso](img//casodeuso_2.png)
 
 ## Projeto da Base de Dados
 
