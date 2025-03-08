@@ -73,9 +73,6 @@ O projeto está restrito pelos itens apresentados na tabela a seguir.
 
 ![Caso de Uso](img//casodeuso_2.png)
 
-## Projeto da Base de Dados
-
-O projeto da base de dados corresponde à representação das entidades e relacionamentos identificadas no Modelo ER, no formato de tabelas, com colunas e chaves primárias/estrangeiras necessárias para representar corretamente as restrições de integridade.
 
 ## Modelo ER 
 
@@ -83,7 +80,14 @@ O Modelo ER representa através de um diagrama como as entidades (coisas, objeto
 
 As referências abaixo irão auxiliá-lo na geração do artefato “Modelo ER”.
 
-> - 
+> - ![Diagrama ER](img//DiagramaER.png)
+
+## Projeto da Base de Dados
+
+O projeto da base de dados corresponde à representação das entidades e relacionamentos identificadas no Modelo ER, no formato de tabelas, com colunas e chaves primárias/estrangeiras necessárias para representar corretamente as restrições de integridade.
+
+> - ![Diagrama de classe](img//DiagramadeClasse.png)
+
 
 ## Esquema Relacional 
 
