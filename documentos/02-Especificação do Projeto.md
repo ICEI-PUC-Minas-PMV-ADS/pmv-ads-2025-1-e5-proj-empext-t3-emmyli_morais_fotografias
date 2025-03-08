@@ -16,11 +16,9 @@ Descreva brevemente a arquitetura definida para o projeto e as tecnologias a ser
 
 ## Project Model Canvas
 
-Deve ser desenvolvido a partir do microfundamento: Empreendedorismo e inovação.
-Colocar a imagem do modelo construído apresentando a proposta de solução.
+O project Model Canvas pode ser visualizado em formato pdf: [Acessar](https://github.com/user-attachments/files/19144527/Project.Model.Canvas.pdf) <br><br> Ou por meio do link compartilhado do canva: [Acessar](https://www.canva.com/design/DAGhJgftJQc/ALqbEf4MMU0cVzC8o8afuw/edit?utm_content=DAGhJgftJQc&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 
-> **Links Úteis**:
-> Disponíveis em material de apoio do projeto
+
 
 ## Requisitos
 
