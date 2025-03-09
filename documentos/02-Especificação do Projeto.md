@@ -94,7 +94,7 @@ O projeto da base de dados corresponde à representação das entidades e relaci
 O Esquema Relacional corresponde à representação dos dados em tabelas juntamente com as restrições de integridade e chave primária.
  
 
-
+> - ![Modelo de dados](img//Modelo1.png)
 
 
 ## Modelo Físico
@@ -103,119 +103,161 @@ CREATE TABLE usuarios (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     email VARCHAR(150) UNIQUE NOT NULL,
+    login VARCHAR(100) UNIQUE NOT NULL,
     senha_hash TEXT NOT NULL,
-    tipo ENUM('fotografo', 'cliente') NOT NULL,
-    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    tipo VARCHAR(10) CHECK (tipo IN ('fotografo', 'cliente')) NOT NULL,
+    dtinclusao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    dtalteracao DATE
+);
+
+CREATE TABLE detalhe_usuarios (
+    id SERIAL PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    rua VARCHAR(100),
+    numero INT,
+    cep VARCHAR(10),
+    bairro VARCHAR(100),
+    cidade VARCHAR(100),
+    cart_identidade VARCHAR(20),
+    cpf VARCHAR(20) UNIQUE,
+    dtinclusao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    dtalteracao DATE,
+    CONSTRAINT fk_detalhe_usuarios FOREIGN KEY (id_usuario) REFERENCES usuarios(id) ON DELETE CASCADE
 );
 
 CREATE TABLE eventos (
     id SERIAL PRIMARY KEY,
-    fotografo_id INT NOT NULL,
     nome VARCHAR(255) NOT NULL,
     descricao TEXT,
     data_evento DATE NOT NULL,
     publico BOOLEAN DEFAULT FALSE,
-    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (fotografo_id) REFERENCES usuarios(id) ON DELETE CASCADE
+    dtinclusao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    dtalteracao DATE
 );
 
-CREATE TABLE fotos_evento (
+CREATE TABLE detalhe_evento (
     id SERIAL PRIMARY KEY,
     evento_id INT NOT NULL,
-    url TEXT NOT NULL,
+    foto BYTEA NOT NULL,
     tem_marca_agua BOOLEAN DEFAULT TRUE,
-    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (evento_id) REFERENCES eventos(id) ON DELETE CASCADE
+    dtinclusao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    dtalteracao DATE,
+    CONSTRAINT fk_detalhe_evento FOREIGN KEY (evento_id) REFERENCES eventos(id) ON DELETE CASCADE
 );
 
 CREATE TABLE albuns (
     id SERIAL PRIMARY KEY,
     usuario_id INT NOT NULL,
     nome VARCHAR(255) NOT NULL,
-    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+    descricao TEXT,
+    dtinclusao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    dtalteracao DATE,
+    CONSTRAINT fk_albuns FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
 );
 
 CREATE TABLE album_fotos (
     album_id INT NOT NULL,
-    foto_id INT NOT NULL,
-    PRIMARY KEY (album_id, foto_id),
-    FOREIGN KEY (album_id) REFERENCES albuns(id) ON DELETE CASCADE,
-    FOREIGN KEY (foto_id) REFERENCES fotos_evento(id) ON DELETE CASCADE
+    id_foto INT NOT NULL,
+    dtinclusao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    dtalteracao DATE,
+    PRIMARY KEY (album_id, id_foto),
+    CONSTRAINT fk_album_fotos_album FOREIGN KEY (album_id) REFERENCES albuns(id) ON DELETE CASCADE,
+    CONSTRAINT fk_album_fotos_foto FOREIGN KEY (id_foto) REFERENCES detalhe_evento(id) ON DELETE CASCADE
 );
 
-CREATE TABLE itens (
+CREATE TABLE produto (
     id SERIAL PRIMARY KEY,
-    nome VARCHAR(255) NOT NULL,
-    descricao TEXT,
+    descricao VARCHAR(255) NOT NULL,
     preco DECIMAL(10,2) NOT NULL,
-    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    id_evento INT NOT NULL,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    dtinclusao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    dtalteracao DATE,
+    CONSTRAINT fk_produto FOREIGN KEY (id_evento) REFERENCES eventos(id) ON DELETE CASCADE
 );
 
 CREATE TABLE compras (
     id SERIAL PRIMARY KEY,
     usuario_id INT NOT NULL,
-    total DECIMAL(10,2) NOT NULL,
-    status ENUM('pendente', 'pago', 'cancelado') DEFAULT 'pendente',
-    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+    dtinclusao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    dtalteracao DATE,
+    CONSTRAINT fk_compras FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
 );
 
 CREATE TABLE itens_compra (
     compra_id INT NOT NULL,
-    item_id INT NOT NULL,
+    produto_id INT NOT NULL,
     quantidade INT NOT NULL,
     preco DECIMAL(10,2) NOT NULL,
-    PRIMARY KEY (compra_id, item_id),
-    FOREIGN KEY (compra_id) REFERENCES compras(id) ON DELETE CASCADE,
-    FOREIGN KEY (item_id) REFERENCES itens(id) ON DELETE CASCADE
+    dtinclusao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    dtalteracao DATE,
+    PRIMARY KEY (compra_id, produto_id),
+    CONSTRAINT fk_itens_compra_compra FOREIGN KEY (compra_id) REFERENCES compras(id) ON DELETE CASCADE,
+    CONSTRAINT fk_itens_compra_produto FOREIGN KEY (produto_id) REFERENCES produto(id) ON DELETE CASCADE
 );
 
 CREATE TABLE pagamentos (
     id SERIAL PRIMARY KEY,
     compra_id INT NOT NULL,
-    metodo ENUM('pix', 'picpay') NOT NULL,
-    status ENUM('pendente', 'confirmado', 'falha') DEFAULT 'pendente',
-    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (compra_id) REFERENCES compras(id) ON DELETE CASCADE
+    metodo VARCHAR(10) CHECK (metodo IN ('pix', 'picpay', 'boleto')) NOT NULL,
+    status VARCHAR(10) CHECK (status IN ('pendente', 'pago', 'cancelado')) DEFAULT 'pendente',
+    dtpagamento DATE,
+    dtestorno DATE,
+    dtinclusao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    dtalteracao DATE,
+    CONSTRAINT fk_pagamentos FOREIGN KEY (compra_id) REFERENCES compras(id) ON DELETE CASCADE
 );
 
-CREATE TABLE notificacoes (
+CREATE TABLE comentarios (
     id SERIAL PRIMARY KEY,
     usuario_id INT NOT NULL,
     mensagem TEXT NOT NULL,
     lida BOOLEAN DEFAULT FALSE,
-    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+    id_foto_evento INT NOT NULL,
+    dtinclusao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    dtalteracao DATE,
+    CONSTRAINT fk_comentarios_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+    CONSTRAINT fk_comentarios_foto FOREIGN KEY (id_foto_evento) REFERENCES detalhe_evento(id) ON DELETE CASCADE
 );
 
-CREATE TABLE feedbacks (
-    id SERIAL PRIMARY KEY,
-    usuario_id INT NOT NULL,
-    fotografo_id INT NOT NULL,
-    avaliacao INT CHECK (avaliacao BETWEEN 1 AND 5),
-    comentario TEXT,
-    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
-    FOREIGN KEY (fotografo_id) REFERENCES usuarios(id) ON DELETE CASCADE
-);
-
-CREATE TABLE backup (
-    id SERIAL PRIMARY KEY,
-    usuario_id INT NOT NULL,
-    url_backup TEXT NOT NULL,
-    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
-);
 ```
 ## Tecnologias Utilizadas
 
-**HTML:** Linguagem de marcação usada para estruturar o conteúdo de páginas da web.
+# **Frontend :**
 
-**CSS:** Linguagem de estilo usada para definir a aparência visual de elementos HTML, como cores, fontes e layout.
+**HTML5:** Utilizado para estruturar o conteúdo das páginas web de forma semântica e acessível.
 
-**C#**: Linguagem de programação usada para escrever a lógica do lado do servidor, geralmente em conjunto com o .NET.
+ **CSS3**: Responsável pela estilização da interface, garantindo um design responsivo e moderno.
+ 
+ **JavaScript:** Linguagem de programação usada para criar interatividade e dinamismo na aplicação.
+ 
+ **React.js:** Biblioteca JavaScript para construção de interfaces de usuário eficientes e reutilizáveis, com foco em desempenho e componentização.
+ 
+ **Vite:** Ferramenta para criação e otimização do ambiente de desenvolvimento do React, proporcionando maior velocidade na execução e build do projeto.
+ 
+ **Bootstrap:** Framework CSS utilizado para agilizar a criação do layout e componentes responsivos.
 
-**.NET:** Framework da Microsoft usado para construir aplicações de software, incluindo APIs e aplicações web no lado do servidor.
+# **Backend**
 
-**SQL Server:** Sistema de gerenciamento de banco de dados relacional da Microsoft usado para armazenar e gerenciar dados estruturados.
+**Node.js:** Ambiente de execução JavaScript no servidor, utilizado para processar requisições da API de forma assíncrona e escalável.
+
+**Express.js:** Framework minimalista para Node.js que simplifica a criação de APIs RESTful e gerenciamento de rotas.
+
+**Sequelize:** ORM (Object-Relational Mapping) para facilitar a interação com o banco de dados, permitindo consultas e operações de forma programática.
+
+**JWT (JSON Web Token):** Utilizado para autenticação segura dos usuários, garantindo controle de acesso aos recursos da aplicação.
+
+**Swagger:** Ferramenta de documentação para API, permitindo a visualização e testes interativos dos endpoints.
+
+# **Banco de Dados**
+
+**PostgreSQL:** Banco de dados relacional robusto e escalável, utilizado para armazenar e gerenciar os dados da aplicação.
+
+
+# **Pagamentos & Integrações**
+
+**PayPal API:** Utilizada para processar pagamentos de forma segura na aplicação.
+
+**PicPay API:** Integração com o sistema de pagamentos do PicPay, permitindo transações rápidas e eficientes.
+
+**Banco do Cliente** Utilizada para processar pagamentos de forma segura na aplicação.
