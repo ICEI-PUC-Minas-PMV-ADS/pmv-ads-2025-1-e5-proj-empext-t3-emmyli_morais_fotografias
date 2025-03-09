@@ -27,7 +27,7 @@ Integrações → APIs de pagamento, ERP e geração de relatórios.
 
 ## Project Model Canvas
 
-O project Model Canvas pode ser visualizado em formato pdf: [Acessar](https://github.com/user-attachments/files/19144527/Project.Model.Canvas.pdf) <br><br> Ou por meio do link compartilhado do canva: [Acessar](https://www.canva.com/design/DAGhJgftJQc/ALqbEf4MMU0cVzC8o8afuw/edit?utm_content=DAGhJgftJQc&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+O project Model Canvas pode ser visualizado em formato pdf: [Acessar](https://github.com/user-attachments/files/19144527/Project.Model.Canvas.pdf) <br><br> Ou por meio do link compartilhado do canva: [Acessar](https://www.canva.com/design/DAGhJgftJQc/ALqbEf4MMU0cVzC8o8afuw/edit?utm_content=DAGhJgftJQc&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton) <br><br> Visualização em formato de imagem  [Acessar](https://github.com/user-attachments/assets/8189059b-a049-42c8-a3c3-0ff83c095111)
 
 
 
