@@ -12,7 +12,18 @@ A profissional da fotografia enfrenta desafios na gestão de seu trabalho devido
 
 ## Arquitetura e Tecnologias
 
-Descreva brevemente a arquitetura definida para o projeto e as tecnologias a serem utilizadas. Sugere-se a criação de um diagrama de componentes da solução.
+Frontend → Aplicação React que se comunica com a API via requisições HTTP/REST.
+
+Backend (Node.js + Express.js) → Responsável pelo processamento da lógica de negócios, autenticação e acesso ao banco de dados.
+
+Banco de Dados (PostgreSQL) → Gerencia usuários, eventos, compras e produtos.
+
+Infraestrutura → O sistema está conteinerizado com Docker e hospedado em um servidor configurado com NGINX para balanceamento de carga e SSL.
+
+Integrações → APIs de pagamento, ERP e geração de relatórios.
+
+
+![Arquitetura](img//arquitetura1.png)
 
 ## Project Model Canvas
 
