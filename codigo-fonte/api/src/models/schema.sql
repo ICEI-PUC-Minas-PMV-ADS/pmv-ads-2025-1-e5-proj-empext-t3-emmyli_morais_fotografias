@@ -9,7 +9,7 @@ CREATE TABLE usuarios (
     dtalteracao DATE
 );
 
-/*CREATE TABLE detalhe_usuarios (
+CREATE TABLE detalhe_usuarios (
     id SERIAL PRIMARY KEY,
     id_usuario INT NOT NULL,
     rua VARCHAR(100),
@@ -24,7 +24,7 @@ CREATE TABLE usuarios (
     CONSTRAINT fk_detalhe_usuarios FOREIGN KEY (id_usuario) REFERENCES usuarios(id) ON DELETE CASCADE
 );
 
-CREATE TABLE eventos (
+/*CREATE TABLE eventos (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
     descricao TEXT,
