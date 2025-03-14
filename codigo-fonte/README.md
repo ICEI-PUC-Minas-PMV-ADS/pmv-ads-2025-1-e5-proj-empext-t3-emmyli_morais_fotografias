@@ -12,6 +12,8 @@ user: process.env.DB_USER,
 ```
 - E insera a .env na pasta src
 - Rode `npm install`
+- Para rodar as migrations: 
+  `npx sequelize-cli db:migrate`
 
   
 ## Implantação
