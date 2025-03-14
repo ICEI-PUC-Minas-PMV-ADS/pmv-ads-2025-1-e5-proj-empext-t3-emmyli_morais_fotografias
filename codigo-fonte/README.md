@@ -13,7 +13,7 @@ user: process.env.DB_USER,
 - E insera a .env na pasta src
 - Rode `npm install`
 
-- 
+  
 ## Implantação
 
 Descrever a infra estrutura utilizada para implantação da aplicação.
