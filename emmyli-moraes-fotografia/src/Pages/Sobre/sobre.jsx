@@ -2,18 +2,21 @@ import React from "react";
 import { Link } from "react-router-dom";
 import MenuNav from "../../components/MenuNav";  
 import logo from "../../img/logo.png";
-import fotografaPS from "../../img/FotoPaginaSobre.jpg";  // Imagem da fotógrafa
+import fotografaPS from "../../img/FotoPaginaSobre.jpg";  
 
 const Sobre = () => {
   return (
 <div className="w-full min-h-screen font-serif bg-[#0B3727] text-[#c09b2d]">
+
       {/* MenuNav importado */}
+      
       <MenuNav />
 
-      {/* Seção de Sobre a Fotógrafa */}
+      
       <section className="p-20 flex items-center justify-center max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row items-center space-y-6 md:space-y-0">
-          {/* Imagem à esquerda */}
+
+          
           <div className="w-1/2 md:ml-[-5rem] mr-20">
             <img
               src={fotografaPS}
@@ -22,10 +25,10 @@ const Sobre = () => {
             />
           </div>
 
-          {/* Texto à direita */}
+          
           <div className="text-center md:w-1/2 md:pl-12">
             <img
-              src={logo}  // Exibe a logo da fotógrafa
+              src={logo}  
               alt="Logo da Fotógrafa"
               className="h-20 mx-auto flex items-center "
             />

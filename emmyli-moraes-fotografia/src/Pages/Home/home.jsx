@@ -67,7 +67,7 @@ const Home = () => {
         </div>
       </section>
 
-        {/*Trabalhos recentes*/ }
+        
 
       <section className="p-20 text-center max-w-7xl mx-auto w-full">
         <h2 className="text-3xl mb-6">Trabalhos recentes</h2>
@@ -95,7 +95,7 @@ const Home = () => {
 
        
 
-        {/* Seção de Depoimentos */}
+        
 
       <section className="p-20 text-center justify-center max-w-6xl mx-auto w-full">
         <h2 className="text-3xl mb-10">Depoimentos</h2>
