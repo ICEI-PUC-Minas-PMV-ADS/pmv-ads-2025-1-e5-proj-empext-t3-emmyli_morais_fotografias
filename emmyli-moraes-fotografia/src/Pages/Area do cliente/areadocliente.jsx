@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import MenuNav from "../../components/MenuNav";
 import logo from "../../img/logo.png"; 
+import { Link } from "react-router-dom";
 
 const AreaDoCliente = () => {
   const [isCliente, setIsCliente] = useState(false);
@@ -73,12 +74,11 @@ const AreaDoCliente = () => {
           
           {!isCliente && (
             <div className="mt-6 w-full">
-              <a
-                href="#"
+              <Link to="/Cadastro"
                 className="w-full bg-[#c09b2d] text-white py-4 px-36 rounded-md hover:bg-[#a68523] transition-all text-lg"
               >
                 Cadastrar
-              </a>
+              </Link>
             </div>
           )}
 

@@ -1,10 +1,13 @@
 import React from "react";
 import MenuNav from "../../components/MenuNav";
-import logo from "../../img/logo.png"; 
+import logo from "../../img/logo.png";
 
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Cadastro = () => {
+    const navigate = useNavigate();
+
   return (
     <div className="font-serif bg-[#0B3727] min-h-screen text-[#c09b2d] overflow-auto">
       <MenuNav />
@@ -20,6 +23,11 @@ const Login = () => {
               className="w-full p-4 sm:p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c09b2d]"
             />
             <input
+              type="email"
+              placeholder="Email"
+              className="w-full p-4 sm:p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c09b2d]"
+            />
+            <input
               type="password"
               placeholder="Senha"
               className="w-full p-4 sm:p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c09b2d]"
@@ -28,15 +36,16 @@ const Login = () => {
               type="submit"
               className="w-full bg-[#c09b2d] text-white p-4 sm:p-3 rounded-md hover:bg-[#a68523] transition-all text-lg"
             >
-              Entrar
+              Cadastrar
             </button>
           </form>
 
-          <div className="form-links flex justify-center gap-20 mt-6 text-md text-gray-600 w-full px-8 sm:px-4">
+          <div className="form-links flex justify-center gap-16 mt-6 text-md text-gray-600 w-full px-8 sm:px-4">
 
-            <a href="#" className="hover:underline">Esqueci minha senha</a>
+          <button onClick={() => navigate(-1)} className="hover:underline">Voltar</button>
 
-            <Link to="/cadastro" className="hover:underline">Cadastrar</Link>
+            <Link to="/login" className="hover:underline">Ja tem uma conta? Faça Login</Link>
+
           </div>
 
         </div>
@@ -45,4 +54,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Cadastro;
