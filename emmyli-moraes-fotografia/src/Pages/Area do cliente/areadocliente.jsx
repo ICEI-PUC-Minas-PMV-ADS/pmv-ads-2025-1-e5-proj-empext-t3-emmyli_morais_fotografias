@@ -47,8 +47,8 @@ const AreaDoCliente = () => {
           {isCliente && (
             <div className="w-full flex flex-col space-y-6 px-8 sm:px-4 mt-6">
               <input
-                type="text"
-                placeholder="Usuário"
+                type="email"
+                placeholder="Email"
                 className="w-full p-4 sm:p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c09b2d]"
               />
               <input
