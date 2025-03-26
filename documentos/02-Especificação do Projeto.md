@@ -82,7 +82,7 @@ O projeto está restrito pelos itens apresentados na tabela a seguir.
 
 ## Diagrama de Caso de Uso
 
-![Caso de Uso](img//casodeuso_2.png)
+![Caso de Uso](img//casodeuso_3.png)
 
 
 ## Modelo ER 
@@ -91,7 +91,7 @@ O Modelo ER representa através de um diagrama como as entidades (coisas, objeto
 
 As referências abaixo irão auxiliá-lo na geração do artefato “Modelo ER”.
 
-> - ![Diagrama ER](img//DiagramaER.png)
+> - ![Diagrama ER](img//DiagramaER02.png)
 
 ## Projeto da Base de Dados
 
