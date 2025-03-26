@@ -53,16 +53,22 @@ const Home = () => {
       {/** Campo de Foto e Frase */}
 
       <section className="relative w-full">
-        <div className="relative w-full h-[50vh] md:h-[70vh] lg:h-[90vh] overflow-hidden">
+        <div className="relative w-full h-[50vh] md:h-[70vh] lg:h-[80vh] overflow-hidden">
           <img 
             src={fotografaaaa} 
             alt="Fotógrafa" 
             className="w-full h-full object-cover object-top transition-all duration-500"
           />
         </div>
-        <div className="absolute inset-0 flex items-center justify-start text-left p-10">
-          <p className="font-serif text-[#d5bc6f] text-lg md:text-2xl lg:text-3xl font-bold bg-transparent max-w-[40%] transition-all duration-500">
-            O mundo através das minhas Lentes:<br />Único, intenso e eterno.
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center bg-black/70 px-5">
+          
+          <p className="text-[#d5bc6f] text-lg md:text-3xl lg:text-4xl tracking-widest uppercase font-light">
+            O MUNDO ATRAVÉS DAS MINHAS LENTES:
+          </p>
+          <hr className="w-[90%] md:w-[60%] lg:w-[50%] border-[#d5bc6f]  my-4" />
+          
+          <p className="text-[#d5bc6f] text-4xl md:text-7xl lg:text-8xl  font-light">
+            ÚNICO, INTENSO <br /> E ETERNO
           </p>
         </div>
       </section>

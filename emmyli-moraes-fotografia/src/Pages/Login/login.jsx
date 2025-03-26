@@ -6,12 +6,17 @@ import { Link } from "react-router-dom";
 
 const Login = () => {
   return (
-    <div className="font-serif bg-[#0B3727] min-h-screen text-[#c09b2d] overflow-auto">
+    <div className="font-serif bg-[#0B3727] min-h-screen text-[#c09b2d] overflow-auto flex flex-col">
       <MenuNav />
-      <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] p-4">
-        <div className="bg-white shadow-2xl rounded-lg p-10 w-full max-w-lg text-center relative h-[60vh] flex flex-col justify-center items-center sm:max-w-md overflow-hidden">
+      <div className="flex items-center justify-center flex-grow p-4">
+        <div className="bg-white shadow-2xl rounded-lg p-10 w-full max-w-lg text-center relative min-h-[60vh] flex flex-col justify-center items-center sm:max-w-md overflow-hidden">
+          
           <img src={logo} alt="Logo" className="w-48 sm:w-40 mb-6" />
 
+          
+          <p className="text-md text-gray-600 mb-8">
+            Ao clicar aqui, você irá descobrir imagens que irão surpreender seus olhos e tocar sua alma. Prepare-se para uma experiência visual única!
+          </p>
 
           <form className="w-full flex flex-col space-y-6 px-8 sm:px-4">
             <input

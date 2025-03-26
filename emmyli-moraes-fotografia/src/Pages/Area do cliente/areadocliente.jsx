@@ -11,10 +11,10 @@ const AreaDoCliente = () => {
   };
 
   return (
-    <div className="font-serif bg-[#0B3727] min-h-screen text-[#c09b2d] overflow-auto">
+    <div className="font-serif bg-[#0B3727] min-h-screen text-[#c09b2d] overflow-auto flex flex-col">
       <MenuNav />
-      <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] p-4">
-        <div className="bg-white shadow-2xl rounded-lg p-10 w-full max-w-lg text-center relative h-[60vh] flex flex-col justify-center items-center sm:max-w-md overflow-hidden">
+      <div className="flex items-center justify-center flex-grow p-4">
+        <div className="bg-white shadow-2xl rounded-lg p-10 w-full max-w-lg text-center relative min-h-[60vh] flex flex-col justify-center items-center sm:max-w-md overflow-hidden">
           
           
           <img src={logo} alt="Logo" className="w-48 sm:w-40 mb-6" />
