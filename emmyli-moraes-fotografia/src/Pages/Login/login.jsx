@@ -1,10 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
 import MenuNav from "../../components/MenuNav";
 import logo from "../../img/logo.png"; 
-
+import { loginUser } from "../../services/authService";
 import { Link } from "react-router-dom";
 
 const Login = () => {
+
+  const [userEmail, setUserEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    if (!userEmail.trim() || !password.trim()) {
+      setErrorMessage('E-mail e senha são obrigatórios.');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const data = await loginUser(userEmail, password);
+      localStorage.setItem('token', data.token);
+      window.location.href = '/perfil';
+    } catch (error) {
+      setErrorMessage(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   return (
     <div className="font-serif bg-[#0B3727] min-h-screen text-[#c09b2d] overflow-auto flex flex-col">
       <MenuNav />
@@ -18,17 +46,24 @@ const Login = () => {
             Ao clicar aqui, você irá descobrir imagens que irão surpreender seus olhos e tocar sua alma. Prepare-se para uma experiência visual única!
           </p>
 
-          <form className="w-full flex flex-col space-y-6 px-8 sm:px-4">
+          {loading ? 'Entrando...' : ''}
+          
+          <form onSubmit={handleSubmit} className="w-full flex flex-col space-y-6 px-8 sm:px-4">
             <input
               type="email"
               placeholder="Email"
               className="w-full p-4 sm:p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c09b2d]"
+              value={userEmail}
+              onChange={(e) => setUserEmail(e.target.value)}
             />
             <input
               type="password"
               placeholder="Senha"
               className="w-full p-4 sm:p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c09b2d]"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
+             {errorMessage && <p className="text-red-700">{errorMessage}</p>}
             <button
               type="submit"
               className="w-full bg-[#c09b2d] text-white p-4 sm:p-3 rounded-md hover:bg-[#a68523] transition-all text-lg"
