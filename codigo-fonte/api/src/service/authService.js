@@ -21,7 +21,7 @@ const AuthLogin = async ({ usernameOrEmail, password }) => {
   const isUserAdmin = user.tipo === 'fotografo';
 
   // Usando MD5 para verificar senha (se necessário mudar para bcrypt)
-  const hashedPassword = crypto.createHash('md5').update(password).digest('hex');
+  const hashedPassword = crypto.createHash('md5').update(password).digest('hex');  
   const validPassword = user.senha_hash === hashedPassword;
 
   if (!validPassword) {

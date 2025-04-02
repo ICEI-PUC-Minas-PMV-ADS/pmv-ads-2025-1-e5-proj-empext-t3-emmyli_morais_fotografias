@@ -9,8 +9,7 @@ CREATE TABLE usuarios (
     dtalteracao DATE
 );
 
-CREATE TABLE detalhe_usuarios (
-    id SERIAL PRIMARY KEY,
+CREATE TABLE detalhe_usuarios (    
     id_usuario INT NOT NULL,
     rua VARCHAR(100),
     numero INT,
