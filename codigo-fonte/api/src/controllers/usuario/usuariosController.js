@@ -1,28 +1,40 @@
 const Api_Controller = require('../Api_Controller');
+const { Usuarios } = require('../../models'); 
 
 class UsuariosController extends Api_Controller {
   constructor() {
-    super('Usuarios'); //  nome do model 
+    super('Usuarios');
   }
-
   
- /* async getProfile(req, res) {
+  async create(req, res) {
     try {
-      const { id } = req.params;
-      const user = await this.models.Usuario.findByPk(id, {
-        attributes: ['id', 'nome', 'email', 'perfil'],
+      const { nome, email, login, senha_hash } = req.body;
+      console.log( req.body);
+      const usuarioExistente = await Usuarios.findOne({ where: { login } });
+     
+      if (usuarioExistente) {
+        return res.status(400).json({ error: "Este login já está em uso!" });
+      }
+      
+      const emailExistente = await Usuarios.findOne({ where: { email } });
+      if (emailExistente) {
+        return res.status(400).json({ error: "Este e-mail já está cadastrado!" });
+      }
+      
+      const novoUsuario = await Usuarios.create({
+        nome,
+        email,
+        login,
+        senha_hash,
+        tipo: "cliente"
       });
 
-      if (!user) {
-        return res.status(404).json({ error: 'Usuário não encontrado' });
-      }
-
-      res.json(user);
+      return res.status(201).json(novoUsuario);
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Erro ao buscar o perfil do usuário' });
+      console.error("Erro ao cadastrar usuário:", error);
+      return res.status(500).json({ error: "Erro interno no servidor" });
     }
-  }*/
+  }
 }
 
 module.exports = new UsuariosController();

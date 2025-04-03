@@ -19,7 +19,8 @@ setupSwagger(app);
 app.use('/api/auth', authRoutes); 
 // Rota de usuário
 
-app.use('/api/usuarios', verifyToken, usuarioRoutes);
+//app.use('/api/usuarios', verifyToken, usuarioRoutes);
+app.use('/api/usuarios', usuarioRoutes);
 
 // rota protegida
 /*app.get('/protected', require('./middleware/AuthMiddlewareToken'), (req, res) => {
