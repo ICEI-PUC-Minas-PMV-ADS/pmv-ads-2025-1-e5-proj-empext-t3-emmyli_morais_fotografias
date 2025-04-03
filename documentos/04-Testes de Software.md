@@ -1,23 +1,52 @@
-# Planos de Testes de Software
+# Plano de Teste de Software
 
-Apresente os casos de testes utilizados na realização da verificação e validação da aplicação. Escolha cenários de testes que demonstrem os requisitos sendo satisfeitos bem como o tratamento de erros (robustez da aplicação).
+## 1. Introdução
+
+Este documento apresenta o Plano de Teste de Software para os módulos de cadastro e login de usuário no sistema "Emmyli Fotografias". O objetivo é garantir que as funcionalidades de autenticação estejam operando corretamente, prevenindo falhas e assegurando a segurança dos dados dos usuários.
+
+## 2. Objetivo dos Testes
+
+O plano de teste visa validar o funcionamento adequado do cadastro e login de usuário, garantindo que:
+
+- Usuários possam se cadastrar com informações válidas.
+- O sistema rejeite dados inválidos no cadastro.
+- O login funcione corretamente para usuários registrados.
+- O sistema impeça acessos não autorizados.
+
+## 3. Escopo
+
+Os testes serão aplicados exclusivamente ao módulo de autenticação do sistema, cobrindo:
+
+- Cadastro de novos usuários.
+- Validação de informações no cadastro.
+- Login de usuários cadastrados.
+- Manutenção de sessão e redirecionamento.
+
+## 4. Critérios de Sucesso
+
+O sistema será considerado funcional para este módulo se:
+
+- Permitir que usuários se registrem com dados válidos.
+- Impedir cadastros com informações inválidas.
+- Permitir login apenas para usuários registrados.
+- Impedir tentativas de login com credenciais incorretas.
+- Gerenciar sessões corretamente.
 
 ### Tipo de Teste
 - **Sucesso**: Tem o objetivo de verificar se as funcionalidades funcionam corretamente.
 - **Insucesso**: Tem o objetivo de verificar se o sistema trata erros de maneira correta.
 
-#### Exemplo de Caso de Teste de Sucesso
+## 5. Casos de Teste
+
+### 5.1. Cadastro de Usuário
+
 <table>
   <tr>
-    <th colspan="2" width="1000">CT-001<br>Login com credenciais válidas</th>
+    <th colspan="2" width="1000">CT-001<br>Cadastro com credenciais válidas</th>
   </tr>
   <tr>
     <td width="150"><strong>Descrição</strong></td>
-    <td>Este caso de teste verifica se um usuário pode fazer login com sucesso utilizando credenciais válidas.</td>
-  </tr>
-  <tr>
-    <td><strong>Responsável Caso de Teste </strong></td>
-    <td width="430">José da Silva</td>
+    <td>Este caso de teste verifica se um usuário pode fazer cadastro com sucesso utilizando credenciais válidas.</td>
   </tr>
  <tr>
     <td><strong>Tipo do Teste</strong></td>
@@ -25,41 +54,43 @@ Apresente os casos de testes utilizados na realização da verificação e valid
   </tr> 
   <tr>
     <td><strong>Requisitos associados</strong></td>
-    <td>RF-001: O funcionário deve conseguir logar no aplicativo</td>
+    <td>RF-002: Sistema de cadastro, leitura, atualização e exclusão de clientes.</td>
   </tr>
   <tr>
     <td><strong>Passos</strong></td>
     <td>
-      1. Abrir o aplicativo.<br>
-      2. Inserir o CPF válido.<br>
-      3. Inserir a senha válida.<br>
-      4. Clicar no botão "Entrar".
+      1. Abrir a aplição em um navegador.<br>
+      2. Navegar para a tela de cadastro.<br>
+      3. Inserir um Nome válido.<br>
+      4. Inserir um Email válida.<br>
+      5. Inserir um Login válida.<br>
+      6. Inserir uma Senha válida.<br>
+      7. Confirmar uma Senha válida.<br>
+      8. Clicar no botão "Cadastrar".
       </td>
   </tr>
     <tr>
     <td><strong>Dados de teste</strong></td>
     <td>
-      - <strong>CPF:</strong> Colocar CPF cadastrado na base<br>
-      - <strong>Senha:</strong> Colocar valor de senha válida
+      - <strong>Nome:</strong> Inserir um Nome válido na base<br>
+      - <strong>Email:</strong> Inserir um Email válido na base<br>
+      - <strong>Login:</strong> Inserir um Login válido na base<br>
+      - <strong>Senha:</strong> Inserir uma Senha válido na base
   </tr>
     <tr>
     <td><strong>Critérios de êxito</strong></td>
-    <td>O sistema deve redirecionar o usuário para a página inicial do aplicativo após o login bem-sucedido.</td>
+    <td>O sistema deve exibir uma mensagem de sucesso e permitir o login do novo usuário.</td>
   </tr>
 </table>
 
-#### Exemplo de Caso de Teste de Insucesso
+
 <table>
   <tr>
-    <th colspan="2" width="1000">CT-001<br>Login com credenciais inválidas</th>
+    <th colspan="2" width="1000">CT-001<br>Cadastro com email já registrado</th>
   </tr>
   <tr>
     <td width="150"><strong>Descrição</strong></td>
-    <td>Este caso de teste verifica o tratamento de credenciais inválidas no login.</td>
-  </tr>
-  <tr>
-    <td><strong>Responsável Caso de Teste </strong></td>
-    <td width="430">José da Silva</td>
+    <td>Este caso de teste verifica se o sistema impede o cadastro de um usuário com um Email já existente.</td>
   </tr>
  <tr>
     <td><strong>Tipo do Teste</strong></td>
@@ -67,28 +98,337 @@ Apresente os casos de testes utilizados na realização da verificação e valid
   </tr> 
   <tr>
     <td><strong>Requisitos associados</strong></td>
-    <td>RF-001: O funcionário não conseguirá logar no aplicativo</td>
+    <td>RF-002: Sistema de cadastro, leitura, atualização e exclusão de clientes.</td>
   </tr>
   <tr>
     <td><strong>Passos</strong></td>
     <td>
-      1. Abrir o aplicativo.<br>
-      2. Inserir o CPF válido.<br>
-      3. Inserir a senha inválida.<br>
-      4. Clicar no botão "Entrar".
+      1. Abrir a aplição em um navegador.<br>
+      2. Navegar para a tela de cadastro.<br>
+      3. Inserir um Nome válido.<br>
+      4. Inserir um Email ja cadastrado.<br>
+      5. Inserir um Login válida.<br>
+      6. Inserir uma Senha válida.<br>
+      7. Confirmar uma Senha válida.<br>
+      8. Clicar no botão "Cadastrar".
       </td>
   </tr>
     <tr>
     <td><strong>Dados de teste</strong></td>
     <td>
-      - <strong>CPF:</strong> Colocar CPF cadastrado na base<br>
-      - <strong>Senha:</strong> Colocar senha inválida
+      - <strong>Nome:</strong> Inserir um Nome válido na base<br>
+      - <strong>Email:</strong> Inserir um Email já cadastrado<br>
+      - <strong>Login:</strong> Inserir um Login válido na base<br>
+      - <strong>Senha:</strong> Inserir uma Senha válido na base
   </tr>
     <tr>
     <td><strong>Critérios de êxito</strong></td>
-    <td>O sistema deve apresentar a mensagem de login inválido.</td>
+    <td>O sistema deve exibir uma mensagem de erro informando que o Email já está em uso.</td>
   </tr>
 </table>
+
+
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-001<br>Cadastro com email inválido</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>Este caso de teste verifica se o sistema impede o cadastro de um usuário com um Email inválido.</td>
+  </tr>
+ <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td width="430">Insucesso</td>
+  </tr> 
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-002: Sistema de cadastro, leitura, atualização e exclusão de clientes.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      1. Abrir a aplição em um navegador.<br>
+      2. Navegar para a tela de cadastro.<br>
+      3. Inserir um Nome válido.<br>
+      4. Inserir um Email inválido.<br>
+      5. Inserir um Login válida.<br>
+      6. Inserir uma Senha válida.<br>
+      7. Confirmar uma Senha válida.<br>
+      8. Clicar no botão "Cadastrar".
+      </td>
+  </tr>
+    <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>
+      - <strong>Nome:</strong> Inserir um Nome válido na base<br>
+      - <strong>Email:</strong> Inserir um Email inválido<br>
+      - <strong>Login:</strong> Inserir um Login válido na base<br>
+      - <strong>Senha:</strong> Inserir uma Senha válida na base
+  </tr>
+    <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>O sistema deve exibir uma mensagem de erro informando que o formato de email é inválido</td>
+  </tr>
+</table>
+
+
+
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-001<br>Cadastro com Senha Fraca</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>Este caso de teste verifica se o sistema impede o cadastro de um usuário com uma senha fraca.</td>
+  </tr>
+ <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td width="430">Insucesso</td>
+  </tr> 
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-002: Sistema de cadastro, leitura, atualização e exclusão de clientes.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      1. Abrir a aplição em um navegador.<br>
+      2. Navegar para a tela de cadastro.<br>
+      3. Inserir um Nome válido.<br>
+      4. Inserir um Email válida.<br>
+      5. Inserir um Login válida.<br>
+      6. Inserir uma Senha fraca.<br>
+      7. Confirmar uma Senha fraca.<br>
+      8. Clicar no botão "Cadastrar".
+      </td>
+  </tr>
+    <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>
+      - <strong>Nome:</strong> Inserir um Nome válido na base<br>
+      - <strong>Email:</strong> Inserir um Email válido na base<br>
+      - <strong>Login:</strong> Inserir um Login válido na base<br>
+      - <strong>Senha:</strong> Inserir uma Senha Inválida
+  </tr>
+    <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>O sistema deve exibir uma mensagem de erro informando que a senha precisa ter ao menos 8 caracteres, incluindo letras e números</td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-001<br>Cadastro com campo obrigatório ausente</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>Este caso de teste verifica se o sistema impede o cadastro de um usuário com um dos campos obrigatorios ausente.</td>
+  </tr>
+ <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td width="430">Insucesso</td>
+  </tr> 
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-002: Sistema de cadastro, leitura, atualização e exclusão de clientes.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      1. Abrir a aplição em um navegador.<br>
+      2. Navegar para a tela de cadastro.<br>
+      3. Deixar um ou mais campos obrigatorios vazios.<br>
+      4. Preencher os demais campos obrigatórios.<br>
+      8. Clicar no botão "Cadastrar".
+      </td>
+  </tr>
+    <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>
+      - <strong>Nome:</strong> Inserir um Nome válido na base caso preenchido<br>
+      - <strong>Email:</strong> Inserir um Email válido na base caso preenchido<br>
+      - <strong>Login:</strong> Inserir um Login válido na base caso preenchido<br>
+      - <strong>Senha:</strong> Inserir uma Senha válida na base caso preenchido
+  </tr>
+    <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>O sistema deve exibir uma mensagem de erro informando que todos os campos obrigatórios devem ser preenchidos</td>
+  </tr>
+</table>
+
+
+### 5.2. Login de Usuário
+
+
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-002<br>Login com credenciais válidas</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>Este caso de teste verifica se um usuário pode fazer login com sucesso utilizando credenciais válidas.</td>
+  </tr>
+ <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td width="430">Sucesso</td>
+  </tr> 
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-002: Sistema de cadastro, leitura, atualização e exclusão de clientes.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      1. Abrir a aplição em um navegador.<br>
+      2. Navegar para a tela de Login.<br>
+      3. Inserir um Email válido.<br>
+      4. Inserir uma Senha válida.<br>
+      5. Clicar no botão "Entrar".
+      </td>
+  </tr>
+    <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>
+      - <strong>Email:</strong> Inserir um Email válido na base<br>
+      - <strong>Senha:</strong> Inserir uma Senha válida na base
+  </tr>
+    <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>O sistema deve redirecionar o usuário para a página inicial da aplicação após o login bem-sucedido.</td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-002<br>Login com email incorreto</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>Este caso de teste verifica se o sistema exibe uma mensagem de erro ao tentar login com um Email inválido.</td>
+  </tr>
+ <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td width="430">Insucesso</td>
+  </tr> 
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-002: Sistema de cadastro, leitura, atualização e exclusão de clientes.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      1. Abrir a aplição em um navegador.<br>
+      2. Navegar para a tela de Login.<br>
+      3. Inserir um Email inexistente.<br>
+      4. Inserir uma Senha válida.<br>
+      5. Clicar no botão "Entrar".
+      </td>
+  </tr>
+    <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>
+      - <strong>Email:</strong> Inserir um Email inválido na base<br>
+      - <strong>Senha:</strong> Inserir uma Senha válida na base
+  </tr>
+    <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>O sistema deve exibir uma mensagem de erro informando que não foi possivel encontrar um Usuário com esse Email.</td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-002<br>Login com senha incorreta</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>Este caso de teste verifica se o sistema exibe uma mensagem de erro ao tentar login com uma Senha inválido.</td>
+  </tr>
+ <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td width="430">Insucesso</td>
+  </tr> 
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-002: Sistema de cadastro, leitura, atualização e exclusão de clientes.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      1. Abrir a aplição em um navegador.<br>
+      2. Navegar para a tela de Login.<br>
+      3. Inserir um Email válido.<br>
+      4. Inserir uma Senha inválida.<br>
+      5. Clicar no botão "Entrar".
+      </td>
+  </tr>
+    <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>
+      - <strong>Email:</strong> Inserir um Email válido na base<br>
+      - <strong>Senha:</strong> Inserir a Senha inválida na base
+  </tr>
+    <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>O sistema deve exibir uma mensagem de erro informando que a senha esta incorreta.</td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-002<br>Login com campos vazios</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>Este caso de teste verifica se o sistema exibe uma mensagem de erro ao tentar login com um ou mais campos ausentes.</td>
+  </tr>
+ <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td width="430">Insucesso</td>
+  </tr> 
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-002: Sistema de cadastro, leitura, atualização e exclusão de clientes.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      1. Abrir a aplição em um navegador.<br>
+      2. Navegar para a tela de Login.<br>
+      3. Não preencher o campo de email e/ou senha.<br>
+      4. Preencher os demais campos caso queira.<br>
+      5. Clicar no botão "Entrar".
+      </td>
+  </tr>
+    <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>
+      - <strong>Email:</strong> Inserir um Email válido na base caso preenchido<br>
+      - <strong>Senha:</strong> Inserir uma Senha válida na base caso preenchido
+  </tr>
+    <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>O sistema deve exibir uma mensagem de erro informando que a senha esta incorreta.</td>
+  </tr>
+</table>
+
+
+## 6. Ferramentas e Ambiente de Teste
+
+Os testes serão conduzidos em:
+
+- Ambiente web responsivo
+- Navegadores: Chrome, Opera, Firefox, Edge, Opera GX,
+- Ferramentas: Postman (testes de API).
+
+## 7. Considerações Finais
+
+Este plano de testes garantirá que as funcionalidades de cadastro e login estejam seguras e funcionais. Ajustes serão feitos conforme os resultados dos testes e feedbacks coletados durante a execução.
+
 
  
 # Evidências de Testes de Software
