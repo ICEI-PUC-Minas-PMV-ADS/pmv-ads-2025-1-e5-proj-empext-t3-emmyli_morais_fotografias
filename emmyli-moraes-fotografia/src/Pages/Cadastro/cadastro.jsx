@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { cadastrarUsuario } from "../../service/userService";
+import { cadastrarUsuario } from "../../services/userService";
 import MenuNav from "../../components/MenuNav";
 import logo from "../../img/logo.png";
 import { Link } from "react-router-dom";
@@ -39,7 +39,7 @@ const Cadastro = () => {
         email: formData.email,
         login: formData.login,
         senha_hash: formData.senha,
-        tipo: "cliente",
+        tipo: "cliente"
       };
 
       await cadastrarUsuario(payload);
