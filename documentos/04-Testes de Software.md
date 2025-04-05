@@ -412,7 +412,7 @@ O sistema será considerado funcional para este módulo se:
   </tr>
     <tr>
     <td><strong>Critérios de êxito</strong></td>
-    <td>O sistema deve exibir uma mensagem de erro informando que a senha esta incorreta.</td>
+    <td>O sistema deve exibir uma mensagem de erro informando que todos os campos devem ser preenchidos</td>
   </tr>
 </table>
 
@@ -564,6 +564,117 @@ Cada funcionalidade desenvolvida deve ser testada utilizando os casos de testes 
     <tr>
     <td width="170"><strong>Comentário</strong></td>
     <td colspan="5">Este caso de teste verifica se o sistema impede o cadastro de um usuário com um dos campos obrigatorios ausente.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><video src="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2024-1-e5-proj-time-sheet/assets/82043220/2e3c1722-7adc-4bd4-8b4c-3abe9ddc1b48"/></td>
+  </tr>
+</table>
+
+
+### Login de Usuário
+
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-002<br>Login com credenciais válidas</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">(Sucesso) O sistema deve redirecionar o usuário para a página inicial da aplicação após o login bem-sucedido.</td>
+  </tr>
+    <tr>
+    <td><strong>Responsável pelo Teste</strong></td>
+    <td width="430"> n/a </td>
+     <td width="100"><strong>Data do Teste</strong></td>
+    <td width="150"> n/a </td>
+  </tr>
+    <tr>
+    <td width="170"><strong>Comentário</strong></td>
+    <td colspan="5">Este caso de teste verifica se um usuário pode fazer login com sucesso utilizando credenciais válidas.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><video src="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2024-1-e5-proj-time-sheet/assets/82043220/2e3c1722-7adc-4bd4-8b4c-3abe9ddc1b48"/></td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-002<br>Login com email incorreto</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">(Insucesso) O sistema deve exibir uma mensagem de erro informando que não foi possivel encontrar um Usuário com esse Email.</td>
+  </tr>
+    <tr>
+    <td><strong>Responsável pelo Teste</strong></td>
+    <td width="430"> n/a </td>
+     <td width="100"><strong>Data do Teste</strong></td>
+    <td width="150"> n/a </td>
+  </tr>
+    <tr>
+    <td width="170"><strong>Comentário</strong></td>
+    <td colspan="5">Este caso de teste verifica se o sistema exibe uma mensagem de erro ao tentar login com um Email inválido.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><video src="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2024-1-e5-proj-time-sheet/assets/82043220/2e3c1722-7adc-4bd4-8b4c-3abe9ddc1b48"/></td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-002<br>Login com senha incorreta</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">(Insucesso) O sistema deve exibir uma mensagem de erro informando que a senha esta incorreta.</td>
+  </tr>
+    <tr>
+    <td><strong>Responsável pelo Teste</strong></td>
+    <td width="430"> n/a </td>
+     <td width="100"><strong>Data do Teste</strong></td>
+    <td width="150"> n/a </td>
+  </tr>
+    <tr>
+    <td width="170"><strong>Comentário</strong></td>
+    <td colspan="5">Este caso de teste verifica se o sistema exibe uma mensagem de erro ao tentar login com uma Senha inválido.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><video src="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2024-1-e5-proj-time-sheet/assets/82043220/2e3c1722-7adc-4bd4-8b4c-3abe9ddc1b48"/></td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-002<br>Login com campos vazios</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">(Insucesso) O sistema deve exibir uma mensagem de erro informando que todos os campos devem ser preenchidos</td>
+  </tr>
+    <tr>
+    <td><strong>Responsável pelo Teste</strong></td>
+    <td width="430"> n/a </td>
+     <td width="100"><strong>Data do Teste</strong></td>
+    <td width="150"> n/a </td>
+  </tr>
+    <tr>
+    <td width="170"><strong>Comentário</strong></td>
+    <td colspan="5">Este caso de teste verifica se o sistema exibe uma mensagem de erro ao tentar login com um ou mais campos ausentes.</td>
   </tr>
   <tr>
     <td colspan="6" align="center"><strong>Evidência</strong></td>
