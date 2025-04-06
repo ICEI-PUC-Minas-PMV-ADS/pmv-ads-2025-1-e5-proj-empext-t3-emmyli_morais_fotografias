@@ -587,19 +587,19 @@ Cada funcionalidade desenvolvida deve ser testada utilizando os casos de testes 
   </tr>
     <tr>
     <td><strong>Responsável pelo Teste</strong></td>
-    <td width="430"> n/a </td>
+    <td width="430"> Bárbara Sena </td>
      <td width="100"><strong>Data do Teste</strong></td>
-    <td width="150"> n/a </td>
+    <td width="150"> 03/04/2025 </td>
   </tr>
     <tr>
     <td width="170"><strong>Comentário</strong></td>
-    <td colspan="5">Este caso de teste verifica se um usuário pode fazer login com sucesso utilizando credenciais válidas.</td>
+    <td colspan="5">(Sucesso) Este caso de teste verifica se um usuário pode fazer login com sucesso utilizando credenciais válidas. Foi possível realizar login com credencias válidas</td>
   </tr>
   <tr>
     <td colspan="6" align="center"><strong>Evidência</strong></td>
   </tr>
   <tr>
-    <td colspan="6" align="center"><video src="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2024-1-e5-proj-time-sheet/assets/82043220/2e3c1722-7adc-4bd4-8b4c-3abe9ddc1b48"/></td>
+    <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/b1eaaa1f-ad9e-4bab-91f2-479385ff0875"/></td>
   </tr>
 </table>
 
