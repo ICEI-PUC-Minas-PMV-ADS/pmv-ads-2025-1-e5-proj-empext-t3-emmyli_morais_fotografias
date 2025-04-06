@@ -449,13 +449,13 @@ Cada funcionalidade desenvolvida deve ser testada utilizando os casos de testes 
   </tr>
     <tr>
     <td><strong>Responsável pelo Teste</strong></td>
-    <td width="430"> n/a </td>
+    <td width="430">Rafael Cassiano </td>
      <td width="100"><strong>Data do Teste</strong></td>
-    <td width="150"> n/a </td>
+    <td width="150"> 03/04/2025 </td>
   </tr>
     <tr>
     <td width="170"><strong>Comentário</strong></td>
-    <td colspan="5">O sistema está permitindo o cadastro corretamente.</td>
+    <td colspan="5">(Sucesso)O sistema está permitindo o cadastro corretamente.</td>
   </tr>
   <tr>
     <td colspan="6" align="center"><strong>Evidência</strong></td>
@@ -472,17 +472,17 @@ Cada funcionalidade desenvolvida deve ser testada utilizando os casos de testes 
   </tr>
   <tr>
     <td width="170"><strong>Critérios de êxito</strong></td>
-    <td colspan="5">(Insucesso) O sistema deve exibir uma mensagem de erro informando que o Email já está em uso.</td>
+    <td colspan="5">(Sucesso) O sistema deve exibir uma mensagem de erro informando que o Email ou Login já está em uso.</td>
   </tr>
     <tr>
     <td><strong>Responsável pelo Teste</strong></td>
-    <td width="430"> n/a </td>
+    <td width="430"> Rafael Cassiano </td>
      <td width="100"><strong>Data do Teste</strong></td>
-    <td width="150"> n/a </td>
+    <td width="150"> 03/04/2025</td>
   </tr>
     <tr>
     <td width="170"><strong>Comentário</strong></td>
-    <td colspan="5">Este caso de teste verifica se o sistema impede o cadastro de um usuário com um Email já existente.</td>
+    <td colspan="5">(Sucesso)Este caso de teste verifica se o sistema impede o cadastro de um usuário com um Email ou Login já existente. </td>
   </tr>
   <tr>
     <td colspan="6" align="center"><strong>Evidência</strong></td>
@@ -499,17 +499,17 @@ Cada funcionalidade desenvolvida deve ser testada utilizando os casos de testes 
   </tr>
   <tr>
     <td width="170"><strong>Critérios de êxito</strong></td>
-    <td colspan="5">(Insuucesso) O sistema deve exibir uma mensagem de erro informando que o formato de email é inválido</td>
+    <td colspan="5"> O sistema deve exibir uma mensagem de erro informando que o formato de email é inválido</td>
   </tr>
     <tr>
     <td><strong>Responsável pelo Teste</strong></td>
-    <td width="430"> n/a </td>
+    <td width="430"> Rafael Cassiano</td>
      <td width="100"><strong>Data do Teste</strong></td>
-    <td width="150"> n/a </td>
+    <td width="150"> 03/04/2025 </td>
   </tr>
     <tr>
     <td width="170"><strong>Comentário</strong></td>
-    <td colspan="5">Este caso de teste verifica se o sistema impede o cadastro de um usuário com um Email inválido.</td>
+    <td colspan="5">(Sucesso)Este caso de teste verifica se o sistema impede o cadastro de um usuário com um Email inválido.</td>
   </tr>
   <tr>
     <td colspan="6" align="center"><strong>Evidência</strong></td>
@@ -530,13 +530,13 @@ Cada funcionalidade desenvolvida deve ser testada utilizando os casos de testes 
   </tr>
     <tr>
     <td><strong>Responsável pelo Teste</strong></td>
-    <td width="430"> n/a </td>
+    <td width="430"> Rafael Cassiano</td>
      <td width="100"><strong>Data do Teste</strong></td>
-    <td width="150"> n/a </td>
+    <td width="150"> 03/04/2025 </td>
   </tr>
     <tr>
     <td width="170"><strong>Comentário</strong></td>
-    <td colspan="5">Este caso de teste verifica se o sistema impede o cadastro de um usuário com uma senha fraca.</td>
+    <td colspan="5">(Insuucesso)Este caso de teste verifica se o sistema impede o cadastro de um usuário com uma senha fraca. Não esta fazendo validação da senha!</td>
   </tr>
   <tr>
     <td colspan="6" align="center"><strong>Evidência</strong></td>
@@ -553,17 +553,17 @@ Cada funcionalidade desenvolvida deve ser testada utilizando os casos de testes 
   </tr>
   <tr>
     <td width="170"><strong>Critérios de êxito</strong></td>
-    <td colspan="5">(Insuucesso) O sistema deve exibir uma mensagem de erro informando que todos os campos obrigatórios devem ser preenchidos</td>
+    <td colspan="5"> O sistema deve exibir uma mensagem de erro informando que todos os campos obrigatórios devem ser preenchidos</td>
   </tr>
     <tr>
     <td><strong>Responsável pelo Teste</strong></td>
-    <td width="430"> n/a </td>
+    <td width="430"> Rafael Cassiano </td>
      <td width="100"><strong>Data do Teste</strong></td>
-    <td width="150"> n/a </td>
+    <td width="150"> 03/04/2025 </td>
   </tr>
     <tr>
     <td width="170"><strong>Comentário</strong></td>
-    <td colspan="5">Este caso de teste verifica se o sistema impede o cadastro de um usuário com um dos campos obrigatorios ausente.</td>
+    <td colspan="5">(Insuucesso)Este caso de teste verifica se o sistema impede o cadastro de um usuário com um dos campos obrigatorios ausente. Foi possível fazer o cadastro com dados ausentes.</td>
   </tr>
   <tr>
     <td colspan="6" align="center"><strong>Evidência</strong></td>
