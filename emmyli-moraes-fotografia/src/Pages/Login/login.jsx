@@ -41,7 +41,13 @@ const Login = () => {
           
           <img src={logo} alt="Logo" className="w-48 sm:w-40 mb-6" />
 
-          
+           {/* Mensagem de erro estilizada */}
+           {errorMessage && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md w-full mb-4">
+              <strong className="font-bold">Erro:</strong> {errorMessage}
+            </div>
+          )}
+
           <p className="text-md text-gray-600 mb-8">
             Ao clicar aqui, você irá descobrir imagens que irão surpreender seus olhos e tocar sua alma. Prepare-se para uma experiência visual única!
           </p>
@@ -63,7 +69,6 @@ const Login = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-             {errorMessage && <p className="text-red-700">{errorMessage}</p>}
             <button
               type="submit"
               className="w-full bg-[#c09b2d] text-white p-4 sm:p-3 rounded-md hover:bg-[#a68523] transition-all text-lg"
