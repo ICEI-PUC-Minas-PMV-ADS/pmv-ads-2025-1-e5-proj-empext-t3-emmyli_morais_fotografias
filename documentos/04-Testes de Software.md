@@ -643,9 +643,9 @@ Cada funcionalidade desenvolvida deve ser testada utilizando os casos de testes 
   </tr>
     <tr>
     <td><strong>Responsável pelo Teste</strong></td>
-    <td width="430"> n/a </td>
+    <td width="430">  Bárbara Sena </td>
      <td width="100"><strong>Data do Teste</strong></td>
-    <td width="150"> n/a </td>
+    <td width="150"> 03/04/2025 </td>
   </tr>
     <tr>
     <td width="170"><strong>Comentário</strong></td>
@@ -670,9 +670,9 @@ Cada funcionalidade desenvolvida deve ser testada utilizando os casos de testes 
   </tr>
     <tr>
     <td><strong>Responsável pelo Teste</strong></td>
-    <td width="430"> n/a </td>
+    <td width="430">  Bárbara Sena </td>
      <td width="100"><strong>Data do Teste</strong></td>
-    <td width="150"> n/a </td>
+    <td width="150"> 03/04/2025 </td>
   </tr>
     <tr>
     <td width="170"><strong>Comentário</strong></td>
