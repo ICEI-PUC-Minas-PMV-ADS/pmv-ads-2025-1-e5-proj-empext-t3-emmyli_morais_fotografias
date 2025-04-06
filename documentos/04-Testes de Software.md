@@ -649,13 +649,13 @@ Cada funcionalidade desenvolvida deve ser testada utilizando os casos de testes 
   </tr>
     <tr>
     <td width="170"><strong>Comentário</strong></td>
-    <td colspan="5">Este caso de teste verifica se o sistema exibe uma mensagem de erro ao tentar login com uma Senha inválido.</td>
+    <td colspan="5">(Sucesso) Este caso de teste verifica se o sistema exibe uma mensagem de erro ao tentar login com uma Senha inválido. O sistema não permite o login do usuário que digitou a senha errada. Uma mensagem de erro genérica é exibida e não é informado qual campo está errado por questão de segurança.</td>
   </tr>
   <tr>
     <td colspan="6" align="center"><strong>Evidência</strong></td>
   </tr>
   <tr>
-    <td colspan="6" align="center"><video src="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2024-1-e5-proj-time-sheet/assets/82043220/2e3c1722-7adc-4bd4-8b4c-3abe9ddc1b48"/></td>
+    <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/b2ab94c2-d65e-465b-9601-05a0e57a61ba"/></td>
   </tr>
 </table>
 
@@ -676,13 +676,13 @@ Cada funcionalidade desenvolvida deve ser testada utilizando os casos de testes 
   </tr>
     <tr>
     <td width="170"><strong>Comentário</strong></td>
-    <td colspan="5">Este caso de teste verifica se o sistema exibe uma mensagem de erro ao tentar login com um ou mais campos ausentes.</td>
+    <td colspan="5">(Sucesso) Este caso de teste verifica se o sistema exibe uma mensagem de erro ao tentar login com um ou mais campos ausentes. O sistema não permite tentar realizar login com a ausência dos campos.</td>
   </tr>
   <tr>
     <td colspan="6" align="center"><strong>Evidência</strong></td>
   </tr>
   <tr>
-    <td colspan="6" align="center"><video src="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2024-1-e5-proj-time-sheet/assets/82043220/2e3c1722-7adc-4bd4-8b4c-3abe9ddc1b48"/></td>
+    <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/3e156acc-3e7c-4e38-91ed-fb5f7d59698c"/></td>
   </tr>
 </table>
 
