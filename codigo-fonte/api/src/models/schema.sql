@@ -23,27 +23,30 @@ CREATE TABLE detalhe_usuarios (
     CONSTRAINT fk_detalhe_usuarios FOREIGN KEY (id_usuario) REFERENCES usuarios(id) ON DELETE CASCADE
 );
 
-/*CREATE TABLE eventos (
+CREATE TABLE eventos (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
     descricao TEXT,
     data_evento DATE NOT NULL,
+    hora_evento TIME,
+    local VARCHAR(255),
     publico BOOLEAN DEFAULT FALSE,
     dtinclusao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     dtalteracao DATE
 );
 
-CREATE TABLE detalhe_evento (
+CREATE TABLE detalhe_evento (    
     id SERIAL PRIMARY KEY,
     evento_id INT NOT NULL,
-    foto BYTEA NOT NULL,
+    foto TEXT NOT NULL,
     tem_marca_agua BOOLEAN DEFAULT TRUE,
+    ordem INT,
     dtinclusao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     dtalteracao DATE,
     CONSTRAINT fk_detalhe_evento FOREIGN KEY (evento_id) REFERENCES eventos(id) ON DELETE CASCADE
 );
 
-CREATE TABLE albuns (
+/*CREATE TABLE albuns (
     id SERIAL PRIMARY KEY,
     usuario_id INT NOT NULL,
     nome VARCHAR(255) NOT NULL,
