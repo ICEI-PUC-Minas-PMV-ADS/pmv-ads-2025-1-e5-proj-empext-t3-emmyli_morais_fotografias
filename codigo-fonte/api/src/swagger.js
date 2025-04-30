@@ -44,6 +44,7 @@ const options = {
 };
 
 const swaggerDocs = swaggerJsDoc(options);
+console.log("Swagger carregado com as seguintes rotas:", swaggerDocs.paths);
 
 module.exports = (app) => {
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));

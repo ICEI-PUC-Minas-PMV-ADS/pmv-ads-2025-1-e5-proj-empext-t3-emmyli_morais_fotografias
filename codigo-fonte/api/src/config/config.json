@@ -1,11 +1,12 @@
 {
   "development": {
     "username": "postgres",
-    "password": "69f95902",
+    "password": "barbara",
     "database": "emmyli_db",
     "host": "localhost",
     "dialect": "postgres",
-    "port": 5432
+    "port": 5432,
+    "jwt": "c089d0fd07b4a82131bfc751ba6f70b97f3bd8e6c2429be64d3b6a1ac0e8a214"
   },
   "test": {
     "username": "root",
