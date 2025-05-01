@@ -7,8 +7,8 @@ class Api_Controller {
     this.getAll  = this.getAll.bind(this);
     this.getById = this.getById.bind(this);
     this.create  = this.create.bind(this);
-    this.update  = this.create.bind(this);
-    this.delete  = this.create.bind(this);
+    this.update  = this.update.bind(this);
+    this.delete  = this.delete.bind(this);
   }
 
   async getAll(req, res) {

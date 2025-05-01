@@ -7,6 +7,8 @@ import Contato from "./Pages/Contatos/contato";
 import Sobre from "./Pages/Sobre/sobre";
 import AreaDoCliente from "./Pages/Area do cliente/areadocliente";
 import Trabalhos from "./Pages/trabalhos/trabalhos";
+import Cliente from "./Pages/PerfilCliente/Cliente";
+
 
 const App = () => {
   return (
@@ -19,6 +21,8 @@ const App = () => {
         <Route path="/sobre" element={<Sobre />} />
         <Route path="/areadocliente" element={<AreaDoCliente />} />
         <Route path="/trabalhos" element={<Trabalhos />} />
+        {/*Cliente*/}
+        <Route path="/PerfilCliente" element={< Cliente />} />
       </Routes>
     </Router>
   );

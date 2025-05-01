@@ -1,6 +1,5 @@
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
+const cryptografyPassword = require('./cryptographServices');
 const { Op } = require('sequelize');
 const { Usuarios, App001 } = require('../models');
 require('dotenv').config(); 
@@ -21,7 +20,7 @@ const AuthLogin = async ({ usernameOrEmail, password }) => {
   const isUserAdmin = user.tipo === 'fotografo';
 
   // Usando MD5 para verificar senha (se necessário mudar para bcrypt)
-  const hashedPassword = crypto.createHash('md5').update(password).digest('hex');  
+  const hashedPassword = cryptografyPassword(password);  
   const validPassword = user.senha_hash === hashedPassword;
 
   if (!validPassword) {

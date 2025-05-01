@@ -3,13 +3,13 @@ const express = require('express');
 const app = express();
 const authRoutes = require('./routes/autenticacao/authRoutes');
 const usuarioRoutes = require('./routes/usuario/usuarioRoutes');
+const myAccountRoutes = require('./routes/usuario/myAccountRoutes');
 const setupSwagger = require('./swagger');
 const port = 3000;
 require('dotenv').config();
 const verifyToken = require('./middleware/AuthMiddlewareToken');
 
 
-// Middleware para parsear JSON
 app.use(express.json());
 
 // Configurar Swagger
@@ -21,6 +21,9 @@ app.use('/api/auth', authRoutes);
 
 //app.use('/api/usuarios', verifyToken, usuarioRoutes);
 app.use('/api/usuarios', usuarioRoutes);
+
+//Token obrigatorio nesse conjunto de rotas
+app.use('/api/myAccount', verifyToken, myAccountRoutes);
 
 // rota protegida
 /*app.get('/protected', require('./middleware/AuthMiddlewareToken'), (req, res) => {
