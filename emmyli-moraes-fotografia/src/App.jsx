@@ -5,8 +5,12 @@ import Login from "./Pages/Login/login";
 import Cadastro from "./Pages/Cadastro/cadastro";
 import Contato from "./Pages/Contatos/contato";
 import Sobre from "./Pages/Sobre/sobre";
+
 import AreaDoCliente from "./Pages/Area do cliente/areadocliente";
+
 import Trabalhos from "./Pages/trabalhos/trabalhos";
+
+import PerfilFotografo from "./Pages/Perfil/perfilFotografa";
 
 const App = () => {
   return (
@@ -17,8 +21,15 @@ const App = () => {
         <Route path="/cadastro" element={<Cadastro />} />
         <Route path="/contato" element={<Contato />} />
         <Route path="/sobre" element={<Sobre />} />
-        <Route path="/areadocliente" element={<AreaDoCliente />} />
+
+        {/* <Route path="/areadocliente" element={<AreaDoCliente />} /> */}
+
         <Route path="/trabalhos" element={<Trabalhos />} />
+
+                {/*Perfil Fotografa*/}
+
+                <Route path="/Perfil" element={< PerfilFotografo />} />
+
       </Routes>
     </Router>
   );

@@ -6,14 +6,13 @@ import logo from "../img/logo.png";
 const MenuNav = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const location = useLocation(); // Obtém a URL atual da página
-
+  const location = useLocation(); 
   const menuItems = [
     { name: "Início", path: "/" },
     { name: "Trabalhos", path: "/trabalhos" },
     { name: "Contatos", path: "/contato" },
     { name: "Sobre", path: "/sobre" },
-    { name: "Área do Cliente", path: "/areadocliente" },
+  /*  { name: "Área do Cliente", path: "/areadocliente" }, */
     { name: "Login", path: "/login" },
   ];
 
