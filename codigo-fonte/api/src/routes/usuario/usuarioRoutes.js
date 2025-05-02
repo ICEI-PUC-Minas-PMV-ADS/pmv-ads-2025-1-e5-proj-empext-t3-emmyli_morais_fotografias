@@ -165,7 +165,12 @@ router.post('/', usuariosController.create);
  *       400:
  *         description: Erro ao atualizar usuário
  */
-router.put('/:id', verifyToken, usuariosController.update); // Protegido
+router.put('/:id', async (reg, res) => {
+    const { id } = req.params;
+    const usuarioInfo = req.body;
+
+    await usuariosController.update(id, usuarioInfo, res)
+});
 
 /**
  * @swagger

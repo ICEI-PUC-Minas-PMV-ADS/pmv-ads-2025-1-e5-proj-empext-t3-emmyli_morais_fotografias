@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 const authRoutes = require('./routes/autenticacao/authRoutes');
 const usuarioRoutes = require('./routes/usuario/usuarioRoutes');
+const myAccountRoutes = require('./routes/usuario/myAccountRoutes');
 const marcaDaguaRoutes = require('./routes/marcaDagua/marcaDaguaRoutes');
 const setupSwagger = require('./swagger');
 const port = 3000;
@@ -19,7 +20,6 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'], // Cabeçalhos permitidos
 }));
 
-// Middleware para parsear JSON
 app.use(express.json());
 
 // Configurar Swagger
@@ -29,11 +29,14 @@ setupSwagger(app);
 app.use('/api/auth', authRoutes); 
 // Rota de usuário
 
-app.use('/api/usuarios', require('./routes/usuario/usuarioRoutes'));
+app.use('/api/usuarios', usuarioRoutes);
 
 // app.use('/api/marcaDagua', marcaDaguaRoutes);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+
+//Token obrigatorio nesse conjunto de rotas
+app.use('/api/myAccount', verifyToken, myAccountRoutes);
 
 // rota protegida
 /*app.get('/protected', require('./middleware/AuthMiddlewareToken'), (req, res) => {

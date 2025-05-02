@@ -235,7 +235,6 @@ const CadastrosRealizados = () => {
       </div>
 
       {/* Modal de Edição */}
-
       {editandoUsuario && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white shadow-2xl rounded-lg p-8 w-full max-w-lg text-center flex flex-col sm:max-w-md">

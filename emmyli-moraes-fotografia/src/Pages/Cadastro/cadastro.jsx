@@ -38,15 +38,14 @@ const Cadastro = () => {
         nome: formData.nome,
         email: formData.email,
         login: formData.login,
-        senha_hash: formData.senha,
-        tipo: "cliente"
+        senha: formData.senha
       };
 
       await cadastrarUsuario(payload);
       alert("Usuário cadastrado com sucesso!");
       navigate("/login");
     } catch (error) {
-      setError(error.response?.data?.error || "Erro ao cadastrar usuário.");
+      setError(error.response?.data?.message || "Erro ao cadastrar usuário.");
     }
   };
 

@@ -22,8 +22,16 @@ const Login = () => {
 
     try {
       const data = await loginUser(userEmail, password);
-      localStorage.setItem("token", data.token);
-      window.location.href = "/perfil";
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('nome', data.usuario.nome);
+      localStorage.setItem('login', data.usuario.login);
+      localStorage.setItem('email', data.usuario.email);
+      localStorage.setItem('perfil', data.usuario.perfil);
+      if (data.usuario.perfil === 'Cliente')
+        window.location.href = '/PerfilCliente';
+      else
+        window.location.href = '/Perfil';
+
     } catch (error) {
       setErrorMessage(error.message);
     } finally {
