@@ -21,14 +21,23 @@ const CadastrosRealizados = () => {
   const [usuarioIdParaRemover, setUsuarioIdParaRemover] = useState(null);
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [tipoMensagem, setTipoMensagem] = useState("");
+  const [mensagem, setMensagem] = useState("");
+
 
   useEffect(() => {
     fetchAllUsuarios();
   }, []);
 
   useEffect(() => {
-    console.log("dadosEditados:", dadosEditados);
-  }, [dadosEditados]);
+    if (mensagem) {
+      const timer = setTimeout(() => {
+        setMensagem("");
+        setTipoMensagem("");
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [mensagem, tipoMensagem]);
 
   const fetchAllUsuarios = async () => {
     try {
@@ -60,7 +69,11 @@ const CadastrosRealizados = () => {
       await removeUsuario(id);
       setModalOpen(false);
       fetchAllUsuarios();
+      setTipoMensagem("sucesso");
+      setMensagem("Usuário excluído com sucesso!");
     } catch (error) {
+      setTipoMensagem("erro");
+      setMensagem("Ocorreu um erro ao excluir o usuário!");
       console.error("Erro ao remover usuário");
     } finally {
       setLoading(false);
@@ -73,8 +86,11 @@ const CadastrosRealizados = () => {
       await editaUsuario(dadosEditados);
       setModalOpen(false);
       fetchAllUsuarios();
+      setTipoMensagem("sucesso");
+      setMensagem("Usuário editado com sucesso!");
     } catch (error) {
-      console.error("Erro ao remover usuário");
+      setTipoMensagem("error");
+      setMensagem("Ocorreu um erro ao editar usuário!");
     } finally {
       setLoading(false);
     }
@@ -108,6 +124,16 @@ const CadastrosRealizados = () => {
       {loading && (
         <div className="fixed inset-0 bg-white bg-opacity-80 z-50 flex items-center justify-center">
           <img src="/loading.gif" alt="Carregando..." className="w-32 h-20" />
+        </div>
+      )}
+
+      {mensagem && (
+        <div
+          className={`border px-4 py-3 rounded-md w-full mb-4 ${
+          tipoMensagem === "sucesso" ? "bg-green-100 border-green-400 text-green-700" :
+          "bg-red-100 border-red-400 text-red-700"
+      }`}>
+          {mensagem}
         </div>
       )}
 
