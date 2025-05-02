@@ -2,6 +2,7 @@
 import axios from "axios";
 
 const API_URL = "http://localhost:3000/api/usuarios"; // Ajuste conforme necessário
+const token = localStorage.getItem("token");
 
 export const cadastrarUsuario = async (dados: { nome: string; email: string; login: string; senha_hash: string; tipo: string; }) => {
   try {
@@ -14,3 +15,48 @@ export const cadastrarUsuario = async (dados: { nome: string; email: string; log
     throw error;
   }
 };
+
+
+export const buscaTodosUsuarios = async () => {
+  try {
+    const response = await axios.get(API_URL, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    });
+    console.log("usuarios:", response)
+    return response.data; 
+  } catch (error){
+    console.error("Erro ao buscar usuários:", error.response?.data || error.message);
+    throw error;
+  }
+}
+
+export const removeUsuario = async (id : Number) => {
+  try {
+    const response = await axios.delete(`${API_URL}/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    });
+    return response.data; 
+  } catch (error){
+    console.error("Erro ao deletar usuário:", error.response?.data || error.message);
+    throw error;
+  }
+}
+
+export const editaUsuario = async (dados: { id: number, nome: string; email: string; senha_hash: string; }) => {
+  try {
+    console.log("dados enviados para alteração:", dados)
+    const response = await axios.put(`${API_URL}/${dados.id}`, dados, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    });
+    return response.data; 
+  } catch (error){
+    console.error("Erro ao deletar usuário:", error.response?.data || error.message);
+    throw error;
+  }
+}
