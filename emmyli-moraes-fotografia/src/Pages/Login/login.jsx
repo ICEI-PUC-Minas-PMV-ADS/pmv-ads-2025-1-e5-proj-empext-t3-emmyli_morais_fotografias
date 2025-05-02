@@ -24,7 +24,11 @@ const Login = () => {
     try {
       const data = await loginUser(userEmail, password);
       localStorage.setItem('token', data.token);
-      window.location.href = '/perfil';
+      localStorage.setItem('nome', data.usuario.nome);
+      localStorage.setItem('login', data.usuario.login);
+      localStorage.setItem('email', data.usuario.email);
+      localStorage.setItem('perfil', data.usuario.perfil);
+      window.location.href = '/PerfilCliente';
     } catch (error) {
       setErrorMessage(error.message);
     } finally {

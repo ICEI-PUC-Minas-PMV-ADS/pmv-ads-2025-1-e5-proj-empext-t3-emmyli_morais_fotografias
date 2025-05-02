@@ -55,7 +55,7 @@ const AuthLogin = async ({ usernameOrEmail, password }) => {
     await App001.create({ idusuario: user.id, ...tokenData });
   }
 
-  return { token, usuario: { id: user.id, nome: user.nome, perfil: user.tipo } };
+  return { token, usuario: { id: user.id, nome: user.nome, login: user.login, email: user.email, perfil: user.tipo } };
 };
 
 const logoutService = async (idusuario) => {
