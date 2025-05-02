@@ -545,6 +545,95 @@ O sistema será considerado funcional para este módulo se:
   </tr>
 </table>
 
+### 5.3. Edição e Exclusão de Usuários pelo Admin
+
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-004<br />Edição de dados do usuário</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>
+      Verifica se o administrador consegue editar com sucesso
+      os dados de um usuário cadastrado.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td>Sucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-002:	Sistema de cadastro, leitura, atualização e exclusão de clientes.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      1. Fazer login como administrador.<br />
+      2. Navegar até a página "Cadastro realizados".<br />
+      3. Clicar em “Editar” no usuário desejado.<br />
+      4. Alterar os campos permitidos (ex.: nome, email, senha).<br />
+      5. Clicar em “Salvar”.<br />
+      6. Confirmar se os dados foram atualizados.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>
+      - Nome: João da Silva → João Pedro da Silva<br />
+      - Email: joao@email.com → joaopedro@email.com
+      - Senha: '' → 'joao1234'
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>
+      O sistema deve salvar e refletir as mudanças feitas pelo admin na listagem
+      de usuários.
+    </td>
+  </tr>
+</table>
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-004<br />Exclusão de usuário do sistema</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>
+      Verifica se o administrador pode excluir um usuário do
+      sistema com sucesso.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td>Sucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-002:	Sistema de cadastro, leitura, atualização e exclusão de clientes.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      1. Fazer login como administrador.<br />
+      2. Navegar até a página "Cadastro realizados".<br />
+      3. Clicar em “Excluir” no usuário desejado.<br />
+      4. Confirmar a exclusão.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>- Usuário: João Pedro da Silva (ID 123)</td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>
+      O sistema deve remover o usuário selecionado e exibir uma mensagem de
+      sucesso.
+    </td>
+  </tr>
+</table>
+
   
 ## 6. Ferramentas e Ambiente de Teste
 
