@@ -27,7 +27,11 @@ const Login = () => {
       localStorage.setItem('login', data.usuario.login);
       localStorage.setItem('email', data.usuario.email);
       localStorage.setItem('perfil', data.usuario.perfil);
-      window.location.href = '/PerfilCliente';
+      if (data.usuario.perfil === 'Cliente')
+        window.location.href = '/PerfilCliente';
+      else
+        window.location.href = '/Perfil';
+
     } catch (error) {
       setErrorMessage(error.message);
     } finally {
