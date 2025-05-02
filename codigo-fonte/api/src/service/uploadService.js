@@ -3,7 +3,7 @@ require('dotenv').config();
 
 const BUNNY_STORAGE_NAME = 'emmyli-moraes-fotografias';
 
-const BUNNY_STORAGE_KEY = process.env.BUNNY_STORAGE_KEY;
+const BUNNY_STORAGE_KEY = '8cc72f74-b6da-4e5b-8bd930b61676-43b4-4998';
 
 const uploadFotoBunnyStorage = async (file) => {
   if (!file || !file.buffer || !file.originalname || !file.mimetype) {
