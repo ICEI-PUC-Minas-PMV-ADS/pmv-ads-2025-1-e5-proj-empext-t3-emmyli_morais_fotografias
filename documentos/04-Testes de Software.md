@@ -995,6 +995,66 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
   </tr>
 </table>
 
+### 1. Edição e Exclusão de Usuários pelo Admin
+
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-004<br>Edição de dados do usuário</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">Verificar se o administrador consegue editar com sucesso os dados de um usuário cadastrado.</td>
+  </tr>
+    <tr>
+    <td><strong>Responsável pela funcionalidade</strong></td>
+    <td width="430">Bárbara Fernandes Sena </td>
+      <td><strong>Responsável pelo teste</strong></td>
+    <td width="430">Gleyston Guimarães </td>
+     <td width="100"><strong>Data do teste</strong></td>
+    <td width="150">02/05/2024</td>
+  </tr>
+    <tr>
+    <td width="170"><strong>Comentário</strong></td>
+    <td colspan="5">O sistema salva e reflete as mudanças feitas pelo admin na listagem de usuários.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><video src="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2024-1-e5-proj-time-sheet/assets/82043220/2e3c1722-7adc-4bd4-8b4c-3abe9ddc1b48"/></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-004<br>Exclusão de usuário do sistema</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">Verificar se o administrador pode excluir um usuário do sistema com sucesso.</td>
+  </tr>
+    <tr>
+    <td><strong>Responsável pela funcionalidade</strong></td>
+    <td width="430">Bárbara Fernandes Sena </td>
+      <td><strong>Responsável pelo teste</strong></td>
+    <td width="430">Gleyston Guimarães </td>
+     <td width="100"><strong>Data do teste</strong></td>
+    <td width="150">02/05/2024</td>
+  </tr>
+    <tr>
+    <td width="170"><strong>Comentário</strong></td>
+    <td colspan="5">O sistema remove o usuário selecionado e exibe uma mensagem de sucesso.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><video src="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2024-1-e5-proj-time-sheet/assets/82043220/2e3c1722-7adc-4bd4-8b4c-3abe9ddc1b48"/></td>
+  </tr>
+</table>
+
+
 
 
 
