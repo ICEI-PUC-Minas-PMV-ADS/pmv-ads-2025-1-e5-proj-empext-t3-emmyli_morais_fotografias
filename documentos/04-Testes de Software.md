@@ -903,7 +903,137 @@ Cada funcionalidade desenvolvida deve ser testada utilizando os casos de testes 
   </tr>
 </table>
 
+### Cadastro de Usuário
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-003<br>Upload de marca d'água com imagem válida</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">(Sucesso) O admin deve conseguir fazer upload de uma imagem válida para a marca d'água.</td>
+  </tr>
+    <tr>
+    <td><strong>Responsável pelo Teste</strong></td>
+    <td width="430">Bárbara Sena </td>
+     <td width="100"><strong>Data do Teste</strong></td>
+    <td width="150"> 02/05/2025 </td>
+  </tr>
+    <tr>
+    <td width="170"><strong>Comentário</strong></td>
+    <td colspan="5">(Sucesso)A imagem é exibida na tela e uma mensagem de sucesso é apresentada.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+      <td colspan="6" align="center"><video src=""/></td>
+  </tr>
+</table>
 
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-003<br>Remoção de marca d'água</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">(Sucesso) O administrador deve conseguir remover a marca d'água que desejar.</td>
+  </tr>
+    <tr>
+    <td><strong>Responsável pelo Teste</strong></td>
+    <td width="430">Bárbara Sena </td>
+     <td width="100"><strong>Data do Teste</strong></td>
+    <td width="150"> 02/05/2025 </td>
+  </tr>
+    <tr>
+    <td width="170"><strong>Comentário</strong></td>
+    <td colspan="5">(Sucesso)A imagem é removida e a tela renderiza apenas as marca d`águas não apagadas.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+      <td colspan="6" align="center"><video src=""/></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-003<br>Upload de marca d'água com arquivo inválido</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">(Sucesso) O sistema deve impedir o upload de arquivos não suportados (como PDF, CSV stc).</td>
+  </tr>
+    <tr>
+    <td><strong>Responsável pelo Teste</strong></td>
+    <td width="430">Bárbara Sena </td>
+     <td width="100"><strong>Data do Teste</strong></td>
+    <td width="150"> 02/05/2025 </td>
+  </tr>
+    <tr>
+    <td width="170"><strong>Comentário</strong></td>
+    <td colspan="5">(Sucesso)A imagem não é enviada para o BunnyCDN e nem registrada no banco. O sistema exibe mensagem de erro.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+      <td colspan="6" align="center"><video src=""/></td>
+  </tr>
+</table>
+
+### Edição e Exclusão de Usuários pelo Admin
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-003<br>Edição de dados do usuário</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">(Sucesso) O administrador deve conseguir editar com sucesso os dados de um usuário cadastrado.</td>
+  </tr>
+    <tr>
+    <td><strong>Responsável pelo Teste</strong></td>
+    <td width="430">Bárbara Sena </td>
+     <td width="100"><strong>Data do Teste</strong></td>
+    <td width="150"> 02/05/2025 </td>
+  </tr>
+    <tr>
+    <td width="170"><strong>Comentário</strong></td>
+    <td colspan="5">(Sucesso)O sistema salva e reflete as mudanças feitas pelo admin na listagem de usuários.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+      <td colspan="6" align="center"><video src=""/></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-003<br>Exclusão de usuário do sistema</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">(Sucesso) o administrador pode excluir um usuário do sistema com sucesso.</td>
+  </tr>
+    <tr>
+    <td><strong>Responsável pelo Teste</strong></td>
+    <td width="430">Bárbara Sena </td>
+     <td width="100"><strong>Data do Teste</strong></td>
+    <td width="150"> 02/05/2025 </td>
+  </tr>
+    <tr>
+    <td width="170"><strong>Comentário</strong></td>
+    <td colspan="5">(Sucesso) O sistema remove o usuário selecionado e exibe uma mensagem de sucesso.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+      <td colspan="6" align="center"><video src=""/></td>
+  </tr>
+</table>
 
 
 ## Parte 2 - Testes por pares
