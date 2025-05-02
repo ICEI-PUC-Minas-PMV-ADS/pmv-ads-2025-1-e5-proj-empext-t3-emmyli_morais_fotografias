@@ -416,7 +416,136 @@ O sistema será considerado funcional para este módulo se:
   </tr>
 </table>
 
+### 5.3. Gerenciamento de Marca d'Água no Login do Admin
 
+<table>
+  <tr>
+    <th colspan="2" width="1000">
+      CT-003<br />Upload de marca d'água com imagem válida
+    </th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>
+      Verificar se o admin consegue fazer upload de uma imagem
+      válida para a marca d'água.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td>Sucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-013: Permite a inclusão e exclusão de marca d`águas.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      1. Fazer login como administrador.<br />
+      2. Navegar até a página "Configurações".<br />
+      3. Clicar em "+".<br />
+      4. Escolher uma imagem válida (JPG, PNG, até 2MB).<br />
+      5. Clicar no botão "Enviar".<br />
+      6. Verificar a exibição da marca d`água.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>
+      A imagem deve ser exibida na tela de login e uma mensagem de sucesso deve
+      ser apresentada.
+    </td>
+  </tr>
+</table>
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-003<br />Remoção da marca d'água atual</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>
+      Verificar se o administrador consegue remover a imagem
+      atual da marca d'água da tela de login.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td>Sucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-013: Permite a inclusão e exclusão de marca d`águas.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      1. Fazer login como administrador.<br />
+      2. Navegar até a página "Configurações".<br />
+      3. Clique no ícone da lixeira. <br />
+      4. Confirme a exclusão no modal. <br />
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>
+      A imagem deve ser removida e a tela deverá renderizar apenas as marca d`águas não apagadas.
+    </td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th colspan="2" width="1000">
+      CT-003<br />Upload de marca d'água com arquivo inválido
+    </th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>
+      Verifica se sistema impede o upload de arquivos não suportados (como PDF, CSV stc).
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td>Sucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-013: Permite a inclusão e exclusão de marca d`águas.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      1. Fazer login como administrador.<br />
+      2. Navegar até a página "Configurações".<br />
+      3. Clicar em "+".<br />
+      4. Escolher uma imagem válida (JPG, PNG, até 2MB).<br />
+      5. Clicar no botão "Enviar".<br />
+      6. Verificar a exibição da marca d`água.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>
+      A imagem não deverá ser enviada para o BunnyCDN e nem registrada no banco. O sistema deve exibir mensagem de erro.
+    </td>
+  </tr>
+</table>
+
+  
 ## 6. Ferramentas e Ambiente de Teste
 
 Os testes serão conduzidos em:
@@ -685,6 +814,8 @@ Cada funcionalidade desenvolvida deve ser testada utilizando os casos de testes 
     <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/3e156acc-3e7c-4e38-91ed-fb5f7d59698c"/></td>
   </tr>
 </table>
+
+
 
 
 ## Parte 2 - Testes por pares
