@@ -5,6 +5,7 @@ const authRoutes = require('./routes/autenticacao/authRoutes');
 const usuarioRoutes = require('./routes/usuario/usuarioRoutes');
 const myAccountRoutes = require('./routes/usuario/myAccountRoutes');
 const marcaDaguaRoutes = require('./routes/marcaDagua/marcaDaguaRoutes');
+const produtosRoutes = require('./routes/produtos/produtosRoutes');
 const setupSwagger = require('./swagger');
 const port = 3000;
 require('dotenv').config();
@@ -46,6 +47,10 @@ app.use('/api/myAccount', verifyToken, myAccountRoutes);
 // rota protegida
 app.use('/api/marcaDagua', verifyToken, marcaDaguaRoutes);
 
+
+//produtos
+
+app.use('/api/produtos', verifyToken, produtosRoutes);
 
 app.listen(port, () => {
   console.log(`Servidor rodando em http://localhost:${port}`);
