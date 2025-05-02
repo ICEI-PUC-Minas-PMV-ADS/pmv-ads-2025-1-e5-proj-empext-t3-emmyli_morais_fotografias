@@ -416,7 +416,224 @@ O sistema será considerado funcional para este módulo se:
   </tr>
 </table>
 
+### 5.3. Gerenciamento de Marca d'Água no Login do Admin
 
+<table>
+  <tr>
+    <th colspan="2" width="1000">
+      CT-003<br />Upload de marca d'água com imagem válida
+    </th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>
+      Verificar se o admin consegue fazer upload de uma imagem
+      válida para a marca d'água.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td>Sucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-013: Permite a inclusão e exclusão de marca d`águas.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      1. Fazer login como administrador.<br />
+      2. Navegar até a página "Configurações".<br />
+      3. Clicar em "+".<br />
+      4. Escolher uma imagem válida (JPG, PNG, até 2MB).<br />
+      5. Clicar no botão "Enviar".<br />
+      6. Verificar a exibição da marca d`água.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>
+     A imagem deve ser exibida na tela e uma mensagem de sucesso deve ser apresentada.
+    </td>
+  </tr>
+</table>
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-003<br />Remoção da marca d'água atual</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>
+      Verificar se o administrador consegue remover a imagem
+      atual da marca d'água da tela de login.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td>Sucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-013: Permite a inclusão e exclusão de marca d`águas.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      1. Fazer login como administrador.<br />
+      2. Navegar até a página "Configurações".<br />
+      3. Clique no ícone da lixeira. <br />
+      4. Confirme a exclusão no modal. <br />
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>
+      A imagem deve ser removida e a tela deverá renderizar apenas as marca d`águas não apagadas.
+    </td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th colspan="2" width="1000">
+      CT-003<br />Upload de marca d'água com arquivo inválido
+    </th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>
+      Verifica se sistema impede o upload de arquivos não suportados (como PDF, CSV stc).
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td>Sucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-013: Permite a inclusão e exclusão de marca d`águas.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      1. Fazer login como administrador.<br />
+      2. Navegar até a página "Configurações".<br />
+      3. Clicar em "+".<br />
+      4. Escolher uma imagem válida (JPG, PNG, até 2MB).<br />
+      5. Clicar no botão "Enviar".<br />
+      6. Verificar a exibição da marca d`água.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>
+      A imagem não deverá ser enviada para o BunnyCDN e nem registrada no banco. O sistema deve exibir mensagem de erro.
+    </td>
+  </tr>
+</table>
+
+### 5.3. Edição e Exclusão de Usuários pelo Admin
+
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-004<br />Edição de dados do usuário</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>
+      Verifica se o administrador consegue editar com sucesso
+      os dados de um usuário cadastrado.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td>Sucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-002:	Sistema de cadastro, leitura, atualização e exclusão de clientes.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      1. Fazer login como administrador.<br />
+      2. Navegar até a página "Cadastro realizados".<br />
+      3. Clicar em “Editar” no usuário desejado.<br />
+      4. Alterar os campos permitidos (ex.: nome, email, senha).<br />
+      5. Clicar em “Salvar”.<br />
+      6. Confirmar se os dados foram atualizados.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>
+      - Nome: João da Silva → João Pedro da Silva<br />
+      - Email: joao@email.com → joaopedro@email.com
+      - Senha: '' → 'joao1234'
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>
+      O sistema deve salvar e refletir as mudanças feitas pelo admin na listagem
+      de usuários.
+    </td>
+  </tr>
+</table>
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-004<br />Exclusão de usuário do sistema</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>
+      Verifica se o administrador pode excluir um usuário do
+      sistema com sucesso.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td>Sucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-002:	Sistema de cadastro, leitura, atualização e exclusão de clientes.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      1. Fazer login como administrador.<br />
+      2. Navegar até a página "Cadastro realizados".<br />
+      3. Clicar em “Excluir” no usuário desejado.<br />
+      4. Confirmar a exclusão.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>- Usuário: João Pedro da Silva (ID 123)</td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>
+      O sistema deve remover o usuário selecionado e exibir uma mensagem de
+      sucesso.
+    </td>
+  </tr>
+</table>
+
+  
 ## 6. Ferramentas e Ambiente de Teste
 
 Os testes serão conduzidos em:
@@ -686,30 +903,163 @@ Cada funcionalidade desenvolvida deve ser testada utilizando os casos de testes 
   </tr>
 </table>
 
-
-## Parte 2 - Testes por pares
-A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade deve ser testada por um colega e os testes devem ser evidenciados. O colega "Tester" deve utilizar o caso de teste criado pelo desenvolvedor responsável pela funcionalidade (desenvolveu a funcionalidade e criou o caso de testes descrito no plano de testes).
-
-### Exemplo
+### Cadastro de Usuário
 <table>
   <tr>
-    <th colspan="6" width="1000">CT-001<br>Login com credenciais válidas</th>
+    <th colspan="6" width="1000">CT-003<br>Upload de marca d'água com imagem válida</th>
   </tr>
   <tr>
     <td width="170"><strong>Critérios de êxito</strong></td>
-    <td colspan="5">O sistema deve redirecionar o usuário para a página inicial do aplicativo após o login bem-sucedido.</td>
+    <td colspan="5">(Sucesso) O admin deve conseguir fazer upload de uma imagem válida para a marca d'água.</td>
   </tr>
     <tr>
-    <td><strong>Responsável pela funcionalidade</strong></td>
-    <td width="430">José da Silva </td>
-      <td><strong>Responsável pelo teste</strong></td>
-    <td width="430">Maria Oliveira </td>
-     <td width="100"><strong>Data do teste</strong></td>
-    <td width="150">08/05/2024</td>
+    <td><strong>Responsável pelo Teste</strong></td>
+    <td width="430">Bárbara Sena </td>
+     <td width="100"><strong>Data do Teste</strong></td>
+    <td width="150"> 02/05/2025 </td>
   </tr>
     <tr>
     <td width="170"><strong>Comentário</strong></td>
-    <td colspan="5">O sistema está permitindo o login corretamente.</td>
+    <td colspan="5">(Sucesso)A imagem é exibida na tela e uma mensagem de sucesso é apresentada.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+      <td colspan="6" align="center"><video src=""/></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-003<br>Remoção de marca d'água</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">(Sucesso) O administrador deve conseguir remover a marca d'água que desejar.</td>
+  </tr>
+    <tr>
+    <td><strong>Responsável pelo Teste</strong></td>
+    <td width="430">Bárbara Sena </td>
+     <td width="100"><strong>Data do Teste</strong></td>
+    <td width="150"> 02/05/2025 </td>
+  </tr>
+    <tr>
+    <td width="170"><strong>Comentário</strong></td>
+    <td colspan="5">(Sucesso)A imagem é removida e a tela renderiza apenas as marca d`águas não apagadas.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+      <td colspan="6" align="center"><video src=""/></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-003<br>Upload de marca d'água com arquivo inválido</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">(Sucesso) O sistema deve impedir o upload de arquivos não suportados (como PDF, CSV stc).</td>
+  </tr>
+    <tr>
+    <td><strong>Responsável pelo Teste</strong></td>
+    <td width="430">Bárbara Sena </td>
+     <td width="100"><strong>Data do Teste</strong></td>
+    <td width="150"> 02/05/2025 </td>
+  </tr>
+    <tr>
+    <td width="170"><strong>Comentário</strong></td>
+    <td colspan="5">(Sucesso)A imagem não é enviada para o BunnyCDN e nem registrada no banco. O sistema exibe mensagem de erro.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+      <td colspan="6" align="center"><video src=""/></td>
+  </tr>
+</table>
+
+### Edição e Exclusão de Usuários pelo Admin
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-003<br>Edição de dados do usuário</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">(Sucesso) O administrador deve conseguir editar com sucesso os dados de um usuário cadastrado.</td>
+  </tr>
+    <tr>
+    <td><strong>Responsável pelo Teste</strong></td>
+    <td width="430">Bárbara Sena </td>
+     <td width="100"><strong>Data do Teste</strong></td>
+    <td width="150"> 02/05/2025 </td>
+  </tr>
+    <tr>
+    <td width="170"><strong>Comentário</strong></td>
+    <td colspan="5">(Sucesso)O sistema salva e reflete as mudanças feitas pelo admin na listagem de usuários.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+      <td colspan="6" align="center"><video src=""/></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-003<br>Exclusão de usuário do sistema</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">(Sucesso) o administrador pode excluir um usuário do sistema com sucesso.</td>
+  </tr>
+    <tr>
+    <td><strong>Responsável pelo Teste</strong></td>
+    <td width="430">Bárbara Sena </td>
+     <td width="100"><strong>Data do Teste</strong></td>
+    <td width="150"> 02/05/2025 </td>
+  </tr>
+    <tr>
+    <td width="170"><strong>Comentário</strong></td>
+    <td colspan="5">(Sucesso) O sistema remove o usuário selecionado e exibe uma mensagem de sucesso.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+      <td colspan="6" align="center"><video src=""/></td>
+  </tr>
+</table>
+
+
+## Parte 2 - Testes por pares
+A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade deve ser testada por um colega e os testes devem ser evidenciados. O colega "Tester" deve utilizar o caso de teste criado pelo desenvolvedor responsável pela funcionalidade (desenvolveu a funcionalidade e criou o caso de testes descrito no plano de testes).
+      
+### 1. Gerenciamento de Marca d'Água no Login do Admin
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-003<br>Upload de marca d'água com imagem válida</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">O admin deve conseguir  fazer upload de uma imagem válida para a marca d'água.</td>
+  </tr>
+    <tr>
+    <td><strong>Responsável pela funcionalidade</strong></td>
+    <td width="430">Bárbara Fernandes Sena </td>
+      <td><strong>Responsável pelo teste</strong></td>
+    <td width="430">Gleyston Guimarães </td>
+     <td width="100"><strong>Data do teste</strong></td>
+    <td width="150">02/05/2024</td>
+  </tr>
+    <tr>
+    <td width="170"><strong>Comentário</strong></td>
+    <td colspan="5">A imagem é exibida na tela e uma mensagem de sucesso é apresentada.</td>
   </tr>
   <tr>
     <td colspan="6" align="center"><strong>Evidência</strong></td>
@@ -718,6 +1068,123 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
     <td colspan="6" align="center"><video src="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2024-1-e5-proj-time-sheet/assets/82043220/2e3c1722-7adc-4bd4-8b4c-3abe9ddc1b48"/></td>
   </tr>
 </table>
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-003<br>Remoção de marca d'água</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">O administrador deve conseguir remover a marca d'água que desejar.</td>
+  </tr>
+    <tr>
+    <td><strong>Responsável pela funcionalidade</strong></td>
+    <td width="430">Bárbara Fernandes Sena </td>
+      <td><strong>Responsável pelo teste</strong></td>
+    <td width="430">Gleyston Guimarães </td>
+     <td width="100"><strong>Data do teste</strong></td>
+    <td width="150">02/05/2024</td>
+  </tr>
+    <tr>
+    <td width="170"><strong>Comentário</strong></td>
+    <td colspan="5">A imagem é removida e a tela renderiza apenas as marca d`águas não apagadas.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><video src="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2024-1-e5-proj-time-sheet/assets/82043220/2e3c1722-7adc-4bd4-8b4c-3abe9ddc1b48"/></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-003<br>Upload de marca d'água com arquivo inválido</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">O sistema deve impedir o upload de arquivos não suportados (como PDF, CSV stc).</td>
+  </tr>
+    <tr>
+    <td><strong>Responsável pela funcionalidade</strong></td>
+    <td width="430">Bárbara Fernandes Sena </td>
+      <td><strong>Responsável pelo teste</strong></td>
+    <td width="430">Gleyston Guimarães </td>
+     <td width="100"><strong>Data do teste</strong></td>
+    <td width="150">02/05/2024</td>
+  </tr>
+    <tr>
+    <td width="170"><strong>Comentário</strong></td>
+    <td colspan="5">A imagem não é enviada para o BunnyCDN e nem registrada no banco. O sistema exibe mensagem de erro.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><video src="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2024-1-e5-proj-time-sheet/assets/82043220/2e3c1722-7adc-4bd4-8b4c-3abe9ddc1b48"/></td>
+  </tr>
+</table>
+
+### 2. Edição e Exclusão de Usuários pelo Admin
+
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-004<br>Edição de dados do usuário</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">Verificar se o administrador consegue editar com sucesso os dados de um usuário cadastrado.</td>
+  </tr>
+    <tr>
+    <td><strong>Responsável pela funcionalidade</strong></td>
+    <td width="430">Bárbara Fernandes Sena </td>
+      <td><strong>Responsável pelo teste</strong></td>
+    <td width="430">Gleyston Guimarães </td>
+     <td width="100"><strong>Data do teste</strong></td>
+    <td width="150">02/05/2024</td>
+  </tr>
+    <tr>
+    <td width="170"><strong>Comentário</strong></td>
+    <td colspan="5">O sistema salva e reflete as mudanças feitas pelo admin na listagem de usuários.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><video src="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2024-1-e5-proj-time-sheet/assets/82043220/2e3c1722-7adc-4bd4-8b4c-3abe9ddc1b48"/></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-004<br>Exclusão de usuário do sistema</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">Verificar se o administrador pode excluir um usuário do sistema com sucesso.</td>
+  </tr>
+    <tr>
+    <td><strong>Responsável pela funcionalidade</strong></td>
+    <td width="430">Bárbara Fernandes Sena </td>
+      <td><strong>Responsável pelo teste</strong></td>
+    <td width="430">Gleyston Guimarães </td>
+     <td width="100"><strong>Data do teste</strong></td>
+    <td width="150">02/05/2024</td>
+  </tr>
+    <tr>
+    <td width="170"><strong>Comentário</strong></td>
+    <td colspan="5">O sistema remove o usuário selecionado e exibe uma mensagem de sucesso.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><video src="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2024-1-e5-proj-time-sheet/assets/82043220/2e3c1722-7adc-4bd4-8b4c-3abe9ddc1b48"/></td>
+  </tr>
+</table>
+
+
 
 
 
