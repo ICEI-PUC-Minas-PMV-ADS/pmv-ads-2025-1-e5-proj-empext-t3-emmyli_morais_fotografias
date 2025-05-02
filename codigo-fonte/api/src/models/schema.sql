@@ -46,7 +46,7 @@ CREATE TABLE detalhe_evento (
     CONSTRAINT fk_detalhe_evento FOREIGN KEY (evento_id) REFERENCES eventos(id) ON DELETE CASCADE
 );
 
-/*CREATE TABLE albuns (
+CREATE TABLE albuns (
     id SERIAL PRIMARY KEY,
     usuario_id INT NOT NULL,
     nome VARCHAR(255) NOT NULL,
@@ -66,7 +66,7 @@ CREATE TABLE album_fotos (
     CONSTRAINT fk_album_fotos_foto FOREIGN KEY (id_foto) REFERENCES detalhe_evento(id) ON DELETE CASCADE
 );
 
-CREATE TABLE produto (
+/*CREATE TABLE produto (
     id SERIAL PRIMARY KEY,
     descricao VARCHAR(255) NOT NULL,
     preco DECIMAL(10,2) NOT NULL,
