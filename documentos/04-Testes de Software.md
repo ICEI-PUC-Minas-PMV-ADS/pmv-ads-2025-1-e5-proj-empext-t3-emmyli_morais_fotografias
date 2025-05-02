@@ -908,35 +908,6 @@ Cada funcionalidade desenvolvida deve ser testada utilizando os casos de testes 
 
 ## Parte 2 - Testes por pares
 A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade deve ser testada por um colega e os testes devem ser evidenciados. O colega "Tester" deve utilizar o caso de teste criado pelo desenvolvedor responsável pela funcionalidade (desenvolveu a funcionalidade e criou o caso de testes descrito no plano de testes).
-
-### Exemplo
-<table>
-  <tr>
-    <th colspan="6" width="1000">CT-003<br>Upload de marca d'água com imagem válida</th>
-  </tr>
-  <tr>
-    <td width="170"><strong>Critérios de êxito</strong></td>
-    <td colspan="5">O admin deve conseguir  fazer upload de uma imagem válida para a marca d'água.</td>
-  </tr>
-    <tr>
-    <td><strong>Responsável pela funcionalidade</strong></td>
-    <td width="430">Bárbara Fernandes Sena </td>
-      <td><strong>Responsável pelo teste</strong></td>
-    <td width="430">Gleyston Guimarães </td>
-     <td width="100"><strong>Data do teste</strong></td>
-    <td width="150">02/05/2024</td>
-  </tr>
-    <tr>
-    <td width="170"><strong>Comentário</strong></td>
-    <td colspan="5">O sistema está permitindo o login corretamente.</td>
-  </tr>
-  <tr>
-    <td colspan="6" align="center"><strong>Evidência</strong></td>
-  </tr>
-  <tr>
-    <td colspan="6" align="center"><video src="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2024-1-e5-proj-time-sheet/assets/82043220/2e3c1722-7adc-4bd4-8b4c-3abe9ddc1b48"/></td>
-  </tr>
-</table>
       
 ### 1. Gerenciamento de Marca d'Água no Login do Admin
 
