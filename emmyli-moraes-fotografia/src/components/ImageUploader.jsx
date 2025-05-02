@@ -113,11 +113,7 @@ const ImageUploader = () => {
           />
         </label>
 
-        <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-          <h2 className="text-lg font-bold mb-4 text-[#c09b2d]">
-            Confirmar exclusão
-          </h2>
-          <p>Tem certeza que deseja excluir esta marca dàgua?</p>
+        <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={"Confirmar exclusão"} content={"Tem certeza que deseja excluir esta marca dàgua?"}>
           <div className="mt-4 flex justify-end gap-2">
             <button
               onClick={() => setModalOpen(false)}
