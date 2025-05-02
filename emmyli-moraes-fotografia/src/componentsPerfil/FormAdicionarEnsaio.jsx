@@ -1,56 +1,99 @@
-import React, { useState } from 'react';
-import ModalPacote from '../componentsPerfil/ModalPacote';
-
-export default function FormAdicionarEnsaio({ onClose }) {
-  const [abaAtiva, setAbaAtiva] = useState('informacoes');
-  const [titulo, setTitulo] = useState('');
-  const [categoria, setCategoria] = useState('');
+import { useState } from "react";
+import axios from "axios";
+import ModalPacote from "../componentsPerfil/ModalPacote";
+const FormAdicionarEnsaio = ({ onClose, onSave }) => {
+  const [abaAtiva, setAbaAtiva] = useState("informacoes");
+  const [titulo, setTitulo] = useState("");
+  const [categoria, setCategoria] = useState("");
   const [imagens, setImagens] = useState([]);
   const [pacotes, setPacotes] = useState([]);
   const [pacotesSelecionados, setPacotesSelecionados] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    setImagens((prevImagens) => [...prevImagens, ...files]);
+    setImagens(Array.from(e.target.files));
   };
 
   const removerImagem = (index) => {
-    setImagens(imagens.filter((_, i) => i !== index));
+    const novasImagens = [...imagens];
+    novasImagens.splice(index, 1);
+    setImagens(novasImagens);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log({
-      titulo,
-      categoria,
-      pacotes,
-      pacotesSelecionados,
-      imagens,
-    });
-    alert('Ensaio enviado! (simulado)');
-    setAbaAtiva('configuracoes');
+  const abrirModalPacote = () => {
+    setMostrarModal(true);
   };
 
-  const handlePacoteChange = (pacote) => {
-    setPacotesSelecionados((prev) =>
-      prev.includes(pacote) ? prev.filter((item) => item !== pacote) : [...prev, pacote]
-    );
+  const fecharModalPacote = () => {
+    setMostrarModal(false);
   };
-
-  const abrirModalPacote = () => setMostrarModal(true);
-  const fecharModalPacote = () => setMostrarModal(false);
 
   const adicionarNovoPacote = (novoPacote) => {
     setPacotes((prev) => [...prev, novoPacote]);
     setMostrarModal(false);
   };
 
-  const handleAvancar = () => {
-    if (titulo && categoria && imagens.length > 0 && pacotesSelecionados.length > 0) {
-      setAbaAtiva('configuracoes');
+  const handlePacoteChange = (pacote) => {
+    if (pacotesSelecionados.includes(pacote)) {
+      setPacotesSelecionados((prev) => prev.filter((p) => p !== pacote));
     } else {
-      alert('Preencha todos os campos obrigatórios e selecione pelo menos um pacote antes de avançar.');
+      setPacotesSelecionados((prev) => [...prev, pacote]);
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  };
+
+  const handleAvancar = async () => {
+    if (!titulo || !categoria || imagens.length === 0) {
+      alert("Preencha todas as informações e adicione imagens antes de criar o ensaio!");
+      return;
+    }
+  
+    try {
+      setLoading(true);
+  
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert("Usuário não autenticado!");
+        return;
+      }
+  
+      const formData = new FormData();
+      formData.append('usuario_id', 1); // fixo no momento
+      formData.append('nome', titulo);
+      formData.append('descricao', categoria);
+  
+      imagens.forEach((img) => {
+        formData.append('fotos', img);
+      });
+  
+      await axios.post('http://localhost:3000/api/albuns', formData, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+  
+      alert("Ensaio criado com sucesso!");
+  
+      // Resetar tudo
+      setTitulo("");
+      setCategoria("");
+      setImagens([]);
+      setPacotes([]);
+      setPacotesSelecionados([]);
+      setAbaAtiva("informacoes");
+  
+      if (onClose) onClose();
+      if (onSave) onSave();
+  
+    } catch (error) {
+      console.error("Erro ao criar ensaio:", error.response?.data || error.message);
+      alert("Erro ao criar ensaio!");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -64,7 +107,7 @@ export default function FormAdicionarEnsaio({ onClose }) {
           ×
         </button>
 
-        {/* Cabeçalho */}
+        
         <div className="flex justify-center items-center border-b border-[#b1783d] pb-2">
           <h1 className="text-3xl text-[#b1783d]">Galeria</h1>
         </div>
@@ -72,23 +115,31 @@ export default function FormAdicionarEnsaio({ onClose }) {
         {/* Abas */}
         <div className="flex border-b mb-6">
           <button
-            className={`px-4 py-2 font-semibold transition ${abaAtiva === 'informacoes' ? 'border-b-4 border-[#c09b2d] text-[#c09b2d]' : 'text-gray-500 hover:text-[#c09b2d]'}`}
+            className={`px-4 py-2 font-semibold transition ${
+              abaAtiva === 'informacoes'
+                ? 'border-b-4 border-[#c09b2d] text-[#c09b2d]'
+                : 'text-gray-500 hover:text-[#c09b2d]'
+            }`}
             onClick={() => setAbaAtiva('informacoes')}
           >
             Informações
           </button>
           <button
-            className={`ml-4 px-4 py-2 font-semibold transition ${abaAtiva === 'configuracoes' ? 'border-b-4 border-[#c09b2d] text-[#c09b2d]' : 'text-gray-500 hover:text-[#c09b2d]'}`}
+            className={`ml-4 px-4 py-2 font-semibold transition ${
+              abaAtiva === 'configuracoes'
+                ? 'border-b-4 border-[#c09b2d] text-[#c09b2d]'
+                : 'text-gray-500 hover:text-[#c09b2d]'
+            }`}
             onClick={() => setAbaAtiva('configuracoes')}
           >
             Configurações
           </button>
         </div>
 
-        {/* Conteúdo da aba Informações */}
+        {/* Conteúdo das abas */}
         {abaAtiva === 'informacoes' && (
           <form onSubmit={handleSubmit} className="space-y-6 overflow-auto max-h-[450px]">
-            <div className="flex space-x-4 flex-wrap ">
+            <div className="flex space-x-4 flex-wrap">
               {/* Lado esquerdo */}
               <div className="flex-1 space-y-6">
                 <div>
@@ -107,7 +158,7 @@ export default function FormAdicionarEnsaio({ onClose }) {
                   <select
                     value={categoria}
                     onChange={(e) => setCategoria(e.target.value)}
-                    className="w-[20rem] sm:w-full p-2  border rounded"
+                    className="w-[20rem] sm:w-full p-2 border rounded"
                     required
                   >
                     <option value="">Selecione</option>
@@ -129,9 +180,9 @@ export default function FormAdicionarEnsaio({ onClose }) {
                     className="mb-2"
                   />
                   {imagens.length > 0 && (
-                    <div className="mt-2 bg-white p-4 border border-gray-300 rounded w-[20rem] sm:w-full ">
+                    <div className="mt-2 bg-white p-4 border border-gray-300 rounded w-[20rem] sm:w-full">
                       <h3 className="text-lg font-medium mb-2">Fotos Selecionadas:</h3>
-                      <div className="grid grid-cols-3 md:grid-cols-5 gap-2 max-h-80 overflow-auto ">
+                      <div className="grid grid-cols-3 md:grid-cols-5 gap-2 max-h-80 overflow-auto">
                         {imagens.map((img, idx) => (
                           <div key={idx} className="relative">
                             <img
@@ -142,7 +193,7 @@ export default function FormAdicionarEnsaio({ onClose }) {
                             <button
                               type="button"
                               onClick={() => removerImagem(idx)}
-                              className="absolute top-1  text-white bg-[#c09b2d] p-1 rounded-full hover:bg-[#a88724]"
+                              className="absolute top-1 text-white bg-[#c09b2d] p-1 rounded-full hover:bg-[#a88724]"
                             >
                               ×
                             </button>
@@ -155,7 +206,7 @@ export default function FormAdicionarEnsaio({ onClose }) {
               </div>
 
               {/* Lado direito */}
-              <div className="w-full sm:w-[22rem]  ">
+              <div className="w-full sm:w-[22rem]">
                 <label className="block font-medium mb-3 mt-4">Selecionar Tipo de Pacote:</label>
 
                 {pacotes.length > 0 && (
@@ -183,40 +234,6 @@ export default function FormAdicionarEnsaio({ onClose }) {
                             </p>
                           </div>
                         </div>
-
-                        <div className="flex space-x-2">
-                          <button
-                            type="button"
-                            className="text-sm text-blue-600 hover:underline"
-                            onClick={() => {
-                              const novoNome = prompt('Editar nome:', pacote.nome);
-                              const novoValor = prompt('Editar valor:', pacote.valor);
-                              const novasFotos = prompt('Editar número de fotos:', pacote.fotos);
-                              if (novoNome && novoValor && novasFotos) {
-                                const atualizado = { nome: novoNome, valor: novoValor, fotos: novasFotos };
-                                setPacotes((prev) =>
-                                  prev.map((p, i) => (i === index ? atualizado : p))
-                                );
-                              }
-                            }}
-                          >
-                            Editar
-                          </button>
-                          <button
-                            type="button"
-                            className="text-sm text-red-600 hover:underline"
-                            onClick={() => {
-                              if (confirm('Tem certeza que deseja excluir este pacote?')) {
-                                setPacotes((prev) => prev.filter((_, i) => i !== index));
-                                setPacotesSelecionados((prev) =>
-                                  prev.filter((p) => p !== pacote)
-                                );
-                              }
-                            }}
-                          >
-                            Excluir
-                          </button>
-                        </div>
                       </div>
                     ))}
                   </div>
@@ -237,84 +254,26 @@ export default function FormAdicionarEnsaio({ onClose }) {
               </div>
             </div>
 
-              {/* Botão Avançar */}
-            <div className="flex justify-end">
+            {/* Botão Avançar */}
+            <div className="flex justify-end mt-4">
               <button
                 type="button"
                 onClick={handleAvancar}
+                disabled={loading}
                 className="bg-[#c09b2d] text-white px-6 py-2 rounded hover:bg-[#a88724]"
               >
-                Avançar
+                {loading ? "Enviando..." : "Criar"}
               </button>
             </div>
           </form>
         )}
 
-        {/* Conteúdo da aba Configurações */}
-        {abaAtiva === 'configuracoes' && (
-          <div className="space-y-6">
-            <div>
-              <label className="block mb-1 text-[#996633]">URL do álbum:</label>
-              <input
-                type="text"
-                placeholder="fotos-jerry"
-                className="w-full border rounded-lg px-4 py-2"
-              />
-            </div>
+       {/*configuracoes */}
 
-            <div className="flex items-center gap-4">
-              <span className="text-[#996633]">Download</span>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" className="sr-only peer" />
-                <div className="w-11 h-6 bg-[#ccc] rounded-full peer peer-checked:bg-[#b1783d] after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full"></div>
-              </label>
-            </div>
-
-            <div>
-              <p className="mb-2">Ativar marca d'água:</p>
-              <label className="mr-4"><input type="radio" name="marca" className="mr-1" defaultChecked />Sim</label>
-              <label><input type="radio" name="marca" className="mr-1" />Não</label>
-            </div>
-
-            <div>
-              <label className="block mb-1 text-[#996633]">Marca d’água:</label>
-              <select className="w-full border rounded-lg px-4 py-2">
-                <option>Marca d’água 1</option>
-                <option>Marca d’água 2</option>
-              </select>
-            </div>
-
-            <div>
-              <p className="mb-2">Status:</p>
-              <label className="mr-4"><input type="radio" name="status" className="mr-1" />Ativado</label>
-              <label><input type="radio" name="status" className="mr-1" />Desativado</label>
-            </div>
-
-            <div className="flex justify-end mt-4">
-              <button
-                onClick={() => {
-                  console.log({
-                    titulo,
-                    categoria,
-                    pacotesSelecionados,
-                    imagens,
-                  });
-                  alert('Ensaio criado com sucesso!');
-
-                  onClose(); // fecha o modal se desejar
-                }}
-                className="bg-[#c09b2d] text-white px-6 py-2 rounded hover:bg-[#a88724]"
-              >
-                Criar
-              </button>
-            </div>
-
-          </div>
-
-            
-        )}
       </div>
     </div>
   );
-}
+};
+
+export default FormAdicionarEnsaio;
 

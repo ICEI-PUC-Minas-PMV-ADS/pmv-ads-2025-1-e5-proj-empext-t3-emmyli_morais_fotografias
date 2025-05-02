@@ -4,22 +4,24 @@ const cryptografyPassword = require('../../service/cryptographServices');
 
 class UsuariosController extends Api_Controller {
   constructor() {
-    super('Usuarios');
+    super("Usuarios");
   }
-  
+
   async create(req, res) {
     try {
       const { nome, email, login, senha } = req.body;
       console.log( req.body);
       const usuarioExistente = await Usuarios.findOne({ where: { login } });
-     
+
       if (usuarioExistente) {
         return res.status(400).json({ error: "Este login já está em uso!" });
       }
-      
+
       const emailExistente = await Usuarios.findOne({ where: { email } });
       if (emailExistente) {
-        return res.status(400).json({ error: "Este e-mail já está cadastrado!" });
+        return res
+          .status(400)
+          .json({ error: "Este e-mail já está cadastrado!" });
       }
       
       const senha_hash = cryptografyPassword(senha);
@@ -27,8 +29,8 @@ class UsuariosController extends Api_Controller {
         nome,
         email,
         login,
-        senha_hash,
-        tipo: "cliente"
+        senha_hash: crypto.createHash("md5").update(senha_hash).digest("hex"),
+        tipo: "cliente",
       });
 
       return res.status(201).json(novoUsuario);

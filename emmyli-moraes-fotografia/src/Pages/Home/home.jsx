@@ -3,7 +3,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import MenuNav from "../../components/MenuNav";
-import fotografaaa from "../../img/fotografaaa.jpg";
+
 import fotografaa from "../../img/fotografaa.jpg";
 import fotografaaaa from "../../img/fotografaaaa.jpg";
 
@@ -76,7 +76,10 @@ const Home = () => {
         
 
       <section className="p-20 text-center max-w-7xl mx-auto w-full">
-        <h2 className="text-3xl mb-6">Trabalhos recentes</h2>
+      <h2 className="text-2xl sm:text-4xl mb-6 whitespace-nowrap">
+        Trabalhos recentes
+      </h2>
+
         <Slider {...settings}>
           {["PRI & JANAINA", "CHRIS & KLEBER", "SU & CARLA", "Emyli"].map((nome, index) => (
             <div key={index} className="p-4">
@@ -107,10 +110,9 @@ const Home = () => {
         <h2 className="text-3xl mb-10">Depoimentos</h2>
 
         <Slider {...settingsDepoimentos}>
+
           <div className="bg-[#E8E6E0] p-6 shadow-md rounded-lg flex items-center justify-center mb-6">
-            <div className="w-20 h-20 rounded-full overflow-hidden mr-6">
-              <img src={fotografaaa} alt="Cliente" className="object-cover w-full h-full" />
-            </div>
+
 
             <div>
               <p className="text-lg text-[#252525] mb-4">"Foi uma experiência incrível! As fotos ficaram maravilhosas e capturaram momentos únicos do nosso dia!"</p>
@@ -120,9 +122,7 @@ const Home = () => {
           </div>
 
           <div className="bg-[#E8E6E0] p-6 shadow-md rounded-lg flex items-center justify-center">
-            <div className="w-20 h-20 rounded-full overflow-hidden mr-6">
-              <img src={fotografaaa} alt="Cliente" className="object-cover w-full h-full" />
-            </div>
+
 
             <div>
               <p className="text-lg text-[#252525] mb-4">"O serviço foi impecável! As fotos ficaram lindas e capturaram a essência do nosso evento. Super recomendo!"</p>

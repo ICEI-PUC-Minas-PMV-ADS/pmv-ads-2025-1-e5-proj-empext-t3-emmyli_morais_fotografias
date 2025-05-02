@@ -19,7 +19,7 @@ const verifyToken = require('../../middleware/AuthMiddlewareToken');
  *           type: integer
  *           description: Número de identifação do usuário
  *         nome:
- *           type: integer
+ *           type: string
  *           description: Nome do Usuário
  *         email:
  *           type: string
@@ -78,12 +78,26 @@ const verifyToken = require('../../middleware/AuthMiddlewareToken');
 
 /**
  * @swagger
- * tags:
- *   name: Usuarios
- *   description: Gerenciamento de Usuários.
+ * /api/usuarios:
+ *   get:
+ *     summary: Lista todos os usuários
+ *     tags: [Usuarios]
+ *     security:
+ *       - bearerAuth: []  # Se você estiver usando token JWT
+ *     responses:
+ *       200:
+ *         description: Lista de usuários
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Usuarios'
+ *       401:
+ *         description: Não autorizado
  */
 
-router.get('/', usuariosController.getAll);
+router.get('/', verifyToken, usuariosController.getAll); // Protegido
 /**
  * @swagger
  * /api/usuarios/{id}:
@@ -177,8 +191,7 @@ router.put('/:id', async (reg, res) => {
  *       400:
  *         description: Erro ao deletar usuário
  */
-router.delete('/:id', usuariosController.delete);
-
+router.delete('/:id', verifyToken, usuariosController.delete); // Protegido
 // Rota específica para pegar perfil do usuário
 //router.get('/:id/perfil', usuariosController.getProfile);
 

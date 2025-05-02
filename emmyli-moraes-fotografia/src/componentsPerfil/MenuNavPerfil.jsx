@@ -5,7 +5,7 @@ import logo from "../img/logo.png";
 
 const MenuNavPerfil = ({ onSelect, isOpen, toggleSidebar, selectedItem }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -20,10 +20,13 @@ const MenuNavPerfil = ({ onSelect, isOpen, toggleSidebar, selectedItem }) => {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      if (!mobile) {
+        setShowMobileMenu(false); // Garante que fecha o menu mobile ao voltar pro desktop
+      }
     };
 
-    handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -37,15 +40,13 @@ const MenuNavPerfil = ({ onSelect, isOpen, toggleSidebar, selectedItem }) => {
 
   return (
     <>
-      {/* Mobile Menu Dropdown */}
-      
+      {/* Mobile Menu */}
       {isMobile && (
         <div
           className={`fixed top-0 left-0 w-full h-screen bg-green-900 text-white p-6 z-50 overflow-auto 
             transition-all duration-500 ease-in-out 
             ${showMobileMenu ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0 pointer-events-none"}`}
         >
-
           <div className="flex items-center mb-4">
             <button
               onClick={() => setShowMobileMenu(false)}
@@ -73,14 +74,13 @@ const MenuNavPerfil = ({ onSelect, isOpen, toggleSidebar, selectedItem }) => {
         </div>
       )}
 
-      {/* Sidebar (desktop only) */}
-
+      {/* Sidebar - Desktop */}
       {!isMobile && (
         <div
           className={`fixed top-0 left-0 h-full bg-green-900 text-white p-4 transition-all z-50 
           ${isOpen ? "w-64" : "w-20"}`}
         >
-          <div className="h-6"></div>
+          <div className="h-6" />
           <div
             className={`flex justify-center mb-6 transition-opacity duration-300 
             ${isOpen ? "opacity-100" : "opacity-0"}`}
@@ -106,10 +106,9 @@ const MenuNavPerfil = ({ onSelect, isOpen, toggleSidebar, selectedItem }) => {
       )}
 
       {/* Topbar */}
-      
       <div
-        className={`fixed top-0 left-0 right-0 h-16 bg-white flex items-center justify-between px-4 shadow-md z-40`}
-        style={{ marginLeft: computedMarginLeft }}
+        className={`fixed top-0 right-0 h-16 bg-white flex items-center justify-between px-4 shadow-md z-40 transition-all duration-300`}
+        style={{ left: computedMarginLeft }}
       >
         <button
           onClick={() => {

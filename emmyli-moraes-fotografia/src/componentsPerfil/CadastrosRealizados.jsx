@@ -1,47 +1,83 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FiEdit, FiTrash2, FiSearch } from "react-icons/fi";
+import {
+  buscaTodosUsuarios,
+  editaUsuario,
+  removeUsuario,
+} from "../services/userService";
+import Modal from "../components/Modal";
 
 const CadastrosRealizados = () => {
-  const [usuarios, setUsuarios] = useState([
-    { id: 1, nome: "Emmyli", email: "emmylimoraess@gmail.com", telefone: "(31) 91234-5678" },
-    { id: 2, nome: "João Silva", email: "joao@email.com", telefone: "(31) 99876-5432" },
-    { id: 3, nome: "Maria Oliveira", email: "maria.oliveira@email.com", telefone: "(31) 98765-4321" },
-  ]);
+  const [usuarios, setUsuarios] = useState([]);
 
   const [busca, setBusca] = useState("");
   const [editandoUsuario, setEditandoUsuario] = useState(null);
   const [dadosEditados, setDadosEditados] = useState({
     nome: "",
     email: "",
-    senha: "",
+    senha_hash: "",
     telefone: "",
   });
+  const [usuarioIdParaRemover, setUsuarioIdParaRemover] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  useEffect(() => {
+    fetchAllUsuarios();
+  }, []);
+
+  useEffect(() => {
+    console.log("dadosEditados:", dadosEditados);
+  }, [dadosEditados]);
+
+  const fetchAllUsuarios = async () => {
+    try {
+      const users = await buscaTodosUsuarios();
+      setUsuarios(users);
+    } catch (error) {
+      console.error("Erro ao buscar usuários");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const abrirModalEdicao = (usuario) => {
     setEditandoUsuario(usuario);
     setDadosEditados({
+      id: usuario.id,
       nome: usuario.nome,
       email: usuario.email,
-      senha: "",
+      senha_hash: "",
       telefone: usuario.telefone || "",
     });
   };
 
   const fecharModal = () => setEditandoUsuario(null);
 
-  const salvarEdicao = () => {
-    setUsuarios((prevUsuarios) =>
-      prevUsuarios.map((usuario) =>
-        usuario.id === editandoUsuario.id
-          ? { ...usuario, ...dadosEditados }
-          : usuario
-      )
-    );
-    fecharModal();
+  const removerUsuario = async (id) => {
+    try {
+      setLoading(true);
+      await removeUsuario(id);
+      setModalOpen(false);
+      fetchAllUsuarios();
+    } catch (error) {
+      console.error("Erro ao remover usuário");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const removerUsuario = (id) => {
-    setUsuarios(usuarios.filter((usuario) => usuario.id !== id));
+  const editarUsuario = async (dadosEditados) => {
+    try {
+      setLoading(true);
+      await editaUsuario(dadosEditados);
+      setModalOpen(false);
+      fetchAllUsuarios();
+    } catch (error) {
+      console.error("Erro ao remover usuário");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const usuariosFiltrados = usuarios.filter((usuario) => {
@@ -69,6 +105,12 @@ const CadastrosRealizados = () => {
         />
       </div>
 
+      {loading && (
+        <div className="fixed inset-0 bg-white bg-opacity-80 z-50 flex items-center justify-center">
+          <img src="/loading.gif" alt="Carregando..." className="w-32 h-20" />
+        </div>
+      )}
+
       <div className="overflow-x-auto">
         <table className="w-full bg-white shadow-lg rounded-lg overflow-hidden hidden sm:table">
           <thead className="bg-[#c09b2d] text-white">
@@ -84,7 +126,9 @@ const CadastrosRealizados = () => {
               usuariosFiltrados.map((usuario, index) => (
                 <tr
                   key={usuario.id}
-                  className={`border-b ${index % 2 === 0 ? "bg-gray-50" : "bg-white"} hover:bg-gray-200 transition-all`}
+                  className={`border-b ${
+                    index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                  } hover:bg-gray-200 transition-all`}
                 >
                   <td className="py-4 px-6">{usuario.nome}</td>
                   <td className="py-4 px-6">{usuario.email}</td>
@@ -98,7 +142,10 @@ const CadastrosRealizados = () => {
                       <FiEdit />
                     </button>
                     <button
-                      onClick={() => removerUsuario(usuario.id)}
+                      onClick={() => {
+                        setModalOpen(true);
+                        setUsuarioIdParaRemover(usuario.id);
+                      }}
                       className="text-red-500 hover:text-red-700 text-xl transition-all"
                       title="Excluir"
                     >
@@ -122,10 +169,19 @@ const CadastrosRealizados = () => {
         <div className="sm:hidden">
           {usuariosFiltrados.length > 0 ? (
             usuariosFiltrados.map((usuario) => (
-              <div key={usuario.id} className="bg-white p-4 rounded-lg shadow mb-4">
-                <p><strong>Nome:</strong> {usuario.nome}</p>
-                <p><strong>E-mail:</strong> {usuario.email}</p>
-                <p><strong>Telefone:</strong> {usuario.telefone}</p>
+              <div
+                key={usuario.id}
+                className="bg-white p-4 rounded-lg shadow mb-4"
+              >
+                <p>
+                  <strong>Nome:</strong> {usuario.nome}
+                </p>
+                <p>
+                  <strong>E-mail:</strong> {usuario.email}
+                </p>
+                <p>
+                  <strong>Telefone:</strong> {usuario.telefone}
+                </p>
                 <div className="flex justify-end space-x-4 mt-2">
                   <button
                     onClick={() => abrirModalEdicao(usuario)}
@@ -135,7 +191,7 @@ const CadastrosRealizados = () => {
                     <FiEdit />
                   </button>
                   <button
-                    onClick={() => removerUsuario(usuario.id)}
+                    onClick={() => setModalOpen(true)}
                     className="text-red-500 hover:text-red-700 text-xl transition-all"
                     title="Excluir"
                   >
@@ -145,13 +201,14 @@ const CadastrosRealizados = () => {
               </div>
             ))
           ) : (
-            <p className="text-center text-gray-500">Nenhum cliente encontrado.</p>
+            <p className="text-center text-gray-500">
+              Nenhum cliente encontrado.
+            </p>
           )}
         </div>
       </div>
 
       {/* Modal de Edição */}
-      
       {editandoUsuario && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white shadow-2xl rounded-lg p-8 w-full max-w-lg text-center flex flex-col sm:max-w-md">
@@ -161,7 +218,9 @@ const CadastrosRealizados = () => {
 
             <form className="w-full flex flex-col space-y-4 text-left">
               <div>
-                <label className="block mb-1 text-sm font-semibold text-gray-700">Nome</label>
+                <label className="block mb-1 text-sm font-semibold text-gray-700">
+                  Nome
+                </label>
                 <input
                   type="text"
                   value={dadosEditados.nome}
@@ -173,36 +232,51 @@ const CadastrosRealizados = () => {
               </div>
 
               <div>
-                <label className="block mb-1 text-sm font-semibold text-gray-700">E-mail</label>
+                <label className="block mb-1 text-sm font-semibold text-gray-700">
+                  E-mail
+                </label>
                 <input
                   type="email"
                   value={dadosEditados.email}
                   onChange={(e) =>
-                    setDadosEditados({ ...dadosEditados, email: e.target.value })
+                    setDadosEditados({
+                      ...dadosEditados,
+                      email: e.target.value,
+                    })
                   }
                   className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c09b2d]"
                 />
               </div>
 
               <div>
-                <label className="block mb-1 text-sm font-semibold text-gray-700">Telefone</label>
+                <label className="block mb-1 text-sm font-semibold text-gray-700">
+                  Telefone
+                </label>
                 <input
                   type="text"
                   value={dadosEditados.telefone}
                   onChange={(e) =>
-                    setDadosEditados({ ...dadosEditados, telefone: e.target.value })
+                    setDadosEditados({
+                      ...dadosEditados,
+                      telefone: e.target.value,
+                    })
                   }
                   className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c09b2d]"
                 />
               </div>
 
               <div>
-                <label className="block mb-1 text-sm font-semibold text-gray-700">Senha</label>
+                <label className="block mb-1 text-sm font-semibold text-gray-700">
+                  Senha
+                </label>
                 <input
                   type="password"
-                  value={dadosEditados.senha}
+                  value={dadosEditados.senha_hash}
                   onChange={(e) =>
-                    setDadosEditados({ ...dadosEditados, senha: e.target.value })
+                    setDadosEditados({
+                      ...dadosEditados,
+                      senha_hash: e.target.value,
+                    })
                   }
                   className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c09b2d]"
                 />
@@ -218,7 +292,10 @@ const CadastrosRealizados = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={salvarEdicao}
+                  onClick={() => {
+                    editarUsuario(dadosEditados);
+                    setEditandoUsuario(null);
+                  }}
                   className="w-1/2 bg-[#c09b2d] text-white p-3 rounded-md hover:bg-[#a68523] transition-all text-lg ml-2"
                 >
                   Salvar
@@ -228,6 +305,27 @@ const CadastrosRealizados = () => {
           </div>
         </div>
       )}
+      <Modal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title={"Confirmar exclusão"}
+        content={"Tem certeza que deseja excluir o usuário?"}
+      >
+        <div className="mt-4 flex justify-end gap-2">
+          <button
+            onClick={() => setModalOpen(false)}
+            className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
+          >
+            Cancelar
+          </button>
+          <button
+            onClick={() => removerUsuario(usuarioIdParaRemover)}
+            className="px-4 py-2 rounded bg-[#c09b2d] text-white hover:bg-[#7e6931]"
+          >
+            Excluir
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 };
