@@ -1125,7 +1125,7 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
   </tr>
 </table>
 
-### 1. Edição e Exclusão de Usuários pelo Admin
+### 2. Edição e Exclusão de Usuários pelo Admin
 
 
 <table>
