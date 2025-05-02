@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-regular-svg-icons";
 import Modal from "./Modal";
 
-const ImageUploader = () => {
+const ImageUploader = ({ onSucesso, onErro }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedImageId, setSelectedImageId] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -49,8 +49,10 @@ const ImageUploader = () => {
         },
       });
       fetchImages();
+      onSucesso("Upload realizado com sucesso!");
     } catch (error) {
       console.error("Erro ao enviar imagem:", error);
+      onErro("Erro ao fazer upload.");
     } finally {
       setLoading(false);
     }
@@ -67,8 +69,10 @@ const ImageUploader = () => {
       });
       fetchImages();
       setModalOpen(false);
+      onSucesso("Marca d`água excluída com sucesso!");
     } catch (error) {
       console.error("Erro ao deletar imagem:", error);
+      onSucesso("Ocorreu um erro ao excluir a marca d`água!");
     }
   };
 
