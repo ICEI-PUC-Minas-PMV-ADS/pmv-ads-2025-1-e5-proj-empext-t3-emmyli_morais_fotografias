@@ -985,7 +985,7 @@ Cada funcionalidade desenvolvida deve ser testada utilizando os casos de testes 
 ### Edição e Exclusão de Usuários pelo Admin
 <table>
   <tr>
-    <th colspan="6" width="1000">CT-003<br>Edição de dados do usuário</th>
+    <th colspan="6" width="1000">CT-004<br>Edição de dados do usuário</th>
   </tr>
   <tr>
     <td width="170"><strong>Critérios de êxito</strong></td>
@@ -1005,13 +1005,13 @@ Cada funcionalidade desenvolvida deve ser testada utilizando os casos de testes 
     <td colspan="6" align="center"><strong>Evidência</strong></td>
   </tr>
   <tr>
-      <td colspan="6" align="center"><video src=""/></td>
+      <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/ab73920b-7b41-41c6-834b-60a136b1d2fb"/></td>
   </tr>
 </table>
 
 <table>
   <tr>
-    <th colspan="6" width="1000">CT-003<br>Exclusão de usuário do sistema</th>
+    <th colspan="6" width="1000">CT-004<br>Exclusão de usuário do sistema</th>
   </tr>
   <tr>
     <td width="170"><strong>Critérios de êxito</strong></td>
@@ -1031,7 +1031,7 @@ Cada funcionalidade desenvolvida deve ser testada utilizando os casos de testes 
     <td colspan="6" align="center"><strong>Evidência</strong></td>
   </tr>
   <tr>
-      <td colspan="6" align="center"><video src=""/></td>
+      <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/3e546591-4b0f-4c5d-8bd0-9548cd5e12e6"/></td>
   </tr>
 </table>
 
