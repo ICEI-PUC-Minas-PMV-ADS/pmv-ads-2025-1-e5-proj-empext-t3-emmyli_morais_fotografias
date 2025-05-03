@@ -670,11 +670,7 @@ O sistema será considerado funcional para este módulo se:
   </tr>
   <tr>
     <td><strong>Dados de teste</strong></td>
-    <td>
-      - Título: Ensaio Casamento Carol & Diego<br />
-      - Categoria: Casamento<br />
-      - Imagens: 3 arquivos JPG
-    </td>
+    <td>- </td>
   </tr>
   <tr>
     <td><strong>Critérios de êxito</strong></td>
@@ -715,7 +711,7 @@ O sistema será considerado funcional para este módulo se:
   </tr>
   <tr>
     <td><strong>Dados de teste</strong></td>
-    <td>- Título: Ensaio Casamento Carol & Diego<br />- Categoria: Casamento<br />- Imagens: 3 arquivos JPG</td>
+    <td>- </td>
   </tr>
   <tr>
     <td><strong>Critérios de êxito</strong></td>
@@ -752,7 +748,7 @@ O sistema será considerado funcional para este módulo se:
   </tr>
   <tr>
     <td><strong>Dados de teste</strong></td>
-    <td>- Título: "Teste sem imagens"</td>
+    <td>- </td>
   </tr>
   <tr>
     <td><strong>Critérios de êxito</strong></td>
@@ -790,7 +786,7 @@ O sistema será considerado funcional para este módulo se:
   </tr>
   <tr>
     <td><strong>Dados de teste</strong></td>
-    <td>- Álbum: "Casamento João & Maria"<br />- Imagem: imagem01.jpg</td>
+    <td>- </td>
   </tr>
   <tr>
     <td><strong>Critérios de êxito</strong></td>
@@ -826,7 +822,7 @@ O sistema será considerado funcional para este módulo se:
   </tr>
   <tr>
     <td><strong>Dados de teste</strong></td>
-    <td>- Imagem: Qualquer imagem existente</td>
+    <td>- </td>
   </tr>
   <tr>
     <td><strong>Critérios de êxito</strong></td>
@@ -862,7 +858,7 @@ O sistema será considerado funcional para este módulo se:
   </tr>
   <tr>
     <td><strong>Dados de teste</strong></td>
-    <td>- Álbum: "Evento Teste"</td>
+    <td>- </td>
   </tr>
   <tr>
     <td><strong>Critérios de êxito</strong></td>
