@@ -64,11 +64,16 @@ class UsuariosController extends Api_Controller {
       if (outroComMesmoEmail) {
         return res.status(400).json({ error: "Este e-mail já está cadastrado por outro usuário!" });
       }
-  
-      // Atualiza os dados
-      const senha_hash = cryptografyPassword(senha);
-      await usuario.update({ nome, email, login, senha_hash });
-  
+
+      if (senha !== ''){
+        // Atualiza os dados com senha
+        const senha_hash = cryptografyPassword(senha);
+        await usuario.update({ nome, email, login, senha_hash });
+      }
+      else{
+         // Atualiza os dados sem senha
+         await usuario.update({ nome, email, login });
+      }
       return res.status(204).json();
     } catch (error) {
       console.error("Erro ao editar dados do usuário:", error);
