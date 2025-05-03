@@ -1569,7 +1569,7 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
   </tr>
   <tr>
     <td><strong>Comentário</strong></td>
-    <td colspan="5">O botão de criação foi não foi bloqueado corretamente, mas a mensagem de erro apareceu em destaque.</td>
+    <td colspan="5">O botão de criação bloqueou o envio corretamente e a mensagem de erro apareceu em destaque.</td>
   </tr>
   <tr>
     <td colspan="6" align="center"><strong>Evidência</strong></td>
