@@ -926,7 +926,7 @@ Cada funcionalidade desenvolvida deve ser testada utilizando os casos de testes 
     <td colspan="6" align="center"><strong>Evidência</strong></td>
   </tr>
   <tr>
-      <td colspan="6" align="center"><video src=""/></td>
+      <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/a3978f8c-f1bd-4b91-9c3a-d00807ba2e43"/></td>
   </tr>
 </table>
 
@@ -952,7 +952,7 @@ Cada funcionalidade desenvolvida deve ser testada utilizando os casos de testes 
     <td colspan="6" align="center"><strong>Evidência</strong></td>
   </tr>
   <tr>
-      <td colspan="6" align="center"><video src=""/></td>
+      <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/6ee1fad6-079c-4b60-8c3b-73c238cc1641"/></td>
   </tr>
 </table>
 
@@ -978,7 +978,7 @@ Cada funcionalidade desenvolvida deve ser testada utilizando os casos de testes 
     <td colspan="6" align="center"><strong>Evidência</strong></td>
   </tr>
   <tr>
-      <td colspan="6" align="center"><video src=""/></td>
+      <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/f733f384-4b8e-4f9e-bf0c-9224fdc0a8b4"/></td>
   </tr>
 </table>
 
