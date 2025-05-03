@@ -681,44 +681,6 @@ O sistema será considerado funcional para este módulo se:
 </table>
 
 
-<table>
-  <tr>
-    <th colspan="2" width="1000">CT-005<br />Criação de novo ensaio com imagens</th>
-  </tr>
-  <tr>
-    <td width="150"><strong>Descrição</strong></td>
-    <td>Verificar se a fotógrafa consegue criar um novo ensaio com título, categoria e imagens.</td>
-  </tr>
-  <tr>
-    <td><strong>Tipo do Teste</strong></td>
-    <td>Sucesso</td>
-  </tr>
-  <tr>
-    <td><strong>Requisitos associados</strong></td>
-    <td>RF-007: Cadastrar fotos tiradas em eventos públicos e privados<br/>RF-010: Upload de fotos - Ver, alterar e apagar</td>
-  </tr>
-  <tr>
-    <td><strong>Passos</strong></td>
-    <td>
-      1. Fazer login como fotógrafa.<br />
-      2. Clicar em “Criar nova galeria”.<br />
-      3. Preencher o título do ensaio.<br />
-      4. Selecionar uma categoria.<br />
-      5. Selecionar uma ou mais imagens.<br />
-      6. Clicar em “Criar”.<br />
-      7. Verificar se o ensaio aparece na galeria.
-    </td>
-  </tr>
-  <tr>
-    <td><strong>Dados de teste</strong></td>
-    <td>- </td>
-  </tr>
-  <tr>
-    <td><strong>Critérios de êxito</strong></td>
-    <td>O ensaio deve ser salvo com sucesso e listado na galeria, com a mensagem "Ensaio criado com sucesso!" visível.</td>
-  </tr>
-</table>
-
 
 <table>
   <tr>
@@ -1270,6 +1232,143 @@ Cada funcionalidade desenvolvida deve ser testada utilizando os casos de testes 
 </table>
 
 
+### Criação de novo ensaio com imagens
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-005<br>Criação de novo ensaio com imagens</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">(Sucesso) O ensaio deve ser salvo com sucesso e listado na galeria com a mensagem "Ensaio criado com sucesso!" visível.</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável pelo Teste</strong></td>
+    <td>Gleyston Guimaraes Silva</td>
+    <td><strong>Data do Teste</strong></td>
+    <td>03/05/2025</td>
+  </tr>
+  <tr>
+    <td><strong>Comentário</strong></td>
+    <td colspan="5">(Sucesso) O ensaio foi criado e as imagens foram exibidas corretamente na galeria.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/266c08d9-18b2-4251-9772-b4ce6e703d42"/></td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-006<br>Validação de campos obrigatórios no novo ensaio</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">(Validação) O sistema deve bloquear a criação do ensaio e exibir a mensagem de erro ao deixar campos obrigatórios em branco.</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável pelo Teste</strong></td>
+    <td>Gleyston Guimaraes Silva</td>
+    <td><strong>Data do Teste</strong></td>
+    <td>03/05/2025</td>
+  </tr>
+  <tr>
+    <td><strong>Comentário</strong></td>
+    <td colspan="5">(Validação) A validação foi acionada corretamente e o botão "Criar" não finalizou o envio.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/94d39d0f-717c-4595-8eac-1b752cc6eedc"/></td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-007<br>Adição de imagem ao álbum existente</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">(Sucesso) A imagem deve aparecer no álbum e a mensagem "Foto adicionada com sucesso!" deve ser exibida.</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável pelo Teste</strong></td>
+    <td>Gleyston Guimaraes Silva</td>
+    <td><strong>Data do Teste</strong></td>
+    <td>03/05/2025</td>
+  </tr>
+  <tr>
+    <td><strong>Comentário</strong></td>
+    <td colspan="5">(Sucesso) O botão de upload funcionou corretamente e atualizou o estado da galeria.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/0ab20213-ab1f-4b9b-afad-65c0f10780a8"/></td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-008<br>Exclusão de imagem com modal de confirmação</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">(Sucesso) A imagem deve ser excluída da galeria após confirmação no modal. A mensagem "Foto deletada com sucesso!" deve ser exibida.</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável pelo Teste</strong></td>
+    <td>Gleyston Guimaraes Silva</td>
+    <td><strong>Data do Teste</strong></td>
+    <td>03/05/2025</td>
+  </tr>
+  <tr>
+    <td><strong>Comentário</strong></td>
+    <td colspan="5">(Sucesso) A exclusão foi feita com modal estilizado e resposta rápida no front-end.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/82c37da3-b635-41f6-95e8-6bfbc5c40c8f"/></td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-009<br>Exclusão de álbum com confirmação estilizada</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">(Sucesso) O álbum e suas imagens devem ser excluídos após confirmação. Mensagem "Álbum apagado com sucesso!" exibida.</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável pelo Teste</strong></td>
+    <td>Gleyston Guimaraes Silva</td>
+    <td><strong>Data do Teste</strong></td>
+    <td>03/05/2025</td>
+  </tr>
+  <tr>
+    <td><strong>Comentário</strong></td>
+    <td colspan="5">(Sucesso) O modal estilizado foi exibido corretamente e a exclusão refletiu imediatamente na interface.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/0d783c63-685f-456c-a302-a2af0b7073d0"/></td>
+  </tr>
+</table>
+
+
 ## Parte 2 - Testes por pares
 A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade deve ser testada por um colega e os testes devem ser evidenciados. O colega "Tester" deve utilizar o caso de teste criado pelo desenvolvedor responsável pela funcionalidade (desenvolveu a funcionalidade e criou o caso de testes descrito no plano de testes).
       
@@ -1299,7 +1398,7 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
     <td colspan="6" align="center"><strong>Evidência</strong></td>
   </tr>
   <tr>
-    <td colspan="6" align="center"><video src="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2024-1-e5-proj-time-sheet/assets/82043220/2e3c1722-7adc-4bd4-8b4c-3abe9ddc1b48"/></td>
+    <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/379e454e-e0e4-407a-a93e-31eb053672fd"/></td>
   </tr>
 </table>
 
@@ -1327,7 +1426,7 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
     <td colspan="6" align="center"><strong>Evidência</strong></td>
   </tr>
   <tr>
-    <td colspan="6" align="center"><video src="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2024-1-e5-proj-time-sheet/assets/82043220/2e3c1722-7adc-4bd4-8b4c-3abe9ddc1b48"/></td>
+    <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/f1d469c7-5e14-46c0-ad6a-84201ab413bf"/></td>
   </tr>
 </table>
 
@@ -1355,7 +1454,7 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
     <td colspan="6" align="center"><strong>Evidência</strong></td>
   </tr>
   <tr>
-    <td colspan="6" align="center"><video src="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2024-1-e5-proj-time-sheet/assets/82043220/2e3c1722-7adc-4bd4-8b4c-3abe9ddc1b48"/></td>
+    <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/7ff48eb5-8fc9-4a7d-a7b9-0769ed3dabbb"/></td>
   </tr>
 </table>
 
@@ -1386,7 +1485,7 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
     <td colspan="6" align="center"><strong>Evidência</strong></td>
   </tr>
   <tr>
-    <td colspan="6" align="center"><video src="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2024-1-e5-proj-time-sheet/assets/82043220/2e3c1722-7adc-4bd4-8b4c-3abe9ddc1b48"/></td>
+    <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/b6b01845-0838-4862-a30b-70ba41ed2b64"/></td>
   </tr>
 </table>
 
@@ -1414,11 +1513,155 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
     <td colspan="6" align="center"><strong>Evidência</strong></td>
   </tr>
   <tr>
-    <td colspan="6" align="center"><video src="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2024-1-e5-proj-time-sheet/assets/82043220/2e3c1722-7adc-4bd4-8b4c-3abe9ddc1b48"/></td>
+    <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/2070d1d1-ffad-4076-be7f-98f999262798"/></td>
   </tr>
 </table>
 
 
 
+### 3. Criação de novo ensaio com imagens
 
 
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-005<br>Criação de novo ensaio com imagens</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">O ensaio deve ser criado com título, categoria e imagens e listado com mensagem de sucesso.</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável pela funcionalidade</strong></td>
+    <td>Gleyston Guimaraes Silva</td>
+    <td><strong>Responsável pelo teste</strong></td>
+    <td>Bárbara Fernandes Sena</td>
+    <td><strong>Data do teste</strong></td>
+    <td>03/05/2025</td>
+  </tr>
+  <tr>
+    <td><strong>Comentário</strong></td>
+    <td colspan="5">Criação realizada com sucesso, imagens renderizadas e mensagem exibida corretamente.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><video src="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2024-1-e5-proj-time-sheet/assets/82043220/2e3c1722-7adc-4bd4-8b4c-3abe9ddc1b48"/></td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-006<br>Validação de campos obrigatórios no novo ensaio</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">O sistema deve impedir o envio de ensaio sem imagens ou sem categoria, exibindo aviso claro.</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável pela funcionalidade</strong></td>
+    <td>Gleyston Guimaraes Silva</td>
+    <td><strong>Responsável pelo teste</strong></td>
+    <td>Bárbara Fernandes Sena</td>
+    <td><strong>Data do teste</strong></td>
+    <td>03/05/2025</td>
+  </tr>
+  <tr>
+    <td><strong>Comentário</strong></td>
+    <td colspan="5">O botão de criação foi bloqueado corretamente e a mensagem de erro apareceu em destaque.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><video src="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2024-1-e5-proj-time-sheet/assets/82043220/2e3c1722-7adc-4bd4-8b4c-3abe9ddc1b48"/></td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-007<br>Adição de imagem ao álbum existente</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">A nova imagem deve ser adicionada corretamente ao álbum e renderizada na tela com mensagem.</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável pela funcionalidade</strong></td>
+    <td>Gleyston Guimaraes Silva</td>
+    <td><strong>Responsável pelo teste</strong></td>
+    <td>Bárbara Fernandes Sena</td>
+    <td><strong>Data do teste</strong></td>
+    <td>03/05/2025</td>
+  </tr>
+  <tr>
+    <td><strong>Comentário</strong></td>
+    <td colspan="5">O upload da imagem foi imediato e a galeria se atualizou automaticamente.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><video src="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2024-1-e5-proj-time-sheet/assets/82043220/2e3c1722-7adc-4bd4-8b4c-3abe9ddc1b48"/></td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-008<br>Exclusão de imagem com modal de confirmação</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">Modal de confirmação deve ser exibido e, após confirmação, a imagem removida com mensagem.</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável pela funcionalidade</strong></td>
+    <td>Gleyston Guimaraes Silva</td>
+    <td><strong>Responsável pelo teste</strong></td>
+    <td>Bárbara Fernandes Sena</td>
+    <td><strong>Data do teste</strong></td>
+    <td>03/05/2025</td>
+  </tr>
+  <tr>
+    <td><strong>Comentário</strong></td>
+    <td colspan="5">Modal personalizado exibido no centro da tela. Exclusão e feedback executados corretamente.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><video src="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2024-1-e5-proj-time-sheet/assets/82043220/2e3c1722-7adc-4bd4-8b4c-3abe9ddc1b48"/></td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-009<br>Exclusão de álbum com confirmação estilizada</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">Confirmação visual deve ser exibida, e ao confirmar, o álbum e suas imagens devem ser removidos.</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável pela funcionalidade</strong></td>
+    <td>Gleyston Guimaraes Silva</td>
+    <td><strong>Responsável pelo teste</strong></td>
+    <td>Bárbara Fernandes Sena</td>
+    <td><strong>Data do teste</strong></td>
+    <td>03/05/2025</td>
+  </tr>
+  <tr>
+    <td><strong>Comentário</strong></td>
+    <td colspan="5">O modal de exclusão apareceu com a estética esperada. A exclusão afetou imediatamente a interface.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><video src="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2024-1-e5-proj-time-sheet/assets/82043220/2e3c1722-7adc-4bd4-8b4c-3abe9ddc1b48"/></td>
+  </tr>
+</table>
