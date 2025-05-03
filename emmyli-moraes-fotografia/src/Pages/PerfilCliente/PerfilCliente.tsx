@@ -17,8 +17,6 @@ const PerfilCliente = () => {
   const [nome, setNome] = useState(localStorage.getItem("nome")!)
   const [email, setEmail] = useState(localStorage.getItem("email")!)
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleChange = (e) => {
@@ -53,7 +51,8 @@ const PerfilCliente = () => {
       setEmail(formData.email)
 
     } catch (error) {
-      setError(error.response?.data?.message || "Erro ao editar usuário.");
+      const msg = error.response?.data?.error || "Erro ao editar usuário.";
+      alert(msg);
     }
   };
 

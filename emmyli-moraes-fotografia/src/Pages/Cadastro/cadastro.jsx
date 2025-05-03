@@ -46,7 +46,8 @@ const Cadastro = () => {
       alert("Usuário cadastrado com sucesso!");
       navigate("/login");
     } catch (error) {
-      setError(error.response?.data?.message || "Erro ao cadastrar usuário.");
+      const msg = error.response?.data?.error || "Erro ao editar usuário.";
+      alert(msg);
     }
   };
 
