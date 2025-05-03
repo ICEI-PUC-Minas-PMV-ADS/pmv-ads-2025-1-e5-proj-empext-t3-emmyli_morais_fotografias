@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState,useEffect } from "react";
 import axios from "axios";
 import ModalPacote from "../componentsPerfil/ModalPacote";
+
 
 
 const FormAdicionarEnsaio = ({ onClose, onSave }) => {
@@ -16,6 +17,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
   const [mensagem, setMensagem] = useState("");
   const [tipoMensagem, setTipoMensagem] = useState("");
 
+  
   const handleErro = (msg) => {
     setTipoMensagem("erro");
     setMensagem(msg);
@@ -75,30 +77,31 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
     try {
       setLoading(true);
   
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (!token) {
         handleErro("Usuário não autenticado!");
         return;
       }
   
       const formData = new FormData();
-      formData.append('usuario_id', 1); // fixo no momento
-      formData.append('nome', titulo);
-      formData.append('descricao', categoria);
+      formData.append("usuario_id", 1); // fixo no momento
+      formData.append("nome", titulo);
+      formData.append("descricao", categoria);
   
       imagens.forEach((img) => {
-        formData.append('fotos', img);
+        formData.append("fotos", img);
       });
   
-      await axios.post('http://localhost:3000/api/albuns', formData, {
+      await axios.post("http://localhost:3000/api/albuns", formData, {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
   
+      // ✅ Agora envia a mensagem para o GaleriaDeClientes
       if (onSave) onSave("Ensaio criado com sucesso!");
   
-      // Resetar tudo
+      // Resetar campos
       setTitulo("");
       setCategoria("");
       setImagens([]);
@@ -124,7 +127,6 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
         >
           ×
         </button>
-
 
         
         <div className="flex justify-center items-center border-b border-[#b1783d] pb-2">
@@ -154,7 +156,6 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
             Configurações
           </button>
         </div>
-
 
         {/* Conteúdo das abas */}
         {abaAtiva === 'informacoes' && (

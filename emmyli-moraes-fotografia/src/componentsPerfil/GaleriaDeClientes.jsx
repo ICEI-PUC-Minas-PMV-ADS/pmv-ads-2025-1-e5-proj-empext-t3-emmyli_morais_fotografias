@@ -23,7 +23,12 @@ const GaleriaDeClientes = () => {
   const [mensagem, setMensagem] = useState("");
   const [tipoMensagem, setTipoMensagem] = useState("");
 
+  const [mostrarConfirmacao, setMostrarConfirmacao] = useState(false);
+  const [fotoParaExcluir, setFotoParaExcluir] = useState(null); // { id_foto, idx }
 
+  const [mostrarConfirmacaoAlbum, setMostrarConfirmacaoAlbum] = useState(false);
+  const [albumParaExcluir, setAlbumParaExcluir] = useState(null); // { id, nome }
+  
 
   useEffect(() => {
     buscarAlbuns();
@@ -52,28 +57,35 @@ const GaleriaDeClientes = () => {
 
   const buscarAlbuns = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/api/albuns', {
+      const response = await axios.get("http://localhost:3000/api/albuns", {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       });
 
       const albunsFormatados = response.data.map((album) => ({
         id: album.id,
         cliente: album.usuario?.nome || "Cliente",
         nome: album.nome,
-        fotos: album.fotos?.map(f => f.foto?.foto) || [],
+        fotos: album.fotos?.map((f) => ({
+          id_foto: f.foto?.id,
+          url: f.foto?.foto,
+        })) || [],
         imagem: album.fotos?.[0]?.foto?.foto || "",
-        data: new Date(album.dtinclusao).toLocaleDateString('pt-BR') || '',
+        data:
+          new Date(album.dtinclusao).toLocaleDateString("pt-BR") || "",
       }));
 
       setGalerias(albunsFormatados);
     } catch (error) {
-      console.error("Erro ao buscar galerias:", error.response?.data || error.message);
+      console.error(
+        "Erro ao buscar galerias:",
+        error.response?.data || error.message
+      );
     }
   };
 
-
+  
 
   const abrirAlbum = (galeria) => {
     setAlbumAberto(galeria);
@@ -106,7 +118,7 @@ const GaleriaDeClientes = () => {
       );
   
       setFotosVisuais((prev) => [...prev, ...response.data.urls]);
-      handleSucesso("Fotos adicionadas com sucesso!");
+      handleSucesso(arquivos.length > 1 ? "Fotos adicionadas com sucesso!" : "Foto adicionada com sucesso!");
     } catch (error) {
       console.error("Erro ao enviar imagens:", error.response?.data || error.message);
       handleErro("Erro ao enviar imagens.");
@@ -180,8 +192,11 @@ const GaleriaDeClientes = () => {
             </div>
 
             <div className="flex-1">
+
               <div className="flex justify-between items-center mb-8 border-b-2 border-[#c09b2d] pb-2">
+
                 <h2 className="text-2xl text-[#b1783d] font-bold">Fotos</h2>
+
                 <div>
                   <button
                     onClick={() => inputRef.current.click()}
@@ -199,6 +214,19 @@ const GaleriaDeClientes = () => {
                   />
                 </div>
               </div>
+
+              {mensagem && tipoMensagem === "sucesso" && (
+                  <div className="border px-4 py-3 rounded-md w-full mb-4 bg-green-100 border-green-400 text-green-700">
+                    {mensagem}
+                  </div>
+                )}
+
+                {mensagem && tipoMensagem === "erro" && (
+                  <div className="border px-4 py-3 rounded-md w-full mb-4 bg-red-100 border-red-400 text-red-700">
+                    {mensagem}
+                  </div>
+                )}
+
 
               <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
                 {fotosVisuais.map((foto, idx) => (
@@ -231,9 +259,8 @@ const GaleriaDeClientes = () => {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              if (confirm("Deseja mesmo apagar esta imagem?")) {
-                                excluirFoto(foto.id_foto, idx);
-                              }
+                              setFotoParaExcluir({ id_foto: foto.id_foto, idx });
+                              setMostrarConfirmacao(true);
                             }}
                             className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-100"
                           >
@@ -289,32 +316,20 @@ const GaleriaDeClientes = () => {
                   </button>
                   {menuAberto === `album-${item.id}` && (
                     <div className="absolute right-0 mt-2 bg-white border border-gray-300 rounded shadow-md transition-all duration-200 animate-fade-in">
+
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          if (confirm("Deseja realmente excluir este álbum? Isso removerá todas as fotos.")) {
-                            axios
-                            .delete(`http://localhost:3000/api/albuns/${item.id}`, {
-                              headers: {
-                                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                              },
-                            })
-                            .then(() => {
-                              handleSucesso("Álbum apagado com sucesso!");
-                              buscarAlbuns();
-                            })
-                            .catch((err) => {
-                              console.error("Erro ao apagar álbum:", err.response?.data || err.message);
-                              handleErro("Erro ao apagar álbum.");
-                            });
-                          }
-                          setMenuAberto(null);
+                          setAlbumParaExcluir(item); 
+                          setMostrarConfirmacaoAlbum(true); 
+                          setMenuAberto(null); 
                         }}
                         className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-100"
                       >
                         <Trash size={14} />
-                        
+                        Excluir
                       </button>
+
                     </div>
                   )}
                 </div>
@@ -414,6 +429,83 @@ const GaleriaDeClientes = () => {
           </div>
         </div>
       )}
+
+        {mostrarConfirmacao && (
+          <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 animate-fade-in">
+            <div className="bg-[#fefdf9] rounded-2xl px-8 py-6 w-full max-w-md shadow-2xl transform transition-all duration-300 scale-100 font-serif border border-[#e5e0d4]">
+              <h2 className="text-[#b1783d] text-2xl font-bold text-center mb-2 leading-snug">
+                Tem certeza que deseja apagar esta imagem?
+              </h2>
+              <p className="text-[#5f4d30] text-center text-sm mb-6">
+                Essa imagem será excluída permanentemente.
+              </p>
+              <div className="flex justify-center gap-4">
+                <button
+                  onClick={() => setMostrarConfirmacao(false)}
+                  className="px-5 py-2 rounded-full border border-[#ccc0a0] text-[#5f4d30] hover:bg-[#f6f3ec] transition font-semibold"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={() => {
+                    excluirFoto(fotoParaExcluir.id_foto, fotoParaExcluir.idx);
+                    setMostrarConfirmacao(false);
+                  }}
+                  className="px-5 py-2 rounded-full bg-red-600 text-white hover:bg-red-700 transition shadow font-semibold"
+                >
+                  Apagar imagem
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+
+        {mostrarConfirmacaoAlbum && albumParaExcluir && (
+          <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 animate-fade-in">
+            <div className="bg-[#fefdf9] rounded-2xl px-8 py-6 w-full max-w-md shadow-2xl transform transition-all duration-300 scale-100 font-serif border border-[#e5e0d4]">
+              <h2 className="text-[#b1783d] text-2xl font-bold text-center mb-2 leading-snug">
+                Tem certeza que deseja apagar?
+              </h2>
+              <p className="text-[#5f4d30] text-center text-sm mb-6">
+                O álbum <span className="font-semibold">“{albumParaExcluir.nome}”</span> e todas as suas fotos serão excluídos permanentemente.
+              </p>
+              <div className="flex justify-center gap-4">
+                <button
+                  onClick={() => setMostrarConfirmacaoAlbum(false)}
+                  className="px-5 py-2 rounded-full border border-[#ccc0a0] text-[#5f4d30] hover:bg-[#f6f3ec] transition font-semibold"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={() => {
+                    axios
+                      .delete(`http://localhost:3000/api/albuns/${albumParaExcluir.id}`, {
+                        headers: {
+                          Authorization: `Bearer ${localStorage.getItem("token")}`,
+                        },
+                      })
+                      .then(() => {
+                        handleSucesso("Álbum apagado com sucesso!");
+                        buscarAlbuns();
+                      })
+                      .catch((err) => {
+                        console.error("Erro ao apagar álbum:", err.response?.data || err.message);
+                        handleErro("Erro ao apagar álbum.");
+                      })
+                      .finally(() => {
+                        setMostrarConfirmacaoAlbum(false);
+                      });
+                  }}
+                  className="px-5 py-2 rounded-full bg-red-600 text-white hover:bg-red-700 transition font-semibold shadow-sm"
+                >
+                  Apagar álbum
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
     </div>
   );
 };
