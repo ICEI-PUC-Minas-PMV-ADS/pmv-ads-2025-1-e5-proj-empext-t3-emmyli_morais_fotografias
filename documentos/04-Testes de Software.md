@@ -1546,7 +1546,7 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
     <td colspan="6" align="center"><strong>Evidência</strong></td>
   </tr>
   <tr>
-    <td colspan="6" align="center"><video src="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2024-1-e5-proj-time-sheet/assets/82043220/2e3c1722-7adc-4bd4-8b4c-3abe9ddc1b48"/></td>
+    <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/03240bf3-cb2f-4e03-881b-47840913d4a5"/></td>
   </tr>
 </table>
 
@@ -1569,13 +1569,13 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
   </tr>
   <tr>
     <td><strong>Comentário</strong></td>
-    <td colspan="5">O botão de criação foi bloqueado corretamente e a mensagem de erro apareceu em destaque.</td>
+    <td colspan="5">O botão de criação foi não foi bloqueado corretamente, mas a mensagem de erro apareceu em destaque.</td>
   </tr>
   <tr>
     <td colspan="6" align="center"><strong>Evidência</strong></td>
   </tr>
   <tr>
-    <td colspan="6" align="center"><video src="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2024-1-e5-proj-time-sheet/assets/82043220/2e3c1722-7adc-4bd4-8b4c-3abe9ddc1b48"/></td>
+    <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/6405dcd4-4b5e-4c76-af56-e5530f004514"/></td>
   </tr>
 </table>
 
@@ -1604,7 +1604,7 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
     <td colspan="6" align="center"><strong>Evidência</strong></td>
   </tr>
   <tr>
-    <td colspan="6" align="center"><video src="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2024-1-e5-proj-time-sheet/assets/82043220/2e3c1722-7adc-4bd4-8b4c-3abe9ddc1b48"/></td>
+    <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/9cc2147d-3915-43a7-8f29-0bcc07c74a7f"/></td>
   </tr>
 </table>
 
@@ -1633,7 +1633,7 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
     <td colspan="6" align="center"><strong>Evidência</strong></td>
   </tr>
   <tr>
-    <td colspan="6" align="center"><video src="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2024-1-e5-proj-time-sheet/assets/82043220/2e3c1722-7adc-4bd4-8b4c-3abe9ddc1b48"/></td>
+    <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/96a434ab-c80c-4af1-b52b-195e3120012c"/></td>
   </tr>
 </table>
 
@@ -1662,6 +1662,6 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
     <td colspan="6" align="center"><strong>Evidência</strong></td>
   </tr>
   <tr>
-    <td colspan="6" align="center"><video src="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2024-1-e5-proj-time-sheet/assets/82043220/2e3c1722-7adc-4bd4-8b4c-3abe9ddc1b48"/></td>
+    <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/62ecd005-41b5-4464-84e4-af1ca2f4e8ca"/></td>
   </tr>
 </table>
