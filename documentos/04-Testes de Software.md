@@ -903,7 +903,7 @@ Cada funcionalidade desenvolvida deve ser testada utilizando os casos de testes 
   </tr>
 </table>
 
-### Cadastro de Usuário
+### Gerenciamento de Marca d'Água no Login do Admin
 <table>
   <tr>
     <th colspan="6" width="1000">CT-003<br>Upload de marca d'água com imagem válida</th>
@@ -978,7 +978,7 @@ Cada funcionalidade desenvolvida deve ser testada utilizando os casos de testes 
     <td colspan="6" align="center"><strong>Evidência</strong></td>
   </tr>
   <tr>
-      <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/f733f384-4b8e-4f9e-bf0c-9224fdc0a8b4"/></td>
+      <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/3f2576ac-f80e-41cf-9120-06afd40e6947"/></td>
   </tr>
 </table>
 
