@@ -77,5 +77,6 @@ export const editarUsuario = async (dados: Usuario) => {
    });
   } catch (error) {
     console.error("Erro ao atualizar usuário:", error.response?.data || error.message);
+    throw error;
   }
 }
