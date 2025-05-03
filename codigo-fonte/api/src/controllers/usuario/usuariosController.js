@@ -29,7 +29,7 @@ class UsuariosController extends Api_Controller {
         nome,
         email,
         login,
-        senha_hash: crypto.createHash("md5").update(senha_hash).digest("hex"),
+        senha_hash,
         tipo: "cliente",
       });
 
