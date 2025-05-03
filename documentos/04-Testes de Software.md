@@ -633,6 +633,240 @@ O sistema será considerado funcional para este módulo se:
   </tr>
 </table>
 
+### 5.4. Criação de novo ensaio com imagens
+
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-005<br />Criação de novo ensaio com imagens</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>
+      Verificar se a fotógrafa consegue criar um novo ensaio com título, categoria e imagens.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td>Sucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>
+      RF-007: Cadastrar fotos tiradas em eventos públicos e privados<br />
+      RF-010: Upload de fotos - Ver, alterar e apagar
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      1. Fazer login como fotógrafa.<br />
+      2. Clicar em “Criar nova galeria”.<br />
+      3. Preencher o título do ensaio.<br />
+      4. Selecionar uma categoria.<br />
+      5. Selecionar uma ou mais imagens para upload.<br />
+      6. Clicar em “Criar”.<br />
+      7. Verificar se o ensaio aparece na galeria.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>- </td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>
+      O ensaio deve ser salvo com sucesso e listado na galeria, com a mensagem "Ensaio criado com sucesso!" visível.
+    </td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-005<br />Criação de novo ensaio com imagens</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>Verificar se a fotógrafa consegue criar um novo ensaio com título, categoria e imagens.</td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td>Sucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-007: Cadastrar fotos tiradas em eventos públicos e privados<br/>RF-010: Upload de fotos - Ver, alterar e apagar</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      1. Fazer login como fotógrafa.<br />
+      2. Clicar em “Criar nova galeria”.<br />
+      3. Preencher o título do ensaio.<br />
+      4. Selecionar uma categoria.<br />
+      5. Selecionar uma ou mais imagens.<br />
+      6. Clicar em “Criar”.<br />
+      7. Verificar se o ensaio aparece na galeria.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>- </td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>O ensaio deve ser salvo com sucesso e listado na galeria, com a mensagem "Ensaio criado com sucesso!" visível.</td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-006<br />Validação de campos obrigatórios no novo ensaio</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>Verificar se o sistema impede o envio do formulário sem o preenchimento dos campos obrigatórios.</td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td>Validação</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-007, RF-010</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      1. Fazer login como fotógrafa.<br />
+      2. Abrir o formulário de novo ensaio.<br />
+      3. Preencher apenas o título.<br />
+      4. Deixar categoria e imagens vazias.<br />
+      5. Clicar em “Criar”.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>- </td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>O sistema deve exibir a mensagem "Preencha todas as informações e adicione imagens antes de criar o ensaio!" e impedir a criação.</td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-007<br />Adição de imagem ao álbum existente</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>Verificar se a fotógrafa consegue adicionar novas imagens a um álbum existente.</td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td>Sucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-010: Upload de fotos - Ver, alterar e apagar</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      1. Fazer login como fotógrafa.<br />
+      2. Acessar a galeria de clientes.<br />
+      3. Abrir um álbum existente.<br />
+      4. Clicar no botão “+”.<br />
+      5. Selecionar uma imagem.<br />
+      6. Confirmar o envio.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>- </td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>A imagem deve aparecer no álbum e a mensagem "Foto adicionada com sucesso!" deve ser exibida.</td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-008<br />Exclusão de imagem com modal de confirmação</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>Verificar se o sistema exibe um modal de confirmação visual ao tentar excluir uma imagem.</td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td>Interface / Confirmação</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-010</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      1. Acessar um álbum com imagens.<br />
+      2. Clicar nos três pontinhos de uma imagem.<br />
+      3. Selecionar “Excluir”.<br />
+      4. Confirmar a ação no modal exibido.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>- </td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>A imagem é removida da galeria e a mensagem "Foto deletada com sucesso" deve ser exibida.</td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-009<br />Exclusão de álbum com confirmação estilizada</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>Verificar se o sistema solicita confirmação estilizada ao excluir um álbum e remove todas as imagens vinculadas.</td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td>Interface / Sucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-007, RF-010</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      1. Acessar a galeria de clientes.<br />
+      2. Clicar nos três pontinhos de um álbum.<br />
+      3. Selecionar “Excluir”.<br />
+      4. Confirmar a exclusão no modal.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>- </td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>O álbum e todas as imagens vinculadas devem ser excluídas. Exibir mensagem “Álbum apagado com sucesso!”.</td>
+  </tr>
+</table>
+
+
   
 ## 6. Ferramentas e Ambiente de Teste
 
@@ -903,7 +1137,7 @@ Cada funcionalidade desenvolvida deve ser testada utilizando os casos de testes 
   </tr>
 </table>
 
-### Cadastro de Usuário
+### Gerenciamento de Marca d'Água no Login do Admin
 <table>
   <tr>
     <th colspan="6" width="1000">CT-003<br>Upload de marca d'água com imagem válida</th>
@@ -926,7 +1160,7 @@ Cada funcionalidade desenvolvida deve ser testada utilizando os casos de testes 
     <td colspan="6" align="center"><strong>Evidência</strong></td>
   </tr>
   <tr>
-      <td colspan="6" align="center"><video src=""/></td>
+      <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/a3978f8c-f1bd-4b91-9c3a-d00807ba2e43"/></td>
   </tr>
 </table>
 
@@ -952,7 +1186,7 @@ Cada funcionalidade desenvolvida deve ser testada utilizando os casos de testes 
     <td colspan="6" align="center"><strong>Evidência</strong></td>
   </tr>
   <tr>
-      <td colspan="6" align="center"><video src=""/></td>
+      <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/6ee1fad6-079c-4b60-8c3b-73c238cc1641"/></td>
   </tr>
 </table>
 
@@ -978,14 +1212,14 @@ Cada funcionalidade desenvolvida deve ser testada utilizando os casos de testes 
     <td colspan="6" align="center"><strong>Evidência</strong></td>
   </tr>
   <tr>
-      <td colspan="6" align="center"><video src=""/></td>
+      <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/3f2576ac-f80e-41cf-9120-06afd40e6947"/></td>
   </tr>
 </table>
 
 ### Edição e Exclusão de Usuários pelo Admin
 <table>
   <tr>
-    <th colspan="6" width="1000">CT-003<br>Edição de dados do usuário</th>
+    <th colspan="6" width="1000">CT-004<br>Edição de dados do usuário</th>
   </tr>
   <tr>
     <td width="170"><strong>Critérios de êxito</strong></td>
@@ -1005,13 +1239,13 @@ Cada funcionalidade desenvolvida deve ser testada utilizando os casos de testes 
     <td colspan="6" align="center"><strong>Evidência</strong></td>
   </tr>
   <tr>
-      <td colspan="6" align="center"><video src=""/></td>
+      <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/ab73920b-7b41-41c6-834b-60a136b1d2fb"/></td>
   </tr>
 </table>
 
 <table>
   <tr>
-    <th colspan="6" width="1000">CT-003<br>Exclusão de usuário do sistema</th>
+    <th colspan="6" width="1000">CT-004<br>Exclusão de usuário do sistema</th>
   </tr>
   <tr>
     <td width="170"><strong>Critérios de êxito</strong></td>
@@ -1031,7 +1265,7 @@ Cada funcionalidade desenvolvida deve ser testada utilizando os casos de testes 
     <td colspan="6" align="center"><strong>Evidência</strong></td>
   </tr>
   <tr>
-      <td colspan="6" align="center"><video src=""/></td>
+      <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/3e546591-4b0f-4c5d-8bd0-9548cd5e12e6"/></td>
   </tr>
 </table>
 

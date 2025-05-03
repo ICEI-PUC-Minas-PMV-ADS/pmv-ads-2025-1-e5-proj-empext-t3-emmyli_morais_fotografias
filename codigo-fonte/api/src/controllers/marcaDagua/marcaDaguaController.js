@@ -13,6 +13,12 @@ class MarcaDaguaController extends Api_Controller {
         return res.status(400).json({ error: "Nenhuma imagem enviada." });
       }
 
+      const mimeTypesPermitidos = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+
+      if (!mimeTypesPermitidos.includes(req.file.mimetype)) {
+        return res.status(400).json({ error: "Tipo de arquivo inválido. Apenas imagens são permitidas." });
+      }
+      
       const imageUrl = await uploadFotoBunnyStorage(req.file);
 
       const novaMarca = await MarcaDagua.create({ imagem: imageUrl });

@@ -1,6 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { Image, Settings, Edit2, Plus, ArrowLeft } from "lucide-react";
+import {
+  Image,
+  Settings,
+  Edit2,
+  Plus,
+  ArrowLeft,
+  Trash,
+  MoreVertical,
+} from "lucide-react";
 import FormAdicionarEnsaio from "../componentsPerfil/FormAdicionarEnsaio";
 
 const GaleriaDeClientes = () => {
@@ -8,43 +16,76 @@ const GaleriaDeClientes = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [albumAberto, setAlbumAberto] = useState(null);
   const [fotosVisuais, setFotosVisuais] = useState([]);
-
   const [imagemSelecionada, setImagemSelecionada] = useState(null);
-const [indiceSelecionado, setIndiceSelecionado] = useState(null);
-
+  const [indiceSelecionado, setIndiceSelecionado] = useState(null);
+  const [menuAberto, setMenuAberto] = useState(null);
   const inputRef = useRef();
+  const [mensagem, setMensagem] = useState("");
+  const [tipoMensagem, setTipoMensagem] = useState("");
+
+  const [mostrarConfirmacao, setMostrarConfirmacao] = useState(false);
+  const [fotoParaExcluir, setFotoParaExcluir] = useState(null); // { id_foto, idx }
+
+  const [mostrarConfirmacaoAlbum, setMostrarConfirmacaoAlbum] = useState(false);
+  const [albumParaExcluir, setAlbumParaExcluir] = useState(null); // { id, nome }
+  
 
   useEffect(() => {
     buscarAlbuns();
   }, []);
 
+  const handleSucesso = (msg) => {
+    setTipoMensagem("sucesso");
+    setMensagem(msg);
+  };
+  
+  const handleErro = (msg) => {
+    setTipoMensagem("erro");
+    setMensagem(msg);
+  };
+  
+  useEffect(() => {
+    if (mensagem) {
+      const timer = setTimeout(() => {
+        setMensagem("");
+        setTipoMensagem("");
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [mensagem]);
+
+
   const buscarAlbuns = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/api/albuns', {
+      const response = await axios.get("http://localhost:3000/api/albuns", {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       });
 
       const albunsFormatados = response.data.map((album) => ({
         id: album.id,
         cliente: album.usuario?.nome || "Cliente",
         nome: album.nome,
-        fotos: album.fotos?.map(f => f.foto?.foto) || [],
+        fotos: album.fotos?.map((f) => ({
+          id_foto: f.foto?.id,
+          url: f.foto?.foto,
+        })) || [],
         imagem: album.fotos?.[0]?.foto?.foto || "",
-        data: new Date(album.dtinclusao).toLocaleDateString('pt-BR') || '',
+        data:
+          new Date(album.dtinclusao).toLocaleDateString("pt-BR") || "",
       }));
 
       setGalerias(albunsFormatados);
     } catch (error) {
-      console.error("Erro ao buscar galerias:", error.response?.data || error.message);
+      console.error(
+        "Erro ao buscar galerias:",
+        error.response?.data || error.message
+      );
     }
   };
 
-  const adicionarNovaGaleria = () => {
-    setMostrarModal(false);
-    buscarAlbuns();
-  };
+  
 
   const abrirAlbum = (galeria) => {
     setAlbumAberto(galeria);
@@ -53,61 +94,69 @@ const [indiceSelecionado, setIndiceSelecionado] = useState(null);
 
   const voltarParaGalerias = () => {
     setAlbumAberto(null);
+    setMenuAberto(null);
   };
 
-  const handleAdicionarFotos = (event) => {
+  const handleAdicionarFotos = async (event) => {
     const arquivos = Array.from(event.target.files);
-    const novas = arquivos.map(file => URL.createObjectURL(file));
-    setFotosVisuais(prev => [...prev, ...novas]);
+    if (!arquivos.length) return;
+  
+    const formData = new FormData();
+    arquivos.forEach((file) => formData.append("fotos", file));
+    formData.append("album_id", albumAberto.id);
+  
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/fotos/adicionar",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+  
+      setFotosVisuais((prev) => [...prev, ...response.data.urls]);
+      handleSucesso(arquivos.length > 1 ? "Fotos adicionadas com sucesso!" : "Foto adicionada com sucesso!");
+    } catch (error) {
+      console.error("Erro ao enviar imagens:", error.response?.data || error.message);
+      handleErro("Erro ao enviar imagens.");
+    }
+  };
+
+  const toggleMenu = (id) => {
+    setMenuAberto(menuAberto === id ? null : id);
+  };
+
+  const excluirFoto = async (fotoId, idx) => {
+    if (!fotoId) {
+      handleErro("Foto ainda não foi salva no banco.");
+      return;
+    }
+  
+    try {
+      await axios.delete(`http://localhost:3000/api/fotos/${fotoId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+  
+      const novaLista = [...fotosVisuais];
+      novaLista.splice(idx, 1);
+      setFotosVisuais(novaLista);
+      setMenuAberto(null);
+      handleSucesso("Foto excluída com sucesso!");
+    } catch (error) {
+      console.error("Erro ao apagar imagem:", error.response?.data || error.message);
+      handleErro("Erro ao apagar imagem.");
+    }
   };
 
   return (
     <div className="relative p-4 sm:p-6 font-serif bg-[#F9F9F9] min-h-screen">
-      {!albumAberto ? (
+      {albumAberto ? (
         <>
-          <div className="mb-4">
-            <h1 className="text-2xl font-bold text-[#c09b2d] border-b-2 border-[#c09b2d] pb-2">
-              Galeria de Clientes
-            </h1>
-            <button
-              onClick={() => setMostrarModal(true)}
-              className="mt-4 bg-[#c09b2d] hover:bg-[#a48322] text-white px-4 py-2 rounded-xl shadow-md transition duration-300"
-            >
-              Criar nova galeria
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {galerias.map((item) => (
-              <div
-                key={item.id}
-                className="bg-white rounded-2xl shadow-md overflow-hidden transform transition-transform hover:scale-105 w-full max-w-sm mx-auto cursor-pointer"
-                onClick={() => abrirAlbum(item)}
-              >
-                <div className="w-full h-60 bg-gray-100 flex items-center justify-center overflow-hidden">
-                  {item.imagem ? (
-                    <img
-                      src={item.imagem}
-                      alt={item.nome}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <span className="text-gray-400">Sem imagem</span>
-                  )}
-                </div>
-                <div className="text-center text-[#252525] text-lg font-semibold mt-3">
-                  {item.nome}
-                </div>
-                <p className="text-center text-[#252525] text-sm">{item.nome}</p>
-                <p className="text-center text-[#c09b2d] text-sm mb-4">
-                  {item.fotos.length} fotos | {item.data}
-                </p>
-              </div>
-            ))}
-          </div>
-        </>
-      ) : (
-        <div className="flex flex-col">
           <div className="flex justify-end">
             <button
               onClick={voltarParaGalerias}
@@ -118,10 +167,11 @@ const [indiceSelecionado, setIndiceSelecionado] = useState(null);
           </div>
 
           <div className="flex flex-col lg:flex-row gap-8">
-            {/* Lado esquerdo: Capa + Ações */}
             <div className="bg-white p-4 rounded-xl shadow-lg max-w-sm w-full lg:min-h-[80vh]">
-              <p className="text-[#c09b2d] text-xl font-bold text-center mb-2">{albumAberto.nome}</p>
-              
+              <p className="text-[#c09b2d] text-xl font-bold text-center mb-2">
+                {albumAberto.nome}
+              </p>
+
               <div className="w-full h-[300px] bg-gray-100 rounded-xl overflow-hidden mb-4">
                 {albumAberto.imagem ? (
                   <img
@@ -135,16 +185,18 @@ const [indiceSelecionado, setIndiceSelecionado] = useState(null);
               </div>
 
               <div className="flex justify-around text-[#b1783d] text-2xl">
-                <Image className="cursor-pointer hover:text-[#a76a2b]" title="Ver fotos" />
-                <Settings className="cursor-pointer hover:text-[#a76a2b]" title="Configurações" />
-                <Edit2 className="cursor-pointer hover:text-[#a76a2b]" title="Editar álbum" />
+                <Image className="cursor-pointer hover:text-[#a76a2b]" />
+                <Settings className="cursor-pointer hover:text-[#a76a2b]" />
+                <Edit2 className="cursor-pointer hover:text-[#a76a2b]" />
               </div>
             </div>
 
-            {/* Lado direito: Galeria de fotos */}
             <div className="flex-1">
+
               <div className="flex justify-between items-center mb-8 border-b-2 border-[#c09b2d] pb-2">
+
                 <h2 className="text-2xl text-[#b1783d] font-bold">Fotos</h2>
+
                 <div>
                   <button
                     onClick={() => inputRef.current.click()}
@@ -163,40 +215,155 @@ const [indiceSelecionado, setIndiceSelecionado] = useState(null);
                 </div>
               </div>
 
-              {fotosVisuais.length > 0 ? (
-                <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
-                  {fotosVisuais.map((foto, idx) => (
-                    <div
-                      key={idx}
-                      className="break-inside-avoid overflow-hidden rounded-xl shadow cursor-pointer transform transition-transform duration-200 hover:scale-105"
+              {mensagem && tipoMensagem === "sucesso" && (
+                  <div className="border px-4 py-3 rounded-md w-full mb-4 bg-green-100 border-green-400 text-green-700">
+                    {mensagem}
+                  </div>
+                )}
+
+                {mensagem && tipoMensagem === "erro" && (
+                  <div className="border px-4 py-3 rounded-md w-full mb-4 bg-red-100 border-red-400 text-red-700">
+                    {mensagem}
+                  </div>
+                )}
+
+
+              <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
+                {fotosVisuais.map((foto, idx) => (
+                  <div
+                    key={idx}
+                    className="relative break-inside-avoid overflow-hidden rounded-xl shadow transform transition-transform duration-200 hover:scale-105 group"
+                  >
+                    <img
+                      src={foto.url}
+                      alt={`Foto ${idx + 1}`}
+                      className="w-full h-auto object-contain rounded-xl cursor-pointer"
                       onClick={() => {
-                        setImagemSelecionada(foto);
+                        setImagemSelecionada(foto.url);
                         setIndiceSelecionado(idx);
                       }}
-                    >
-                      <img
-                        src={foto}
-                        alt={`Foto ${idx + 1}`}
-                        className="w-full h-auto object-contain rounded-xl"
-                      />
+                    />
+
+                    <div className="absolute top-2 right-2 z-10">
+                      <button
+                        className="text-white bg-black bg-opacity-50 p-1 rounded-full hover:bg-opacity-70"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleMenu(`foto-${idx}`);
+                        }}
+                      >
+                        <MoreVertical size={18} />
+                      </button>
+                      {menuAberto === `foto-${idx}` && (
+                        <div className="absolute right-0 mt-2 bg-white border border-gray-300 rounded shadow-md animate-fade-in">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setFotoParaExcluir({ id_foto: foto.id_foto, idx });
+                              setMostrarConfirmacao(true);
+                            }}
+                            className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-100"
+                          >
+                            <Trash size={16} />
+                            Excluir
+                          </button>
+                        </div>
+                      )}
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-gray-600">Nenhuma foto nesse álbum.</p>
-              )}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        </>
+      ) : (
+        <>
+            <div className="mb-4">
+              
+
+              <h1 className="text-2xl font-bold text-[#c09b2d] border-b-2 border-[#c09b2d] pb-2">Galeria de Clientes</h1>
+
+              <button
+                onClick={() => setMostrarModal(true)}
+                className="mt-4 bg-[#c09b2d] hover:bg-[#a48322] text-white px-4 py-2 rounded-xl shadow-md transition duration-300"
+              >
+                Criar nova galeria
+              </button>
+            </div>
+
+            {mensagem && tipoMensagem === "sucesso" && (
+                <div className="border px-4 py-3 rounded-md w-full mb-4 bg-green-100 border-green-400 text-green-700">
+                  {mensagem}
+                </div>
+              )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            {galerias.map((item) => (
+              <div
+                key={item.id}
+                className="relative bg-white rounded-2xl shadow-md overflow-hidden transform transition-transform hover:scale-105 w-full max-w-sm mx-auto cursor-pointer"
+                onClick={() => abrirAlbum(item)}
+              >
+                <div className="absolute top-2 right-2 z-10">
+                  <button
+                    className="text-white bg-black bg-opacity-50 p-1 rounded-full hover:bg-opacity-70"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleMenu(`album-${item.id}`);
+                    }}
+                  >
+                    <MoreVertical size={18} />
+                  </button>
+                  {menuAberto === `album-${item.id}` && (
+                    <div className="absolute right-0 mt-2 bg-white border border-gray-300 rounded shadow-md transition-all duration-200 animate-fade-in">
+
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setAlbumParaExcluir(item); 
+                          setMostrarConfirmacaoAlbum(true); 
+                          setMenuAberto(null); 
+                        }}
+                        className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-100"
+                      >
+                        <Trash size={14} />
+                        Excluir
+                      </button>
+
+                    </div>
+                  )}
+                </div>
+
+                <div className="w-full h-60 bg-gray-100 flex items-center justify-center overflow-hidden">
+                  {item.imagem ? (
+                    <img src={item.imagem} alt={item.nome} className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-gray-400">Sem imagem</span>
+                  )}
+                </div>
+                <div className="text-center text-[#252525] text-lg font-semibold mt-3">{item.nome}</div>
+                <p className="text-center text-[#252525] text-sm">{item.nome}</p>
+                <p className="text-center text-[#c09b2d] text-sm mb-4">
+                  {item.fotos.length} fotos | {item.data}
+                </p>
+              </div>
+            ))}
+          </div>
+        </>
       )}
 
       {mostrarModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-xl w-full max-w-3xl">
-            <FormAdicionarEnsaio
-              onSave={adicionarNovaGaleria}
-              onClose={() => setMostrarModal(false)}
-            />
+            
+          <FormAdicionarEnsaio
+            onSave={(mensagemSucesso) => {
+              setMostrarModal(false);
+              buscarAlbuns();
+              if (mensagemSucesso) handleSucesso(mensagemSucesso); // ✅ exibe a mensagem por cima do botão
+            }}
+            onClose={() => setMostrarModal(false)}
+          />
           </div>
         </div>
       )}
@@ -207,15 +374,12 @@ const [indiceSelecionado, setIndiceSelecionado] = useState(null);
           onClick={() => setImagemSelecionada(null)}
         >
           <div className="relative inline-block">
-            {/* Imagem principal */}
             <img
               src={imagemSelecionada}
               alt="Zoom"
               className="max-h-[90vh] w-auto object-contain rounded-xl shadow-lg"
               onClick={(e) => e.stopPropagation()}
             />
-
-            {/* Botão fechar */}
             <button
               className="absolute top-2 right-2 text-white text-3xl font-bold z-50 bg-black bg-opacity-10 rounded-full px-3 transition-transform duration-200 hover:scale-110 hover:bg-opacity-80"
               onClick={(e) => {
@@ -225,8 +389,6 @@ const [indiceSelecionado, setIndiceSelecionado] = useState(null);
             >
               ×
             </button>
-
-            {/* Botão anterior */}
             <button
               className="absolute left-2 top-1/2 transform -translate-y-1/2 text-white text-3xl z-50 bg-black bg-opacity-10 rounded-full px-3 py-1 transition-transform duration-200 hover:scale-110 hover:bg-opacity-80"
               onClick={(e) => {
@@ -238,8 +400,6 @@ const [indiceSelecionado, setIndiceSelecionado] = useState(null);
             >
               ◀
             </button>
-
-            {/* Botão próximo */}
             <button
               className="absolute right-2 top-1/2 transform -translate-y-1/2 text-white text-3xl z-50 bg-black bg-opacity-10 rounded-full px-3 py-1 transition-transform duration-200 hover:scale-110 hover:bg-opacity-80"
               onClick={(e) => {
@@ -251,9 +411,101 @@ const [indiceSelecionado, setIndiceSelecionado] = useState(null);
             >
               ▶
             </button>
+            <button
+              className="absolute bottom-4 right-4 text-white text-xl z-50 bg-red-600 bg-opacity-90 rounded-full p-2 hover:bg-red-700 transition"
+              title="Excluir imagem"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (confirm("Deseja mesmo apagar esta foto?")) {
+                  const novaLista = [...fotosVisuais];
+                  novaLista.splice(indiceSelecionado, 1);
+                  setFotosVisuais(novaLista);
+                  setImagemSelecionada(null);
+                }
+              }}
+            >
+              <Trash />
+            </button>
           </div>
         </div>
       )}
+
+        {mostrarConfirmacao && (
+          <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 animate-fade-in">
+            <div className="bg-[#fefdf9] rounded-2xl px-8 py-6 w-full max-w-md shadow-2xl transform transition-all duration-300 scale-100 font-serif border border-[#e5e0d4]">
+              <h2 className="text-[#b1783d] text-2xl font-bold text-center mb-2 leading-snug">
+                Tem certeza que deseja apagar esta imagem?
+              </h2>
+              <p className="text-[#5f4d30] text-center text-sm mb-6">
+                Essa imagem será excluída permanentemente.
+              </p>
+              <div className="flex justify-center gap-4">
+                <button
+                  onClick={() => setMostrarConfirmacao(false)}
+                  className="px-5 py-2 rounded-full border border-[#ccc0a0] text-[#5f4d30] hover:bg-[#f6f3ec] transition font-semibold"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={() => {
+                    excluirFoto(fotoParaExcluir.id_foto, fotoParaExcluir.idx);
+                    setMostrarConfirmacao(false);
+                  }}
+                  className="px-5 py-2 rounded-full bg-red-600 text-white hover:bg-red-700 transition shadow font-semibold"
+                >
+                  Apagar imagem
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+
+        {mostrarConfirmacaoAlbum && albumParaExcluir && (
+          <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 animate-fade-in">
+            <div className="bg-[#fefdf9] rounded-2xl px-8 py-6 w-full max-w-md shadow-2xl transform transition-all duration-300 scale-100 font-serif border border-[#e5e0d4]">
+              <h2 className="text-[#b1783d] text-2xl font-bold text-center mb-2 leading-snug">
+                Tem certeza que deseja apagar?
+              </h2>
+              <p className="text-[#5f4d30] text-center text-sm mb-6">
+                O álbum <span className="font-semibold">“{albumParaExcluir.nome}”</span> e todas as suas fotos serão excluídos permanentemente.
+              </p>
+              <div className="flex justify-center gap-4">
+                <button
+                  onClick={() => setMostrarConfirmacaoAlbum(false)}
+                  className="px-5 py-2 rounded-full border border-[#ccc0a0] text-[#5f4d30] hover:bg-[#f6f3ec] transition font-semibold"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={() => {
+                    axios
+                      .delete(`http://localhost:3000/api/albuns/${albumParaExcluir.id}`, {
+                        headers: {
+                          Authorization: `Bearer ${localStorage.getItem("token")}`,
+                        },
+                      })
+                      .then(() => {
+                        handleSucesso("Álbum apagado com sucesso!");
+                        buscarAlbuns();
+                      })
+                      .catch((err) => {
+                        console.error("Erro ao apagar álbum:", err.response?.data || err.message);
+                        handleErro("Erro ao apagar álbum.");
+                      })
+                      .finally(() => {
+                        setMostrarConfirmacaoAlbum(false);
+                      });
+                  }}
+                  className="px-5 py-2 rounded-full bg-red-600 text-white hover:bg-red-700 transition font-semibold shadow-sm"
+                >
+                  Apagar álbum
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
     </div>
   );
 };

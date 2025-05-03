@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import axios from "axios";
 import ModalPacote from "../componentsPerfil/ModalPacote";
+
+
+
 const FormAdicionarEnsaio = ({ onClose, onSave }) => {
   const [abaAtiva, setAbaAtiva] = useState("informacoes");
   const [titulo, setTitulo] = useState("");
@@ -10,6 +13,25 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
   const [pacotesSelecionados, setPacotesSelecionados] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const [mensagem, setMensagem] = useState("");
+  const [tipoMensagem, setTipoMensagem] = useState("");
+
+  
+  const handleErro = (msg) => {
+    setTipoMensagem("erro");
+    setMensagem(msg);
+  };
+  
+  useEffect(() => {
+    if (mensagem) {
+      const timer = setTimeout(() => {
+        setMensagem("");
+        setTipoMensagem("");
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [mensagem]);
 
   const handleImageChange = (e) => {
     setImagens(Array.from(e.target.files));
@@ -48,37 +70,38 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
 
   const handleAvancar = async () => {
     if (!titulo || !categoria || imagens.length === 0) {
-      alert("Preencha todas as informações e adicione imagens antes de criar o ensaio!");
+      handleErro("Preencha todas as informações e adicione imagens antes de criar o ensaio!");
       return;
     }
   
     try {
       setLoading(true);
   
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (!token) {
-        alert("Usuário não autenticado!");
+        handleErro("Usuário não autenticado!");
         return;
       }
   
       const formData = new FormData();
-      formData.append('usuario_id', 1); // fixo no momento
-      formData.append('nome', titulo);
-      formData.append('descricao', categoria);
+      formData.append("usuario_id", 1); // fixo no momento
+      formData.append("nome", titulo);
+      formData.append("descricao", categoria);
   
       imagens.forEach((img) => {
-        formData.append('fotos', img);
+        formData.append("fotos", img);
       });
   
-      await axios.post('http://localhost:3000/api/albuns', formData, {
+      await axios.post("http://localhost:3000/api/albuns", formData, {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
   
-      alert("Ensaio criado com sucesso!");
+      // ✅ Agora envia a mensagem para o GaleriaDeClientes
+      if (onSave) onSave("Ensaio criado com sucesso!");
   
-      // Resetar tudo
+      // Resetar campos
       setTitulo("");
       setCategoria("");
       setImagens([]);
@@ -87,11 +110,9 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
       setAbaAtiva("informacoes");
   
       if (onClose) onClose();
-      if (onSave) onSave();
-  
     } catch (error) {
       console.error("Erro ao criar ensaio:", error.response?.data || error.message);
-      alert("Erro ao criar ensaio!");
+      handleErro("Erro ao criar ensaio!");
     } finally {
       setLoading(false);
     }
@@ -138,7 +159,14 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
 
         {/* Conteúdo das abas */}
         {abaAtiva === 'informacoes' && (
-          <form onSubmit={handleSubmit} className="space-y-6 overflow-auto max-h-[450px]">
+        <form onSubmit={handleSubmit} className="space-y-6 overflow-auto max-h-[450px]">
+
+          {mensagem && tipoMensagem === "erro" && (
+            <div className="border px-4 py-3 rounded-md w-full mb-4 bg-red-100 border-red-400 text-red-700">
+              {mensagem}
+            </div>
+          )}
+
             <div className="flex space-x-4 flex-wrap">
               {/* Lado esquerdo */}
               <div className="flex-1 space-y-6">
