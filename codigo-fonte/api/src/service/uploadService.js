@@ -16,7 +16,7 @@ const uploadFotoBunnyStorage = async (file) => {
 
   try {
     const fileName = `${Date.now()}_${file.originalname.replace(/\s/g, '_')}`;
-    const url = `https://br.storage.bunnycdn.com/${BUNNY_STORAGE_NAME}/${fileName}`; // ✅ CORRIGIDO
+    const url = `https://br.storage.bunnycdn.com/${BUNNY_STORAGE_NAME}/${fileName}`;
 
     console.log('📤 Enviando para BunnyCDN:', url);
     console.log('🔐 Chave usada:', BUNNY_STORAGE_KEY);
@@ -41,4 +41,27 @@ const uploadFotoBunnyStorage = async (file) => {
   }
 };
 
-module.exports = { uploadFotoBunnyStorage };
+  const deleteFotoBunnyStorage = async (fileUrl) => {
+    try {
+      if (!fileUrl) throw new Error("URL inválida para deletar.");
+  
+      const filePath = fileUrl.split('/').pop();
+      const url = `https://br.storage.bunnycdn.com/${BUNNY_STORAGE_NAME}/${filePath}`;
+  
+      await axios.delete(url, {
+        headers: {
+          AccessKey: BUNNY_STORAGE_KEY
+        }
+      });
+  
+      console.log(`✅ Foto removida do BunnyCDN: ${filePath}`);
+    } catch (error) {
+      console.error('❌ Erro ao deletar do BunnyCDN:', error.response?.data || error.message);
+      throw new Error('Erro ao excluir imagem do BunnyCDN.');
+    }
+  };
+  
+  module.exports = {
+    uploadFotoBunnyStorage,
+    deleteFotoBunnyStorage
+  };

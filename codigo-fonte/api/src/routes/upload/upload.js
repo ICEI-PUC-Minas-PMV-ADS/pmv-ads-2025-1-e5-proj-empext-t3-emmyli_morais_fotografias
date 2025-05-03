@@ -1,5 +1,5 @@
 // backend/routes/upload.js
-const express = require('express');
+/*const express = require('express');
 const multer = require('multer');
 const { Storage } = require('@google-cloud/storage');
 
@@ -27,4 +27,4 @@ router.post('/upload', upload.single('imagem'), async (req, res) => {
   }
 });
 
-module.exports = router;
+module.exports = router;*/

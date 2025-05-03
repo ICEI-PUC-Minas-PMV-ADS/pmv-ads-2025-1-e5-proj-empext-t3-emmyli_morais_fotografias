@@ -7,6 +7,10 @@ const myAccountRoutes = require('./routes/usuario/myAccountRoutes');
 const marcaDaguaRoutes = require('./routes/marcaDagua/marcaDaguaRoutes');
 const produtosRoutes = require('./routes/produtos/produtosRoutes');
 const setupSwagger = require('./swagger');
+
+const albunsRoutes = require('./routes/album/albumRoutes');
+const fotoRoutes = require('./routes/foto/fotoRoutes')
+
 const port = 3000;
 require('dotenv').config();
 const verifyToken = require('./middleware/AuthMiddlewareToken');
@@ -47,6 +51,9 @@ app.use('/api/myAccount', verifyToken, myAccountRoutes);
 // rota protegida
 app.use('/api/marcaDagua', verifyToken, marcaDaguaRoutes);
 
+// 🔐 Albuns e fotos (token pode ser adicionado depois se desejar)
+app.use('/api/albuns', albunsRoutes);
+app.use('/api/fotos', verifyToken, fotoRoutes);
 
 //produtos
 
