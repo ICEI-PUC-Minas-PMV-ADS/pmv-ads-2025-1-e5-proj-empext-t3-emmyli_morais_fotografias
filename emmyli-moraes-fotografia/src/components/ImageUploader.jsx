@@ -38,6 +38,11 @@ const ImageUploader = ({ onSucesso, onErro }) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
+    if (!file.type.startsWith("image/")) {
+      onErro("Somente arquivos de imagem são permitidos.");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("imagem", file);
 
