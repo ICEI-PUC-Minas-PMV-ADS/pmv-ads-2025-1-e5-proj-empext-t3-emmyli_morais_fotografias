@@ -5,6 +5,7 @@ import MenuNav from "../../components/MenuNav";
 import logo from "../../img/logo.png";
 import { Link } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react"; // Ícones para mostrar/ocultar senha
+import InputPassword from "../../components/InputPassword";
 
 const Cadastro = () => {
   const navigate = useNavigate();
@@ -90,43 +91,12 @@ const Cadastro = () => {
             />
 
             {/* Campo de Senha */}
-            <div className="relative w-full">
-              <input
-                type={showPassword ? "text" : "password"}
-                name="senha"
-                placeholder="Senha"
-                value={formData.senha}
-                onChange={handleChange}
-                className="w-full p-4 sm:p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c09b2d] pr-10"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700"
-              >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-              </button>
-            </div>
+            <InputPassword placeholder="senha" name="senha" value={formData.senha} onChange={handleChange}/>
+              
 
             {/* Campo Confirmar Senha */}
-            <div className="relative w-full">
-              <input
-                type={showConfirmPassword ? "text" : "password"}
-                name="confirmarsenha"
-                placeholder="Confirmar Senha"
-                value={formData.confirmarsenha}
-                onChange={handleChange}
-                className="w-full p-4 sm:p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c09b2d] pr-10"
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700"
-              >
-                {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-              </button>
-            </div>
-
+            <InputPassword placeholder="Confirmar Senha" name="confirmarsenha" value={formData.confirmarsenha} onChange={handleChange}/>
+            
             <button
               type="submit"
               className="w-full bg-[#c09b2d] text-white p-4 sm:p-3 rounded-md hover:bg-[#a68523] transition-all text-lg"

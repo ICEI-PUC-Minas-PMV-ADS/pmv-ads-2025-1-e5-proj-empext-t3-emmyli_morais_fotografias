@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { editarUsuario } from "../../services/userService";
+import InputPassword from "../../components/InputPassword";
 
 
 const PerfilCliente = () => {
@@ -93,7 +94,6 @@ const PerfilCliente = () => {
             value={formData.email}
             onChange={handleChange}
             className="w-full p-2.5 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-yellow-500 transition "
-            readOnly
           />
         </div>
       </div>
@@ -112,23 +112,14 @@ const PerfilCliente = () => {
         </div>
         <div className="w-full md:w-1/3">
           <label className="block mb-1 font-medium text-gray-700">Senha:</label>
-          <input
-            type="password"
-            name="senha"
-            value={formData.senha}
-            onChange={handleChange}
-            className="w-full p-2.5 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"
-          />
+          {/* Campo de Senha */}
+          <InputPassword placeholder="senha" name="senha" value={formData.senha} onChange={handleChange} />
         </div>
+        
         <div className="w-full md:w-1/3">
           <label className="block mb-1 font-medium text-gray-700">Confirme a senha:</label>
-          <input
-            type="password"
-            name="confirmarSenha"
-            value={formData.confirmarSenha}
-            onChange={handleChange}
-            className="w-full p-2.5 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"
-          />
+          {/* Campo Confirmar Senha */}
+          <InputPassword placeholder="Confirmar Senha" name="confirmarsenha" value={formData.confirmarSenha} onChange={handleChange} />
         </div>
       </div>
 

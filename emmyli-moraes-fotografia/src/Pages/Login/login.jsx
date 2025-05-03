@@ -3,6 +3,7 @@ import MenuNav from "../../components/MenuNav";
 import logo from "../../img/logo.png";
 import { loginUser } from "../../services/authService";
 import { Link } from "react-router-dom";
+import InputPassword from "../../components/InputPassword";
 
 const Login = () => {
   const [userEmail, setUserEmail] = useState("");
@@ -27,7 +28,7 @@ const Login = () => {
       localStorage.setItem('login', data.usuario.login);
       localStorage.setItem('email', data.usuario.email);
       localStorage.setItem('perfil', data.usuario.perfil);
-      if (data.usuario.perfil === 'Cliente')
+      if (data.usuario.perfil.toLowerCase() === 'cliente')
         window.location.href = '/PerfilCliente';
       else
         window.location.href = '/Perfil';
@@ -80,13 +81,13 @@ const Login = () => {
               value={userEmail}
               onChange={(e) => setUserEmail(e.target.value)}
             />
-            <input
-              type="password"
+
+            <InputPassword
               placeholder="Senha"
-              className="w-full p-4 sm:p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c09b2d]"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+
             <button
               type="submit"
               className="w-full bg-[#c09b2d] text-white p-4 sm:p-3 rounded-md hover:bg-[#a68523] transition-all text-lg"
