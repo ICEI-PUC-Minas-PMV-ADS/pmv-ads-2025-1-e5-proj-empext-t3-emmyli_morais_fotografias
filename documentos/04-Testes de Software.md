@@ -1369,6 +1369,145 @@ Cada funcionalidade desenvolvida deve ser testada utilizando os casos de testes 
 </table>
 
 
+
+
+### Cadastro de Produtos
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-014<br>Cadastro de produtos com dados Válidos</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">(Sucesso) O sistema deve exibir uma mensagem de sucesso, retornando para lista de Produtos Cadastrados</td>
+  </tr>
+    <tr>
+    <td><strong>Responsável pelo Teste</strong></td>
+    <td width="430">Rafael Cassiano </td>
+     <td width="100"><strong>Data do Teste</strong></td>
+    <td width="150"> 04/05/2025 </td>
+  </tr>
+    <tr>
+    <td width="170"><strong>Comentário</strong></td>
+    <td colspan="5">(Sucesso)O sistema está permitindo o cadastro corretamente.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+      <td colspan="6" align="center"><video src="#"/></td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-014<br>Cadastro com falta de informações</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">(Sucesso) O sistema deve exibir uma mensagem de erro, informando os campos que precisam ser preenchidos</td>
+  </tr>
+    <tr>
+    <td><strong>Responsável pelo Teste</strong></td>
+    <td width="430"> Rafael Cassiano </td>
+     <td width="100"><strong>Data do Teste</strong></td>
+    <td width="150"> 04/05/2025</td>
+  </tr>
+    <tr>
+    <td width="170"><strong>Comentário</strong></td>
+    <td colspan="5">(Sucesso)Este caso de teste verifica se o sistema impede o cadastro de um produto com falta de dados </td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><video src="#"/></td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-014<br>Edição de produtos</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5"> O sistema deve deixar o usuário fazer alterações no produto, menos no campo Evento</td>
+  </tr>
+    <tr>
+    <td><strong>Responsável pelo Teste</strong></td>
+    <td width="430"> Rafael Cassiano</td>
+     <td width="100"><strong>Data do Teste</strong></td>
+    <td width="150"> 04/05/2025 </td>
+  </tr>
+    <tr>
+    <td width="170"><strong>Comentário</strong></td>
+    <td colspan="5">(Sucesso)Este caso de teste verifica se o sistema deixa o Admin fazer alterações no produto.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><video src="#"/></td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-014<br>Exclusao de produtos</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">(sucesso) O sistema deve deixar o Admin remover os produtos quando achar necessário</td>
+  </tr>
+    <tr>
+    <td><strong>Responsável pelo Teste</strong></td>
+    <td width="430"> Rafael Cassiano</td>
+     <td width="100"><strong>Data do Teste</strong></td>
+    <td width="150"> 04/05/2025 </td>
+  </tr>
+    <tr>
+    <td width="170"><strong>Comentário</strong></td>
+    <td colspan="5">(sucesso)Este caso de teste verifica se o sistema permite ao Admin remover produtos</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><video src=""/></td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-014<br>Busca por Produtos</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5"> O sistema deve retornar os registro após o usuário fazer um busca</td>
+  </tr>
+    <tr>
+    <td><strong>Responsável pelo Teste</strong></td>
+    <td width="430"> Rafael Cassiano </td>
+     <td width="100"><strong>Data do Teste</strong></td>
+    <td width="150"> 04/05/2025 </td>
+  </tr>
+    <tr>
+    <td width="170"><strong>Comentário</strong></td>
+    <td colspan="5">(sucesso)Este caso de teste verifica se o sistema permite ao usuário de fazer buscas.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><video src="#"/></td>
+  </tr>
+</table>
+
+
+
 ## Parte 2 - Testes por pares
 A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade deve ser testada por um colega e os testes devem ser evidenciados. O colega "Tester" deve utilizar o caso de teste criado pelo desenvolvedor responsável pela funcionalidade (desenvolveu a funcionalidade e criou o caso de testes descrito no plano de testes).
       
