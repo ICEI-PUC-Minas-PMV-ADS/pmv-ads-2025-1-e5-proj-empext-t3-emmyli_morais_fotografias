@@ -1,3 +1,4 @@
+const { z: zod } = require('zod')
 const Api_Controller = require('../Api_Controller');
 const { Usuarios } = require('../../models'); 
 const cryptografyPassword = require('../../service/cryptographServices');
@@ -43,7 +44,20 @@ class UsuariosController extends Api_Controller {
   async update(id, usuarioInfo, res) {
     try {
       const { nome, email, login, senha } = usuarioInfo;
+
+      const UserSchema = zod.object({
+        nome: zod.string().min(1, { message: "Nome não pode estar vazio" }),
+        login: zod.string().min(1, { message: "Login não pode estar vazio" }),
+        email: zod.string().email({ message: "Email inválido" }).min(1, { message: "Email não pode estar vazio" }),
+        senha: zod.string().optional()
+      });
   
+      const resultadoValidacao = UserSchema.safeParse(usuarioInfo);
+      
+      if (!resultadoValidacao.success) {
+        return res.status(400).json({ errors: resultadoValidacao.error.flatten().fieldErrors });
+      }
+
       const usuario = await Usuarios.findByPk(id);
       if (!usuario) {
         return res.status(404).json({ error: "Usuário não encontrado" });

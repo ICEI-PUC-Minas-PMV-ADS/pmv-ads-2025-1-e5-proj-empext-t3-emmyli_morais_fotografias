@@ -4,8 +4,8 @@ import { editarUsuario } from "../../services/userService";
 import InputPassword from "../../components/InputPassword";
 
 
+
 const PerfilCliente = () => {
-  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     nome: localStorage.getItem("nome")!,
     email: localStorage.getItem("email")!,

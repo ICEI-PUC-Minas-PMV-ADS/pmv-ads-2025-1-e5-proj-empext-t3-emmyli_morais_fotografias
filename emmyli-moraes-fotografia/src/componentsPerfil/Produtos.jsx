@@ -6,7 +6,7 @@ const Produtos = () => {
 
   const [produtos, setProdutos] = useState([]);
   const [busca, setBusca] = useState("");
-  const [editandoProduto, setEditandoProduto] = useState(null);  
+  const [editandoProduto, setEditandoProduto] = useState(null);
   const [dadosEditados, setDadosEditados] = useState({
     descricao: "",
     quantidade_fotos: 0,
@@ -147,30 +147,30 @@ const Produtos = () => {
       </h1>
 
       <div className="flex items-center justify-between mt-4 mb-4">
-  <div className="flex items-center gap-2 w-full max-w-md">
-    <FiSearch className="text-[#c09b2d] text-xl" />
-    <input
-      type="text"
-      placeholder="Buscar por descrição ou observação..."
-      value={busca}
-      onChange={(e) => setBusca(e.target.value)}
-      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c09b2d]"
-    />
-  </div>
-  <button
-  onClick={() => setModalCadastroAberto(true)}
-  className="ml-4 bg-[#c09b2d] text-white px-4 py-2 rounded hover:bg-[#b0891a] transition"
->
-  Novo Produto
-</button>
-</div>
+        <div className="flex items-center gap-2 w-full max-w-md">
+          <FiSearch className="text-[#c09b2d] text-xl" />
+          <input
+            type="text"
+            placeholder="Buscar por descrição ou observação..."
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c09b2d]"
+          />
+        </div>
+        <button
+          onClick={() => setModalCadastroAberto(true)}
+          className="ml-4 bg-[#c09b2d] text-white px-4 py-2 rounded hover:bg-[#b0891a] transition"
+        >
+          Novo Produto
+        </button>
+      </div>
 
       {/* Tabela Desktop */}
       <div className="overflow-x-auto hidden sm:block">
         <table className="w-full bg-white shadow-lg rounded-lg overflow-hidden">
           <thead className="bg-[#c09b2d] text-white">
             <tr>
-              
+
               <th className="py-4 px-6 text-left">Descrição</th>
               <th className="py-4 px-6 text-left">Qtd. Fotos</th>
               <th className="py-4 px-6 text-left">Preço</th>
@@ -184,9 +184,8 @@ const Produtos = () => {
               produtosFiltrados.map((produto, index) => (
                 <tr
                   key={produto.id}
-                  className={`border-b ${
-                    index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                  } hover:bg-gray-200 transition-all`}
+                  className={`border-b ${index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                    } hover:bg-gray-200 transition-all`}
                 >
                   <td className="py-4 px-6">{produto.descricao}</td>
                   <td className="py-4 px-6">{produto.quantidade_fotos}</td>
@@ -372,118 +371,118 @@ const Produtos = () => {
       {/*modal cadastro novo produto*/}
 
       {modalCadastroAberto && (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 transition-opacity animate-fade-in">
-    <div className="bg-white shadow-2xl rounded-lg p-8 w-full max-w-lg text-center">
-      <h2 className="text-2xl font-bold text-[#c09b2d] mb-6">
-        Cadastrar Produto
-      </h2>
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 transition-opacity animate-fade-in">
+          <div className="bg-white shadow-2xl rounded-lg p-8 w-full max-w-lg text-center">
+            <h2 className="text-2xl font-bold text-[#c09b2d] mb-6">
+              Cadastrar Produto
+            </h2>
 
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          salvarNovoProduto();
-        }}
-        className="space-y-4 text-left"
-      >
-        <div>
-          <label className="block mb-1">Descrição</label>
-          <input
-            required
-            value={dadosNovoProduto.descricao}
-            onChange={(e) =>
-              setDadosNovoProduto({ ...dadosNovoProduto, descricao: e.target.value })
-            }
-            className="w-full border p-2 rounded"
-          />
-        </div>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                salvarNovoProduto();
+              }}
+              className="space-y-4 text-left"
+            >
+              <div>
+                <label className="block mb-1">Descrição</label>
+                <input
+                  required
+                  value={dadosNovoProduto.descricao}
+                  onChange={(e) =>
+                    setDadosNovoProduto({ ...dadosNovoProduto, descricao: e.target.value })
+                  }
+                  className="w-full border p-2 rounded"
+                />
+              </div>
 
-        <div>
-          <label className="block mb-1">Quantidade de Fotos</label>
-          <input
-            type="number"
-            min={0}
-            required
-            value={dadosNovoProduto.quantidade_fotos}
-            onChange={(e) =>
-              setDadosNovoProduto({
-                ...dadosNovoProduto,
-                quantidade_fotos: parseInt(e.target.value),
-              })
-            }
-            className="w-full border p-2 rounded"
-          />
-        </div>
+              <div>
+                <label className="block mb-1">Quantidade de Fotos</label>
+                <input
+                  type="number"
+                  min={0}
+                  required
+                  value={dadosNovoProduto.quantidade_fotos}
+                  onChange={(e) =>
+                    setDadosNovoProduto({
+                      ...dadosNovoProduto,
+                      quantidade_fotos: parseInt(e.target.value),
+                    })
+                  }
+                  className="w-full border p-2 rounded"
+                />
+              </div>
 
-        <div>
-          <label className="block mb-1">Preço</label>
-          <input
-            type="number"
-            step="0.01"
-            min={0}
-            required
-            value={dadosNovoProduto.preco}
-            onChange={(e) =>
-              setDadosNovoProduto({
-                ...dadosNovoProduto,
-                preco: e.target.value,
-              })
-            }
-            className="w-full border p-2 rounded"
-          />
-        </div>
+              <div>
+                <label className="block mb-1">Preço</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  min={0}
+                  required
+                  value={dadosNovoProduto.preco}
+                  onChange={(e) =>
+                    setDadosNovoProduto({
+                      ...dadosNovoProduto,
+                      preco: e.target.value,
+                    })
+                  }
+                  className="w-full border p-2 rounded"
+                />
+              </div>
 
-        <div>
-          <label className="block mb-1">Observações</label>
-          <textarea
-            value={dadosNovoProduto.observacoes}
-            onChange={(e) =>
-              setDadosNovoProduto({
-                ...dadosNovoProduto,
-                observacoes: e.target.value,
-              })
-            }
-            className="w-full border p-2 rounded"
-          />
-        </div>
+              <div>
+                <label className="block mb-1">Observações</label>
+                <textarea
+                  value={dadosNovoProduto.observacoes}
+                  onChange={(e) =>
+                    setDadosNovoProduto({
+                      ...dadosNovoProduto,
+                      observacoes: e.target.value,
+                    })
+                  }
+                  className="w-full border p-2 rounded"
+                />
+              </div>
 
-        <div>
-          <label className="block mb-1">Evento</label>
-          <select
-            required
-            value={dadosNovoProduto.id_evento}
-            onChange={(e) =>
-              setDadosNovoProduto({ ...dadosNovoProduto, id_evento: e.target.value })
-            }
-            className="w-full border p-2 rounded"
-          >
-            <option value="">Selecione um evento</option>
-            {eventos.map((evento) => (
-              <option key={evento.id} value={evento.id}>
-                {evento.nome}
-              </option>
-            ))}
-          </select>
-        </div>
+              <div>
+                <label className="block mb-1">Evento</label>
+                <select
+                  required
+                  value={dadosNovoProduto.id_evento}
+                  onChange={(e) =>
+                    setDadosNovoProduto({ ...dadosNovoProduto, id_evento: e.target.value })
+                  }
+                  className="w-full border p-2 rounded"
+                >
+                  <option value="">Selecione um evento</option>
+                  {eventos.map((evento) => (
+                    <option key={evento.id} value={evento.id}>
+                      {evento.nome}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-        <div className="flex justify-between mt-4">
-          <button
-            type="button"
-            onClick={() => setModalCadastroAberto(false)}
-            className="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded"
-          >
-            Cancelar
-          </button>
-          <button
-            type="submit"
-            className="bg-[#c09b2d] hover:bg-[#b0891a] text-white px-4 py-2 rounded"
-          >
-            Salvar
-          </button>
+              <div className="flex justify-between mt-4">
+                <button
+                  type="button"
+                  onClick={() => setModalCadastroAberto(false)}
+                  className="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="bg-[#c09b2d] hover:bg-[#b0891a] text-white px-4 py-2 rounded"
+                >
+                  Salvar
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-      </form>
-    </div>
-  </div>
-)}
+      )}
 
     </div>
   );
