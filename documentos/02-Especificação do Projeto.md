@@ -52,7 +52,8 @@ As tabelas que se seguem apresentam os requisitos funcionais e não funcionais q
 |RF-010| Upload de fotos - Ver, alterar e apagar| ALTA | 
 |RF-011| Emitir notifacações automáticas para clientes e fotógrafos.| MÉDIA |  
 |RF-012| Áreas de feedbacks – Permite ao cliente avaliar sobre o serviço e fotos. | BAIXA | 
-|RF-013| Permite a inclusão e exclusão de marca d`águas. | ALTA | 
+|RF-013| Permite a inclusão e exclusão de marca d`águas. | ALTA |
+|RF-014| Permite a inclusão e exclusão de produtos para os eventos públicos | ALTA |
 
 
 
