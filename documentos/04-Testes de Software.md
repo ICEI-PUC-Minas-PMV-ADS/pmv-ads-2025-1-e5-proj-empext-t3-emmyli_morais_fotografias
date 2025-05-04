@@ -2034,3 +2034,92 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
 </table>
 
 
+### 4. Perfil do Usuário
+
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-015 <br>Alterar dados Perfil Usuário</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">(Sucesso) O sistema deve exibir uma mensagem de sucesso após atualizar os dados</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável pela funcionalidade</strong></td>
+    <td>Adriel Agnes Costa Bosco</td>
+    <td><strong>Responsável pelo teste</strong></td>
+    <td>Rafael Cassiano</td>
+    <td><strong>Data do teste</strong></td>
+    <td>04/05/2025</td>
+  </tr>
+  <tr>
+    <td><strong>Comentário</strong></td>
+    <td colspan="5">(Sucesso)O sistema está permitindo o usuário a fazer alteração dos seus dados</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/3a614d51-6821-4677-a787-b46e64736a4c"/></td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-015 <br>Alterar dados Usuário com login existente</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">O sistema não deve iserir um login já existente! Exibir uma mensagem de erro, informando que o login já existe</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável pela funcionalidade</strong></td>
+    <td>Adriel Agnes Costa Bosco</td>
+    <td><strong>Responsável pelo teste</strong></td>
+    <td>Rafael Cassiano</td>
+    <td><strong>Data do teste</strong></td>
+    <td>04/05/2025</td>
+  </tr>
+  <tr>
+    <td><strong>Comentário</strong></td>
+    <td colspan="5">Este caso de teste verifica se existe o login informado pelo usuário, caso exista, o sistema impede o cadastro.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/cff1d580-f128-4ba3-9f1a-84a357a41bd2"/></td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-015 <br>Alterar dados Usuário com Email existente</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">O sistema não deve iserir um Email já existente! Exibir uma mensagem de erro, informando que o email já existe</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável pela funcionalidade</strong></td>
+    <td>Adriel Agnes Costa Bosco</td>
+    <td><strong>Responsável pelo teste</strong></td>
+    <td>Rafael Cassiano</td>
+    <td><strong>Data do teste</strong></td>
+    <td>04/05/2025</td>
+  </tr>
+  <tr>
+    <td><strong>Comentário</strong></td>
+    <td colspan="5">Este caso de teste verifica se existe o Email informado pelo usuário, caso exista, o sistema impede o cadastro.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/06c92b7b-c19e-4584-83f6-cef381f5fd8c"/></td>
+  </tr>
+</table>
+
