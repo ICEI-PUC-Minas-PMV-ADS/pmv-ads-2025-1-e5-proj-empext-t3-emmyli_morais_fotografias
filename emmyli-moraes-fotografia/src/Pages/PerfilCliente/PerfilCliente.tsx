@@ -1,9 +1,6 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { ChangeEvent, MouseEvent, useState } from "react";
 import { editarUsuario } from "../../services/userService";
 import InputPassword from "../../components/InputPassword";
-
-
 
 const PerfilCliente = () => {
   const [formData, setFormData] = useState({
@@ -17,18 +14,15 @@ const PerfilCliente = () => {
   const [nome, setNome] = useState(localStorage.getItem("nome")!)
   const [email, setEmail] = useState(localStorage.getItem("email")!)
 
-  const [error, setError] = useState<string | null>(null);
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e!.target!.name]: e!.target.value });
   };
 
-  const handleClick = async (e) => {
+  const handleClick = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setError(null);
 
     if (formData.senha !== formData.confirmarSenha) {
-      setError("As senhas não coincidem.");
+      alert("As senhas não coincidem.");
       return;
     }
 
