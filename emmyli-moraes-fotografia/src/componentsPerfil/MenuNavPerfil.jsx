@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaBolt, FaImage, FaDollarSign, FaUserPlus, FaCog } from "react-icons/fa";
+import { FaBolt, FaImage, FaDollarSign, FaUserPlus, FaCog ,FaBox } from "react-icons/fa";
 import { Menu } from "lucide-react";
 import logo from "../img/logo.png";
 
@@ -15,6 +15,7 @@ const MenuNavPerfil = ({ onSelect, isOpen, toggleSidebar, selectedItem }) => {
     { name: "Galeria de Clientes", icon: <FaImage />, key: "galeria" },
     { name: "Controle de Vendas", icon: <FaDollarSign />, key: "controleVendas" },
     { name: "Cadastros Realizados", icon: <FaUserPlus />, key: "cadastros" },
+    { name: "Cadastros de Produtos", icon: <FaBox />, key: "produtos" },
     { name: "Configuração", icon: <FaCog />, key: "configuracao" },
   ];
 
