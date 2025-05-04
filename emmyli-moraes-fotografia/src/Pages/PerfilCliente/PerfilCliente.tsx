@@ -118,7 +118,7 @@ const PerfilCliente = () => {
         <div className="w-full md:w-1/3">
           <label className="block mb-1 font-medium text-gray-700">Confirme a senha:</label>
           {/* Campo Confirmar Senha */}
-          <InputPassword placeholder="Confirmar Senha" name="confirmarsenha" value={formData.confirmarSenha} onChange={handleChange} />
+          <InputPassword placeholder="Confirmar Senha" name="confirmarSenha" value={formData.confirmarSenha} onChange={handleChange} />
         </div>
       </div>
 
