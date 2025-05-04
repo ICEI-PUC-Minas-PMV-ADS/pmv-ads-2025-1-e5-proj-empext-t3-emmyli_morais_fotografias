@@ -103,7 +103,7 @@ const verifyToken = require('../../middleware/AuthMiddlewareToken');
  *         name: include
  *         schema:
  *           type: string
- *           example: Evento
+ *           example: evento
  *         description: |
  *           Incluir associações relacionadas na consulta. Exemplos de associações possíveis:
  *           - `Evento`: Inclui o evento ligado ao produto.

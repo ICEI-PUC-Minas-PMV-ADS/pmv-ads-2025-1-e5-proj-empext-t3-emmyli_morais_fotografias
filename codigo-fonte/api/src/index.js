@@ -6,6 +6,8 @@ const usuarioRoutes = require('./routes/usuario/usuarioRoutes');
 const myAccountRoutes = require('./routes/usuario/myAccountRoutes');
 const marcaDaguaRoutes = require('./routes/marcaDagua/marcaDaguaRoutes');
 const produtosRoutes = require('./routes/produtos/produtosRoutes');
+const eventosRoutes = require('./routes/eventos/eventosRoutes');
+
 const setupSwagger = require('./swagger');
 
 const albunsRoutes = require('./routes/album/albumRoutes');
@@ -56,8 +58,10 @@ app.use('/api/albuns', albunsRoutes);
 app.use('/api/fotos', verifyToken, fotoRoutes);
 
 //produtos
-
 app.use('/api/produtos', verifyToken, produtosRoutes);
+
+//eventos
+app.use('/api/eventos', verifyToken, eventosRoutes);
 
 app.listen(port, () => {
   console.log(`Servidor rodando em http://localhost:${port}`);

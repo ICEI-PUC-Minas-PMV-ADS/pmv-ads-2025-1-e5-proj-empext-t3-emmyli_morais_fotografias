@@ -4,6 +4,7 @@ import AcessoRapido from "../../componentsPerfil/AcessoRapido";
 import GaleriaDeClientes from "../../componentsPerfil/GaleriaDeClientes";
 import ControleDeVendas from "../../componentsPerfil/ControleDeVendas";
 import CadastrosRealizados from "../../componentsPerfil/CadastrosRealizados";
+import ProdutosEventos from "../../componentsPerfil/Produtos";
 import Configuracoes from "../../componentsPerfil/Configuracoes";
 
 const PerfilFotografa = () => {
@@ -24,6 +25,8 @@ const PerfilFotografa = () => {
         return <ControleDeVendas />;
       case "cadastros":
         return <CadastrosRealizados />;
+      case "produtos":
+        return <ProdutosEventos />;
       case "configuracao":
         return <Configuracoes />;
       default:
