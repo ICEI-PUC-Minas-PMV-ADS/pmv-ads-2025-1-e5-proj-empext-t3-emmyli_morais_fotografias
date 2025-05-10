@@ -2,6 +2,17 @@ const API_URL = 'http://localhost:3000';
 
 // Função para realizar o login
 
+export interface LoginResponse {
+	token: string,
+	usuario: {
+		id: number,
+		nome: string,
+		login: string,
+		email: string,
+		perfil: string,
+	}
+}
+
 export const loginUser = async (usernameOrEmail: string, password: string) => {
   try {
     const response = await fetch(`${API_URL}/api/auth/login`, {
@@ -18,7 +29,7 @@ export const loginUser = async (usernameOrEmail: string, password: string) => {
     }
 
     const data = await response.json();
-    return data;
+    return data as LoginResponse;
   } catch (error) {
     throw new Error(error.message || 'Ocorreu um erro, tente novamente');
   }

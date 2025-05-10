@@ -21,6 +21,11 @@ const PerfilCliente = () => {
   const handleClick = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
+    if (!formData.nome.trim() || !formData.email.trim() || !formData.login.trim()) {
+      alert("Por favor, preencha todos os campos obrigatórios.");
+      return;
+    }
+
     if (formData.senha !== formData.confirmarSenha) {
       alert("As senhas não coincidem.");
       return;
@@ -74,9 +79,10 @@ const PerfilCliente = () => {
           <input
             type="text"
             name="nome"
+            placeholder="*Digite seu nome"
             value={formData.nome}
             onChange={handleChange}
-            className="w-full p-2.5 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"
+            className="w-full p-2.5 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-yellow-500 transition placeholder-red-300"
           />
         </div>
         <div>
@@ -84,9 +90,10 @@ const PerfilCliente = () => {
           <input
             type="email"
             name="email"
+            placeholder="*Digite seu email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full p-2.5 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-yellow-500 transition "
+            className="w-full p-2.5 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-yellow-500 transition placeholder-red-300"
           />
         </div>
       </div>
@@ -98,9 +105,10 @@ const PerfilCliente = () => {
           <input
             type="text"
             name="login"
+            placeholder="*Digite seu login"
             value={formData.login}
             onChange={handleChange}
-            className="w-full p-2.5 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"
+            className="w-full p-2.5 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-yellow-500 transition placeholder-red-300"
           />
         </div>
         <div className="w-full md:w-1/3">

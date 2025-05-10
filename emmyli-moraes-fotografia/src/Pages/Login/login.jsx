@@ -1,42 +1,35 @@
 import React, { useState } from "react";
 import MenuNav from "../../components/MenuNav";
 import logo from "../../img/logo.png";
-import { loginUser } from "../../services/authService";
 import { Link } from "react-router-dom";
 import InputPassword from "../../components/InputPassword";
+import { useAuth } from "../../context/authContext";
 
 const Login = () => {
-  const [userEmail, setUserEmail] = useState("");
+  const [userEmailOrLogin, setUserEmailOrLogin] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const { logar } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    if (!userEmail.trim() || !password.trim()) {
+
+    if (!userEmailOrLogin.trim() || !password.trim()) {
       setErrorMessage("E-mail e senha são obrigatórios.");
       setLoading(false);
       return;
     }
 
-    try {
-      const data = await loginUser(userEmail, password);
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('nome', data.usuario.nome);
-      localStorage.setItem('login', data.usuario.login);
-      localStorage.setItem('email', data.usuario.email);
-      localStorage.setItem('perfil', data.usuario.perfil);
-      if (data.usuario.perfil.toLowerCase() === 'cliente')
-        window.location.href = '/PerfilCliente';
-      else
-        window.location.href = '/Perfil';
+    const response = await logar(userEmailOrLogin, password);
 
-    } catch (error) {
-      setErrorMessage(error.message);
-    } finally {
+    if (typeof response === 'string') {
+      setErrorMessage(response);
       setLoading(false);
+      return;
     }
   };
 
@@ -76,10 +69,10 @@ const Login = () => {
           >
             <input
               type="text"
-              placeholder="Email"
+              placeholder="Email ou Login"
               className="w-full p-4 sm:p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c09b2d]"
-              value={userEmail}
-              onChange={(e) => setUserEmail(e.target.value)}
+              value={userEmailOrLogin}
+              onChange={(e) => setUserEmailOrLogin(e.target.value)}
             />
 
             <InputPassword
