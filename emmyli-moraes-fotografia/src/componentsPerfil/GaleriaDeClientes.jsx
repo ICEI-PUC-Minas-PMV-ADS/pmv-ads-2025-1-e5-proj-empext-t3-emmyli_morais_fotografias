@@ -22,13 +22,11 @@ const GaleriaDeClientes = () => {
   const inputRef = useRef();
   const [mensagem, setMensagem] = useState("");
   const [tipoMensagem, setTipoMensagem] = useState("");
-
+  const [loadingUpload, setLoadingUpload] = useState(false);
   const [mostrarConfirmacao, setMostrarConfirmacao] = useState(false);
-  const [fotoParaExcluir, setFotoParaExcluir] = useState(null); // { id_foto, idx }
-
+  const [fotoParaExcluir, setFotoParaExcluir] = useState(null);
   const [mostrarConfirmacaoAlbum, setMostrarConfirmacaoAlbum] = useState(false);
-  const [albumParaExcluir, setAlbumParaExcluir] = useState(null); // { id, nome }
-  
+  const [albumParaExcluir, setAlbumParaExcluir] = useState(null);
 
   useEffect(() => {
     buscarAlbuns();
@@ -38,12 +36,12 @@ const GaleriaDeClientes = () => {
     setTipoMensagem("sucesso");
     setMensagem(msg);
   };
-  
+
   const handleErro = (msg) => {
     setTipoMensagem("erro");
     setMensagem(msg);
   };
-  
+
   useEffect(() => {
     if (mensagem) {
       const timer = setTimeout(() => {
@@ -54,7 +52,6 @@ const GaleriaDeClientes = () => {
     }
   }, [mensagem]);
 
-
   const buscarAlbuns = async () => {
     try {
       const response = await axios.get("http://localhost:3000/api/albuns", {
@@ -63,31 +60,31 @@ const GaleriaDeClientes = () => {
         },
       });
 
-      const albunsFormatados = response.data.map((album) => ({
+      const albunsClientes = response.data.filter((album) => album.origem === 'cliente');
+
+      const albunsFormatados = albunsClientes.map((album) => ({
         id: album.id,
         cliente: album.usuario?.nome || "Cliente",
         nome: album.nome,
-        fotos: album.fotos?.map((f) => ({
-          id_foto: f.foto?.id,
-          url: f.foto?.foto,
-        })) || [],
+        descricao: album.descricao || "",
+        fotos:
+          album.fotos?.map((f) => ({
+            id_foto: f.foto?.id,
+            url: f.foto?.foto,
+          })) || [],
         imagem: album.fotos?.[0]?.foto?.foto || "",
-        data:
-          new Date(album.dtinclusao).toLocaleDateString("pt-BR") || "",
+        data: new Date(album.dtinclusao).toLocaleDateString("pt-BR") || "",
       }));
 
       setGalerias(albunsFormatados);
     } catch (error) {
-      console.error(
-        "Erro ao buscar galerias:",
-        error.response?.data || error.message
-      );
+      console.error("Erro ao buscar galerias:", error.response?.data || error.message);
     }
   };
 
-  
-
   const abrirAlbum = (galeria) => {
+    setMensagem("");
+    setTipoMensagem("");
     setAlbumAberto(galeria);
     setFotosVisuais(galeria.fotos || []);
   };
@@ -95,17 +92,21 @@ const GaleriaDeClientes = () => {
   const voltarParaGalerias = () => {
     setAlbumAberto(null);
     setMenuAberto(null);
+    setMensagem("");
+    setTipoMensagem("");
   };
 
   const handleAdicionarFotos = async (event) => {
     const arquivos = Array.from(event.target.files);
     if (!arquivos.length) return;
-  
+
     const formData = new FormData();
     arquivos.forEach((file) => formData.append("fotos", file));
     formData.append("album_id", albumAberto.id);
-  
+
     try {
+      setLoadingUpload(true);
+
       const response = await axios.post(
         "http://localhost:3000/api/fotos/adicionar",
         formData,
@@ -116,12 +117,18 @@ const GaleriaDeClientes = () => {
           },
         }
       );
-  
+
       setFotosVisuais((prev) => [...prev, ...response.data.urls]);
-      handleSucesso(arquivos.length > 1 ? "Fotos adicionadas com sucesso!" : "Foto adicionada com sucesso!");
+      handleSucesso(
+        arquivos.length > 1
+          ? "Fotos adicionadas com sucesso!"
+          : "Foto adicionada com sucesso!"
+      );
     } catch (error) {
       console.error("Erro ao enviar imagens:", error.response?.data || error.message);
       handleErro("Erro ao enviar imagens.");
+    } finally {
+      setLoadingUpload(false);
     }
   };
 
@@ -130,30 +137,54 @@ const GaleriaDeClientes = () => {
   };
 
   const excluirFoto = async (fotoId, idx) => {
-    if (!fotoId) {
-      handleErro("Foto ainda não foi salva no banco.");
-      return;
-    }
-  
-    try {
-      await axios.delete(`http://localhost:3000/api/fotos/${fotoId}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-  
-      const novaLista = [...fotosVisuais];
-      novaLista.splice(idx, 1);
-      setFotosVisuais(novaLista);
-      setMenuAberto(null);
-      handleSucesso("Foto excluída com sucesso!");
-    } catch (error) {
-      console.error("Erro ao apagar imagem:", error.response?.data || error.message);
-      handleErro("Erro ao apagar imagem.");
-    }
-  };
+  if (!fotoId) {
+    handleErro("Foto ainda não foi salva no banco.");
+    return;
+  }
+
+  try {
+    setLoadingUpload(true);
+    await axios.delete(`http://localhost:3000/api/fotos/${fotoId}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    const novaLista = fotosVisuais.filter((_, i) => i !== idx);
+    setFotosVisuais(novaLista);
+    handleSucesso("Foto excluída com sucesso!");
+  } catch {
+    handleErro("Erro ao apagar imagem.");
+  } finally {
+    setLoadingUpload(false);
+  }
+};
+
+const excluirAlbum = async () => {
+  setMostrarConfirmacaoAlbum(false);
+  setLoadingUpload(true);
+  try {
+    await axios.delete(`http://localhost:3000/api/albuns/${albumParaExcluir.id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    handleSucesso("Álbum apagado com sucesso!");
+    buscarAlbuns();
+  } catch {
+    handleErro("Erro ao apagar álbum.");
+  } finally {
+    setLoadingUpload(false);
+  }
+};
 
   return (
+    <div className="relative p-4 sm:p-6 font-serif bg-[#F9F9F9] min-h-screen">
+      {loadingUpload && (
+        <div className="fixed inset-0 bg-white bg-opacity-80 z-50 flex items-center justify-center">
+          <img src="/loading.gif" alt="Carregando..." className="w-32 h-20" />
+        </div>
+      )}
     <div className="relative p-4 sm:p-6 font-serif bg-[#F9F9F9] min-h-screen">
       {albumAberto ? (
         <>
@@ -197,14 +228,18 @@ const GaleriaDeClientes = () => {
 
                 <h2 className="text-2xl text-[#b1783d] font-bold">Fotos</h2>
 
-                <div>
+                <div className="relative inline-flex items-center">
+
                   <button
                     onClick={() => inputRef.current.click()}
                     title="Adicionar fotos"
                     className="rounded-full p-2 border-2 border-[#c09b2d] text-[#c09b2d] hover:bg-[#c09b2d] hover:text-white transition"
+                    disabled={loadingUpload}
                   >
                     <Plus size={20} />
                   </button>
+
+                  {/* INPUT ESCONDIDO DE UPLOAD */}
                   <input
                     ref={inputRef}
                     type="file"
@@ -213,6 +248,7 @@ const GaleriaDeClientes = () => {
                     onChange={handleAdicionarFotos}
                   />
                 </div>
+
               </div>
 
               {mensagem && tipoMensagem === "sucesso" && (
@@ -254,16 +290,16 @@ const GaleriaDeClientes = () => {
                       >
                         <MoreVertical size={18} />
                       </button>
-                      {menuAberto === `foto-${idx}` && (
-                        <div className="absolute right-0 mt-2 bg-white border border-gray-300 rounded shadow-md animate-fade-in">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setFotoParaExcluir({ id_foto: foto.id_foto, idx });
-                              setMostrarConfirmacao(true);
-                            }}
-                            className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-100"
-                          >
+                        {menuAberto === `foto-${idx}` && (
+                          <div className="absolute right-0 mt-2 bg-white border border-gray-300 rounded shadow-md animate-fade-in">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setFotoParaExcluir({ id_foto: foto.id_foto, idx });
+                                setMostrarConfirmacao(true);
+                              }}
+                              className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-100"
+                            >
                             <Trash size={16} />
                             Excluir
                           </button>
@@ -298,6 +334,7 @@ const GaleriaDeClientes = () => {
               )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            
             {galerias.map((item) => (
               <div
                 key={item.id}
@@ -342,7 +379,7 @@ const GaleriaDeClientes = () => {
                   )}
                 </div>
                 <div className="text-center text-[#252525] text-lg font-semibold mt-3">{item.nome}</div>
-                <p className="text-center text-[#252525] text-sm">{item.nome}</p>
+                  <p className="text-center text-gray-500 text-lg italic">{item.descricao}</p>
                 <p className="text-center text-[#c09b2d] text-sm mb-4">
                   {item.fotos.length} fotos | {item.data}
                 </p>
@@ -395,7 +432,7 @@ const GaleriaDeClientes = () => {
                 e.stopPropagation();
                 const novoIndice = (indiceSelecionado - 1 + fotosVisuais.length) % fotosVisuais.length;
                 setIndiceSelecionado(novoIndice);
-                setImagemSelecionada(fotosVisuais[novoIndice]);
+                setImagemSelecionada(fotosVisuais[novoIndice].url);
               }}
             >
               ◀
@@ -406,7 +443,7 @@ const GaleriaDeClientes = () => {
                 e.stopPropagation();
                 const novoIndice = (indiceSelecionado + 1) % fotosVisuais.length;
                 setIndiceSelecionado(novoIndice);
-                setImagemSelecionada(fotosVisuais[novoIndice]);
+                setImagemSelecionada(fotosVisuais[novoIndice].url);
               }}
             >
               ▶
@@ -430,82 +467,58 @@ const GaleriaDeClientes = () => {
         </div>
       )}
 
-        {mostrarConfirmacao && (
-          <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 animate-fade-in">
-            <div className="bg-[#fefdf9] rounded-2xl px-8 py-6 w-full max-w-md shadow-2xl transform transition-all duration-300 scale-100 font-serif border border-[#e5e0d4]">
-              <h2 className="text-[#b1783d] text-2xl font-bold text-center mb-2 leading-snug">
-                Tem certeza que deseja apagar esta imagem?
-              </h2>
-              <p className="text-[#5f4d30] text-center text-sm mb-6">
-                Essa imagem será excluída permanentemente.
-              </p>
-              <div className="flex justify-center gap-4">
-                <button
-                  onClick={() => setMostrarConfirmacao(false)}
-                  className="px-5 py-2 rounded-full border border-[#ccc0a0] text-[#5f4d30] hover:bg-[#f6f3ec] transition font-semibold"
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={() => {
-                    excluirFoto(fotoParaExcluir.id_foto, fotoParaExcluir.idx);
-                    setMostrarConfirmacao(false);
-                  }}
-                  className="px-5 py-2 rounded-full bg-red-600 text-white hover:bg-red-700 transition shadow font-semibold"
-                >
-                  Apagar imagem
-                </button>
-              </div>
+{/* Modal de confirmação padronizado */}
+{mostrarConfirmacao && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl px-6 py-5 w-full max-w-md shadow-xl font-serif">
+            <h2 className="text-[#b88a1c] text-xl font-bold mb-4">Confirmar exclusão</h2>
+            <p className="text-gray-800 mb-6">Tem certeza que deseja excluir esta foto?</p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setMostrarConfirmacao(false)}
+                className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => {
+                  excluirFoto(fotoParaExcluir.id_foto, fotoParaExcluir.idx);
+                  setMostrarConfirmacao(false);
+                }}
+                className="px-4 py-2 rounded bg-[#c09b2d] text-white hover:bg-[#a88724]"
+              >
+                Excluir
+              </button>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
-
-        {mostrarConfirmacaoAlbum && albumParaExcluir && (
-          <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 animate-fade-in">
-            <div className="bg-[#fefdf9] rounded-2xl px-8 py-6 w-full max-w-md shadow-2xl transform transition-all duration-300 scale-100 font-serif border border-[#e5e0d4]">
-              <h2 className="text-[#b1783d] text-2xl font-bold text-center mb-2 leading-snug">
-                Tem certeza que deseja apagar?
-              </h2>
-              <p className="text-[#5f4d30] text-center text-sm mb-6">
-                O álbum <span className="font-semibold">“{albumParaExcluir.nome}”</span> e todas as suas fotos serão excluídos permanentemente.
-              </p>
-              <div className="flex justify-center gap-4">
-                <button
-                  onClick={() => setMostrarConfirmacaoAlbum(false)}
-                  className="px-5 py-2 rounded-full border border-[#ccc0a0] text-[#5f4d30] hover:bg-[#f6f3ec] transition font-semibold"
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={() => {
-                    axios
-                      .delete(`http://localhost:3000/api/albuns/${albumParaExcluir.id}`, {
-                        headers: {
-                          Authorization: `Bearer ${localStorage.getItem("token")}`,
-                        },
-                      })
-                      .then(() => {
-                        handleSucesso("Álbum apagado com sucesso!");
-                        buscarAlbuns();
-                      })
-                      .catch((err) => {
-                        console.error("Erro ao apagar álbum:", err.response?.data || err.message);
-                        handleErro("Erro ao apagar álbum.");
-                      })
-                      .finally(() => {
-                        setMostrarConfirmacaoAlbum(false);
-                      });
-                  }}
-                  className="px-5 py-2 rounded-full bg-red-600 text-white hover:bg-red-700 transition font-semibold shadow-sm"
-                >
-                  Apagar álbum
-                </button>
-              </div>
+      {mostrarConfirmacaoAlbum && albumParaExcluir && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl px-6 py-5 w-full max-w-md shadow-xl font-serif">
+            <h2 className="text-[#b88a1c] text-xl font-bold mb-4">Confirmar exclusão</h2>
+            <p className="text-gray-800 mb-6">
+              Tem certeza que deseja excluir o álbum <span className="font-semibold">“{albumParaExcluir.nome}”</span> e todas as suas fotos?
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setMostrarConfirmacaoAlbum(false)}
+                className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={excluirAlbum}
+                className="px-4 py-2 rounded bg-[#c09b2d] text-white hover:bg-[#a88724]"
+              >
+                Excluir
+              </button>
             </div>
           </div>
-        )}
-
+        </div>
+      )}
+      </div>
     </div>
   );
 };

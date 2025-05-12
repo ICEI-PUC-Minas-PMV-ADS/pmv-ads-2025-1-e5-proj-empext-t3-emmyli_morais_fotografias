@@ -15,6 +15,19 @@ module.exports = (sequelize, DataTypes) => {
         as: 'fotos',
         onDelete: 'CASCADE',
       });
+
+      // ← associações para visualizações e curtidas de álbum
+      Albuns.hasMany(models.VisualizacaoAlbum, {
+        foreignKey: 'album_id',
+        as: 'visualizacoesAlbuns',
+        onDelete: 'CASCADE',
+      });
+
+      Albuns.hasMany(models.CurtidaAlbum, {
+        foreignKey: 'album_id',
+        as: 'curtidasAlbuns',
+        onDelete: 'CASCADE',
+      });
     }
   }
 
@@ -35,6 +48,10 @@ module.exports = (sequelize, DataTypes) => {
     descricao: {
       type: DataTypes.TEXT,
     },
+    origem: {
+      type: DataTypes.STRING(50),
+      defaultValue: 'cliente'
+    },
     dtinclusao: {
       type: DataTypes.DATE,
       defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
@@ -51,4 +68,3 @@ module.exports = (sequelize, DataTypes) => {
 
   return Albuns;
 };
-

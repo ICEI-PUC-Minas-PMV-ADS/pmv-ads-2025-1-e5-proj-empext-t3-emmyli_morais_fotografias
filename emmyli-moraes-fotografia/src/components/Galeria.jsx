@@ -1,26 +1,61 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const Galeria = ({ ensaio, setImagemAtual, setIndiceImagem, fecharGaleria }) => {
+  const [curtidasLocais, setCurtidasLocais] = useState({});
+
+  useEffect(() => {
+    const carregarCurtidas = async () => {
+      try {
+        const res = await axios.get("http://localhost:3000/api/visualizacoesCurtidas/curtidas/foto");
+        const curtidas = res.data.fotos.reduce((acc, id) => ({ ...acc, [id]: true }), {});
+        setCurtidasLocais(curtidas);
+      } catch (err) {
+        console.error("Erro ao carregar curtidas locais:", err);
+      }
+    };
+    carregarCurtidas();
+  }, []);
+
+  const curtirFoto = async (url, idx) => {
+    const fotoId = ensaio.fotos[idx].id;
+    if (curtidasLocais[fotoId]) return;
+
+    try {
+      await axios.post(`http://localhost:3000/api/visualizacoesCurtidas/like/foto/${fotoId}`);
+      setCurtidasLocais(prev => ({ ...prev, [fotoId]: true }));
+    } catch (err) {
+      console.error("Erro ao curtir foto:", err);
+    }
+  };
+
   return (
-    <div className="p-10 max-w-8xl mx-auto">
-
-      <button onClick={fecharGaleria} className="text-[#c09b2d] mb-4 underline hover:opacity-80 transition-opacity">Voltar</button>
-
+    <div className="p-10 max-w-7xl mx-auto">
+      <button onClick={fecharGaleria} className="text-[#c09b2d] underline mb-4">Voltar</button>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-        {ensaio.fotos.map((foto, idx) => (
-
+        {ensaio.fotos.map((f, idx) => (
           <div key={idx} className="relative">
             <img
-              src={foto}
+              src={f.url}
               alt={`Foto ${idx + 1}`}
-              className="w-full h-[400px] object-cover rounded-xl shadow-lg transition-transform hover:scale-105 cursor-pointer"
+              className="w-full h-96 object-cover rounded-xl shadow-lg cursor-pointer hover:scale-105 transition"
               onClick={() => {
-                setImagemAtual(foto);
+                setImagemAtual({ id: f.id, url: f.url });
                 setIndiceImagem(idx);
               }}
+              onError={(e) => (e.currentTarget.src = "/fallback.jpg")}
+            />
+            <img
+              src={
+                curtidasLocais[f.id]
+                  ? "icons/coracao-vermelho.svg"
+                  : "icons/coracao-branco.svg"
+              }
+              alt="Curtir"
+              className="w-7 h-7 absolute top-2 right-2 cursor-pointer hover:scale-110 transition"
+              onClick={(e) => { e.stopPropagation(); curtirFoto(f.url, idx); }}
             />
           </div>
-
         ))}
       </div>
     </div>
