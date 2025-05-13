@@ -13,7 +13,7 @@ const ModalImagem = ({
   useEffect(() => {
     const carregar = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/visualizacoesCurtidas/curtidas/foto");
+        const res = await axios.get("https://emmylifotografias.com.br/api/api/visualizacoesCurtidas/curtidas/foto");
         const map = res.data.fotos.reduce((acc, id) => ({ ...acc, [id]: true }), {});
         setCurtidasLocais(map);
       } catch (err) {
@@ -40,7 +40,7 @@ const ModalImagem = ({
     if (curtidasLocais[id]) return;
 
     try {
-      await axios.post(`http://localhost:3000/api/visualizacoesCurtidas/like/foto/${id}`);
+      await axios.post(`https://emmylifotografias.com.br/api/api/visualizacoesCurtidas/like/foto/${id}`);
       setCurtidasLocais(prev => ({ ...prev, [id]: true }));
     } catch (err) {
       console.error("Erro ao curtir foto no modal:", err);

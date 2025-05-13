@@ -9,7 +9,7 @@ const ImageUploader = ({ onSucesso, onErro }) => {
   const [selectedImageId, setSelectedImageId] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const API_URL = "http://localhost:3000";
+  const API_URL = "https://emmylifotografias.com.br/api";
   const [images, setImages] = useState([]);
   const token = localStorage.getItem("token");
   

@@ -29,7 +29,7 @@ const Produtos = () => {
 
   const buscarProdutos = () => {
     axios
-      .get("http://localhost:3000/api/produtos?include=evento", {
+      .get("https://emmylifotografias.com.br/api/api/produtos?include=evento", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
@@ -47,7 +47,7 @@ const Produtos = () => {
 
   const buscarEventos = () => {
     axios
-      .get("http://localhost:3000/api/eventos", {
+      .get("https://emmylifotografias.com.br/api/api/eventos", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
@@ -86,7 +86,7 @@ const Produtos = () => {
 
   const salvarEdicao = () => {
     axios
-      .put(`http://localhost:3000/api/produtos/${editandoProduto.id}`, dadosEditados, {
+      .put(`https://emmylifotografias.com.br/api/api/produtos/${editandoProduto.id}`, dadosEditados, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(() => {
@@ -104,7 +104,7 @@ const Produtos = () => {
     if (!window.confirm("Tem certeza que deseja excluir este produto?")) return;
 
     axios
-      .delete(`http://localhost:3000/api/produtos/${id}`, {
+      .delete(`https://emmylifotografias.com.br/api/api/produtos/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(() => {
@@ -119,7 +119,7 @@ const Produtos = () => {
 
   const salvarNovoProduto = () => {
     axios
-      .post("http://localhost:3000/api/produtos", dadosNovoProduto, {
+      .post("https://emmylifotografias.com.br/api/api/produtos", dadosNovoProduto, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(() => {

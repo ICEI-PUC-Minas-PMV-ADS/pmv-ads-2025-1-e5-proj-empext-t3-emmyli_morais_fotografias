@@ -21,7 +21,7 @@ const Trabalhos = () => {
 
   const buscarAlbunsPublicos = async () => {
     try {
-      const { data } = await axios.get("http://localhost:3000/api/albuns", {
+      const { data } = await axios.get("https://emmylifotografias.com.br/api/api/albuns", {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
       });
       const filtrados = data
@@ -51,7 +51,7 @@ const Trabalhos = () => {
   const abrirGaleria = async (ensaio) => {
     try {
       await axios.post(
-        `http://localhost:3000/api/visualizacoesCurtidas/view/album/${ensaio.id}`,
+        `https://emmylifotografias.com.br/api/api/visualizacoesCurtidas/view/album/${ensaio.id}`,
         {},
         { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
       );

@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { getAuthHeader } from "./produtosService"
 
-const API_URL = 'http://localhost:3000';
-
+//const API_URL = 'https://emmylifotografias.com.br/api';
+const API_URL = 'https://emmylifotografias.com.br/api';
 // Função para realizar o login
 
 export interface LoginResponse {

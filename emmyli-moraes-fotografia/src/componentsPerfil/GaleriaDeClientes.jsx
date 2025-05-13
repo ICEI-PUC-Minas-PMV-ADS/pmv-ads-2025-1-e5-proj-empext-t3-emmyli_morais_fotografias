@@ -54,7 +54,7 @@ const GaleriaDeClientes = () => {
 
   const buscarAlbuns = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/albuns", {
+      const response = await axios.get("https://emmylifotografias.com.br/api/api/albuns", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -108,7 +108,7 @@ const GaleriaDeClientes = () => {
       setLoadingUpload(true);
 
       const response = await axios.post(
-        "http://localhost:3000/api/fotos/adicionar",
+        "https://emmylifotografias.com.br/api/api/fotos/adicionar",
         formData,
         {
           headers: {
@@ -144,7 +144,7 @@ const GaleriaDeClientes = () => {
 
   try {
     setLoadingUpload(true);
-    await axios.delete(`http://localhost:3000/api/fotos/${fotoId}`, {
+    await axios.delete(`https://emmylifotografias.com.br/api/api/fotos/${fotoId}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
@@ -164,7 +164,7 @@ const excluirAlbum = async () => {
   setMostrarConfirmacaoAlbum(false);
   setLoadingUpload(true);
   try {
-    await axios.delete(`http://localhost:3000/api/albuns/${albumParaExcluir.id}`, {
+    await axios.delete(`https://emmylifotografias.com.br/api/api/albuns/${albumParaExcluir.id}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },

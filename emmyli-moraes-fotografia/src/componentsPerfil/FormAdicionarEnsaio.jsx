@@ -26,7 +26,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
 
   const fetchCategorias = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/api/categorias");
+      const res = await axios.get("https://emmylifotografias.com.br/api/api/categorias");
       setCategoriasPersonalizadas(res.data);
     } catch {
       // falha silenciosa
@@ -88,7 +88,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
       formData.append("descricao", categoria);
       formData.append("origem", origem);
       imagens.forEach((img) => formData.append("fotos", img));
-      await axios.post("http://localhost:3000/api/albuns", formData, {
+      await axios.post("https://emmylifotografias.com.br/api/api/albuns", formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       onSave?.("Ensaio criado com sucesso!");
@@ -112,7 +112,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
     const nome = novaCategoria.trim();
     if (!nome) return;
     try {
-      const res = await axios.post("http://localhost:3000/api/categorias", { nome });
+      const res = await axios.post("https://emmylifotografias.com.br/api/api/categorias", { nome });
       setCategoriasPersonalizadas((prev) => [...prev, res.data]);
       setCategoria(res.data.nome);
       setNovaCategoria("");
@@ -125,7 +125,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
   // remoção da categoria
   const handleDeleteCategoria = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/api/categorias/${id}`);
+      await axios.delete(`https://emmylifotografias.com.br/api/api/categorias/${id}`);
       setCategoriasPersonalizadas((prev) => prev.filter((c) => c.id !== id));
       if (categoriasPersonalizadas.find((c) => c.id === id)?.nome === categoria) {
         setCategoria("");

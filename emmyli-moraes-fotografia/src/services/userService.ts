@@ -1,7 +1,7 @@
 // src/services/userService.js
 import axios from "axios";
 
-const API_URL = "http://localhost:3000/api/usuarios"; // Ajuste conforme necessário
+const API_URL = "https://emmylifotografias.com.br/api/api/usuarios"; // Ajuste conforme necessário
 const token = localStorage.getItem("token");
 
 interface Usuario {
@@ -67,7 +67,7 @@ export const editaUsuario = async (dados: { id: number, nome: string; email: str
   }
 }
 
-const ACCOUNT_API_URL = "http://localhost:3000/api/myAccount"
+const ACCOUNT_API_URL = "https://emmylifotografias.com.br/api/api/myAccount"
 export const editarUsuario = async (dados: Usuario) => {
   try {
    await axios.put(ACCOUNT_API_URL, dados,{
