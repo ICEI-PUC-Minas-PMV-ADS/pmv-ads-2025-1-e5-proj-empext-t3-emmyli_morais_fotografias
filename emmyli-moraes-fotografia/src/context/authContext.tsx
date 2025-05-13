@@ -1,11 +1,12 @@
 import React, { useContext, createContext, PropsWithChildren, useState, useCallback } from "react";
-import { LoginResponse, loginUser } from "../services/authService";
+import { LoginResponse, loginUser, logoutUser } from "../services/authService";
 
-const AuthContext = createContext<AuthStorage>({logar: async () => "", user: {} as UserStorage});
+const AuthContext = createContext<AuthStorage>({ logar: async () => "", user: {} as UserStorage, logout: async () => { } });
 
 interface AuthStorage {
     user: UserStorage;
-    logar: (userEmail: string, password: string) => Promise<string | LoginResponse>
+    logar: (userEmailOrLogin: string, password: string) => Promise<string | LoginResponse>;
+    logout: () => Promise<void>
 }
 
 interface UserStorage {
@@ -22,7 +23,7 @@ const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
         const token = localStorage.getItem('token')
 
         if (!token)
-            return {} as UserStorage
+            return {}
 
         setIsAuth(true);
         return {
@@ -34,32 +35,45 @@ const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
         }
     });
 
-    const logar = useCallback(
+    const logar =
         async (userEmailOrLogin: string, password: string) => {
-        try {
-            const data = await loginUser(userEmailOrLogin, password);
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('nome', data.usuario.nome);
-            localStorage.setItem('login', data.usuario.login);
-            localStorage.setItem('email', data.usuario.email);
-            localStorage.setItem('perfil', data.usuario.perfil);
-            setArmazemUsuario({
-                email: data.usuario.email,
-                login: data.usuario.login,
-                nome: data.usuario.nome,
-                perfil: data.usuario.perfil,
-                token: data.token
-            });
+            try {
+                const data = await loginUser(userEmailOrLogin, password);
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('nome', data.usuario.nome);
+                localStorage.setItem('login', data.usuario.login);
+                localStorage.setItem('email', data.usuario.email);
+                localStorage.setItem('perfil', data.usuario.perfil);
+                setArmazemUsuario({
+                    email: data.usuario.email,
+                    login: data.usuario.login,
+                    nome: data.usuario.nome,
+                    perfil: data.usuario.perfil,
+                    token: data.token
+                });
+
+                setIsAuth(true)
+
+                return data;
+            } catch (error) {
+                return error.message as string;
+            }
+        };
+
+    const logout =
+        async () => {
+            await logoutUser();
+            localStorage.removeItem('token');
+            localStorage.removeItem('nome');
+            localStorage.removeItem('login');
+            localStorage.removeItem('email');
+            localStorage.removeItem('perfil');
             
-            setIsAuth(true)
-
-            return data;
-        } catch (error) {
-            return error.message as string;
+            setArmazemUsuario({});
+            setIsAuth(false)
         }
-    }, [isAuth]);
-
-    return <AuthContext.Provider value={{ user: armazemUsuario, logar: logar }}> {children}</AuthContext.Provider>;
+        
+    return <AuthContext.Provider value={{ user: armazemUsuario, logar: logar, logout: logout }}> {children}</AuthContext.Provider>;
 };
 
 export default AuthProvider;

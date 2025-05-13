@@ -1,16 +1,19 @@
+import axios from 'axios';
+import { getAuthHeader } from "./produtosService"
+
 const API_URL = 'http://localhost:3000';
 
 // Função para realizar o login
 
 export interface LoginResponse {
-	token: string,
-	usuario: {
-		id: number,
-		nome: string,
-		login: string,
-		email: string,
-		perfil: string,
-	}
+  token: string,
+  usuario: {
+    id: number,
+    nome: string,
+    login: string,
+    email: string,
+    perfil: string,
+  }
 }
 
 export const loginUser = async (usernameOrEmail: string, password: string) => {
@@ -19,7 +22,7 @@ export const loginUser = async (usernameOrEmail: string, password: string) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        
+
       },
       body: JSON.stringify({ usernameOrEmail, password }),
     });
@@ -34,3 +37,10 @@ export const loginUser = async (usernameOrEmail: string, password: string) => {
     throw new Error(error.message || 'Ocorreu um erro, tente novamente');
   }
 };
+
+export const logoutUser = async () => {
+  await axios.post(`${API_URL}/api/auth/logout`,
+    undefined,
+    getAuthHeader()
+  )
+}

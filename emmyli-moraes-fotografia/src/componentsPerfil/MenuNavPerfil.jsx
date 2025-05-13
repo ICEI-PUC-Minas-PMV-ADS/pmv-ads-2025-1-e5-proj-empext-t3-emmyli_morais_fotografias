@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { FaBolt, FaImage, FaDollarSign, FaUserPlus, FaCog ,FaBox } from "react-icons/fa";
 import { Menu } from "lucide-react";
 import logo from "../img/logo.png";
+import { useAuth } from "../context/authContext";
 
 const MenuNavPerfil = ({ onSelect, isOpen, toggleSidebar, selectedItem }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -38,6 +39,8 @@ const MenuNavPerfil = ({ onSelect, isOpen, toggleSidebar, selectedItem }) => {
   };
 
   const computedMarginLeft = !isMobile ? (isOpen ? "16rem" : "5rem") : "0";
+
+  const { logout } = useAuth();
 
   return (
     <>
@@ -133,7 +136,7 @@ const MenuNavPerfil = ({ onSelect, isOpen, toggleSidebar, selectedItem }) => {
               <ul>
                 <li className="cursor-pointer hover:text-yellow-700">Perfil</li>
                 <li className="cursor-pointer hover:text-yellow-700">Configuração</li>
-                <li className="cursor-pointer hover:text-yellow-700">Sair</li>
+                <li onClick={logout} className="cursor-pointer hover:text-yellow-700">Sair</li>
               </ul>
             </div>
           )}

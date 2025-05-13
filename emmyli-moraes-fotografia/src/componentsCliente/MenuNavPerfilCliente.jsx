@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FaImage, FaShoppingCart, FaUser } from "react-icons/fa";
 import { Menu } from "lucide-react";
 import logo from "../img/logo.png";
+import { useAuth } from "../context/authContext";
 
 const MenuNavPerfilCliente = ({
   onSelect,
@@ -36,6 +37,8 @@ const MenuNavPerfilCliente = ({
   const computedMarginLeft = !isMobile ? (isOpen ? "16rem" : "5rem") : "0";
 
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
+
+  const {logout} = useAuth()
 
   return (
     <>
@@ -135,7 +138,7 @@ const MenuNavPerfilCliente = ({
                 <li className="cursor-pointer hover:text-yellow-700">
                   Configuração
                 </li>
-                <li className="cursor-pointer hover:text-yellow-700">Sair</li>
+                <li onClick={logout} className="cursor-pointer hover:text-yellow-700">Sair</li>
               </ul>
             </div>
           )}

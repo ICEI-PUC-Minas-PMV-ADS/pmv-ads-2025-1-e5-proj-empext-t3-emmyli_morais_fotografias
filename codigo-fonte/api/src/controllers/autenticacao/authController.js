@@ -12,10 +12,8 @@ const login = async (req, res) => {
 };
 
 const logout = async (req, res) => {
-  const { idusuario } = req.body;
-
   try {
-    const result = await logoutService(idusuario);
+    const result = await logoutService(req.userId);
     return res.json(result);
   } catch (error) {
     console.error('Erro ao deslogar:', error.message);
