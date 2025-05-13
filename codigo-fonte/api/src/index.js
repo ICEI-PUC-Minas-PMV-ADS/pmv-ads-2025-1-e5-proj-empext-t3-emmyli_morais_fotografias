@@ -1,4 +1,6 @@
 // src/index.js
+
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const authRoutes = require('./routes/autenticacao/authRoutes');
@@ -17,7 +19,6 @@ const fotoRoutes = require('./routes/foto/fotoRoutes')
 const categoriasRouter = require('./routes/categoria/categoriasRoutes');
 
 const port = 3000;
-require('dotenv').config();
 const verifyToken = require('./middleware/AuthMiddlewareToken');
 
 const cors = require('cors');
