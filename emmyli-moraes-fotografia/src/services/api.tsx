@@ -1,3 +1,6 @@
 import axios from "axios";
 
-export const api = axios.create ({baseURL: 'http://localhost:3000'});
+// const url = 'http://localhost:3000'
+const url = 'https://emmylifotografias.com.br'
+
+export const api = axios.create ({baseURL: url});
