@@ -8,6 +8,13 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'evento_id',
         as: 'evento'
       });
+
+       // ← curtidas de foto
+      DetalheEvento.hasMany(models.CurtidaFoto, {
+        foreignKey: 'id_foto',
+        as: 'curtidasFotos',
+        onDelete: 'CASCADE',
+      });
     }
   }
 

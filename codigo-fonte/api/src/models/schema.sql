@@ -51,9 +51,12 @@ CREATE TABLE albuns (
     usuario_id INT NOT NULL,
     nome VARCHAR(255) NOT NULL,
     descricao TEXT,
+    origem VARCHAR(50) DEFAULT 'cliente', -- <-- novo campo para diferenciar os tipos de álbuns
     dtinclusao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     dtalteracao DATE,
-    CONSTRAINT fk_albuns FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+    categoria_id INT,
+    CONSTRAINT fk_albuns FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+    CONSTRAINT fk_categoria_album FOREIGN KEY (categoria_id) REFERENCES categorias(id) ON DELETE SET NULL
 );
 
 CREATE TABLE album_fotos (
@@ -66,7 +69,7 @@ CREATE TABLE album_fotos (
     CONSTRAINT fk_album_fotos_foto FOREIGN KEY (id_foto) REFERENCES detalhe_evento(id) ON DELETE CASCADE
 );
 
-/*CREATE TABLE produto (
+CREATE TABLE produto (
     id SERIAL PRIMARY KEY,
     descricao VARCHAR(255) NOT NULL,
     preco DECIMAL(10,2) NOT NULL,
@@ -119,4 +122,36 @@ CREATE TABLE comentarios (
     dtalteracao DATE,
     CONSTRAINT fk_comentarios_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
     CONSTRAINT fk_comentarios_foto FOREIGN KEY (id_foto_evento) REFERENCES detalhe_evento(id) ON DELETE CASCADE
-);*/
+);
+
+CREATE TABLE categorias (
+  id SERIAL PRIMARY KEY,
+  nome VARCHAR(100) UNIQUE NOT NULL
+);
+
+CREATE TABLE visualizacoes_albuns (
+  id SERIAL PRIMARY KEY,
+  album_id INT NOT NULL,
+  ip VARCHAR(100),
+  criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (album_id) REFERENCES albuns(id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE curtidas_albuns (
+  id SERIAL PRIMARY KEY,
+  album_id INT NOT NULL,
+  ip VARCHAR(100),
+  criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (album_id) REFERENCES albuns(id) ON DELETE CASCADE
+  UNIQUE (album_id, ip)  -- só uma curtida por (album_id, ip)
+);
+
+CREATE TABLE curtidas_fotos (
+  id SERIAL PRIMARY KEY,
+  id_foto INT NOT NULL,
+  ip VARCHAR(100),
+  criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (id_foto) REFERENCES detalhe_evento(id) ON DELETE CASCADE
+  UNIQUE (id_foto, ip)   -- só uma curtida por (id_foto, ip)
+);

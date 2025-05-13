@@ -8,10 +8,13 @@ const marcaDaguaRoutes = require('./routes/marcaDagua/marcaDaguaRoutes');
 const produtosRoutes = require('./routes/produtos/produtosRoutes');
 const eventosRoutes = require('./routes/eventos/eventosRoutes');
 
+const vcRoutes = require('./routes/visualizacoesCurtidas/visualizacoesCurtidasRoutes');
+
 const setupSwagger = require('./swagger');
 
 const albunsRoutes = require('./routes/album/albumRoutes');
 const fotoRoutes = require('./routes/foto/fotoRoutes')
+const categoriasRouter = require('./routes/categoria/categoriasRoutes');
 
 const port = 3000;
 require('dotenv').config();
@@ -53,9 +56,15 @@ app.use('/api/myAccount', verifyToken, myAccountRoutes);
 // rota protegida
 app.use('/api/marcaDagua', verifyToken, marcaDaguaRoutes);
 
-// 🔐 Albuns e fotos (token pode ser adicionado depois se desejar)
+// Albuns e fotos
 app.use('/api/albuns', albunsRoutes);
 app.use('/api/fotos', verifyToken, fotoRoutes);
+
+// Categorias
+app.use('/api/categorias', categoriasRouter);
+
+// ** VISUALIZAÇÕES & CURTIDAS **
+app.use('/api/visualizacoesCurtidas', vcRoutes);
 
 //produtos
 app.use('/api/produtos', verifyToken, produtosRoutes);

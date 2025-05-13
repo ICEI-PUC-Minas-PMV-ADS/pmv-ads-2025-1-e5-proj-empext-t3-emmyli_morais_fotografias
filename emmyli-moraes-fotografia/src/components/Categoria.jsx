@@ -1,6 +1,4 @@
-import React from "react";
-
-const Categoria = ({ categorias, categoriaSelecionada, setCategoriaSelecionada, setGaleriaAberta }) => {
+const Categoria = ({ categorias = [], categoriaSelecionada, setCategoriaSelecionada, setGaleriaAberta }) => {
   return (
     <div className="flex flex-wrap justify-center gap-1 sm:gap-3 mt-14 px-10 w-full max-w-5xl sm:max-w-5xl mx-auto text-center">
       {categorias.map((categoria, index) => (
@@ -24,6 +22,7 @@ const Categoria = ({ categorias, categoriaSelecionada, setCategoriaSelecionada, 
     </div>
   );
 };
+
 
 export default Categoria;
 

@@ -1,24 +1,71 @@
-const { Albuns, AlbumFotos, DetalheEvento } = require('../../models');
+const {
+  Albuns,
+  AlbumFotos,
+  DetalheEvento,
+  VisualizacaoAlbum,
+  CurtidaAlbum,
+  CurtidaFoto
+} = require('../../models');
 const { deleteFotoBunnyStorage, uploadFotoBunnyStorage } = require('../../service/uploadService');
+const { fn, col } = require('sequelize');
 
+/**
+ * Retorna todos os álbuns com contagem de visualizações e curtidas
+ */
 const getAll = async (req, res) => {
   try {
     const albuns = await Albuns.findAll({
-      include: {
-        model: AlbumFotos,
-        as: 'fotos',
-        include: {
-          model: DetalheEvento,
-          as: 'foto'
+      include: [
+        { model: VisualizacaoAlbum, as: 'visualizacoesAlbuns' },
+        { model: CurtidaAlbum, as: 'curtidasAlbuns' },
+        {
+          model: AlbumFotos,
+          as: 'fotos',
+          include: [
+            {
+              model: DetalheEvento,
+              as: 'foto',
+              include: [
+                { model: CurtidaFoto, as: 'curtidasFotos' }
+              ]
+            }
+          ]
         }
-      }
+      ]
     });
-    res.json(albuns);
-  } catch (error) {
-    res.status(500).json({ error: 'Erro ao buscar álbuns', details: error.message });
+
+    const resultado = albuns.map(album => {
+      const curtidasDoAlbum = album.curtidasAlbuns?.length || 0;
+      const curtidasDasFotos = album.fotos.reduce((acc, af) => {
+        return acc + (af.foto?.curtidasFotos?.length || 0);
+      }, 0);
+
+      const visualizacoes = album.visualizacoesAlbuns?.length || 0;
+
+      return {
+        id: album.id,
+        nome: album.nome,
+        descricao: album.descricao,
+        origem: album.origem,
+        dtinclusao: album.dtinclusao,
+        fotos: album.fotos,
+        visualizacoes,
+        curtidasAlbum: curtidasDoAlbum,
+        curtidasFotos: curtidasDasFotos,
+        totalCurtidas: curtidasDoAlbum + curtidasDasFotos
+      };
+    });
+
+    res.json(resultado);
+  } catch (err) {
+    console.error('Erro ao buscar álbuns:', err);
+    res.status(500).json({ error: 'Erro ao buscar álbuns' });
   }
 };
 
+/**
+ * Busca um álbum específico por ID, com suas fotos
+ */
 const getById = async (req, res) => {
   const { id } = req.params;
   try {
@@ -36,54 +83,66 @@ const getById = async (req, res) => {
     if (!album) return res.status(404).json({ error: 'Álbum não encontrado' });
     res.json(album);
   } catch (error) {
+    console.error('Erro ao buscar álbum:', error);
     res.status(500).json({ error: 'Erro ao buscar álbum', details: error.message });
   }
 };
 
+/**
+ * Cria um novo álbum e faz upload em paralelo das imagens, usando bulkCreate
+ */
 const create = async (req, res) => {
   try {
-    const { nome, descricao, usuario_id } = req.body;
+    const { nome, descricao, usuario_id, origem } = req.body;
     const imagens = req.files;
 
-    if (!nome || !usuario_id || !imagens || imagens.length === 0) {
-      return res.status(400).json({ error: 'Dados incompletos ou imagens ausentes' });
+    if (!nome || !usuario_id || !descricao || !imagens || imagens.length === 0) {
+      return res.status(400).json({ error: 'Dados incompletos: nome, descrição, usuário e imagens são obrigatórios.' });
     }
 
+    // Cria o álbum
     const novoAlbum = await Albuns.create({
       nome,
       descricao,
       usuario_id,
+      origem: origem || 'cliente',
       dtinclusao: new Date(),
       dtalteracao: new Date()
     });
 
-    for (const file of imagens) {
+    // Faz upload em paralelo e prepara detalhes para bulkCreate
+    const detalhes = await Promise.all(imagens.map(async file => {
       const url = await uploadFotoBunnyStorage(file);
-
-      const novaFoto = await DetalheEvento.create({
-        evento_id: 1, // ajustar se necessário
-        foto: url,
+      return {
+        evento_id:      1,            // ajuste conforme sua lógica
+        foto:           url,
         tem_marca_agua: true,
-        dtinclusao: new Date(),
-        dtalteracao: new Date()
-      });
+        ordem:          0,            // ou outro valor padrão
+        dtinclusao:     new Date(),
+        dtalteracao:    new Date()
+      };
+    }));
 
-      await AlbumFotos.create({
-        album_id: novoAlbum.id,
-        id_foto: novaFoto.id,
-        dtinclusao: new Date(),
-        dtalteracao: new Date()
-      });
-    }
+    // Insere detalhes e associa ao álbum de uma só vez
+    const fotosCriadas = await DetalheEvento.bulkCreate(detalhes, { returning: true });
+    const albunsFotosData = fotosCriadas.map(foto => ({
+      album_id: novoAlbum.id,
+      id_foto:  foto.id,
+      dtinclusao:  new Date(),
+      dtalteracao: new Date()
+    }));
+    await AlbumFotos.bulkCreate(albunsFotosData);
 
     res.status(201).json({ message: 'Álbum criado com sucesso', album: novoAlbum });
-
   } catch (error) {
     console.error('Erro ao criar álbum:', error);
-    res.status(500).json({ error: 'Erro interno ao criar álbum' });
+    res.status(500).json({ error: 'Erro interno ao criar álbum', details: error.message });
   }
 };
 
+/**
+ * Atualiza nome e descrição de um álbum existente
+ */
 const update = async (req, res) => {
   const { id } = req.params;
   const { nome, descricao } = req.body;
@@ -98,15 +157,17 @@ const update = async (req, res) => {
 
     await album.save();
     res.json({ message: 'Álbum atualizado com sucesso', album });
-
   } catch (error) {
+    console.error('Erro ao atualizar álbum:', error);
     res.status(500).json({ error: 'Erro ao atualizar álbum', details: error.message });
   }
 };
 
+/**
+ * Deleta álbum e todas as fotos no BunnyCDN e no banco, em paralelo
+ */
 const deleteAlbum = async (req, res) => {
   const { id } = req.params;
-
   try {
     const album = await Albuns.findByPk(id, {
       include: {
@@ -121,18 +182,18 @@ const deleteAlbum = async (req, res) => {
 
     if (!album) return res.status(404).json({ error: 'Álbum não encontrado' });
 
-    for (const af of album.fotos) {
+    // Deleta fotos paralelamente
+    await Promise.all(album.fotos.map(async af => {
       if (af.foto?.foto) {
         await deleteFotoBunnyStorage(af.foto.foto);
         await DetalheEvento.destroy({ where: { id: af.foto.id } });
       }
-    }
+    }));
 
     await AlbumFotos.destroy({ where: { album_id: id } });
     await Albuns.destroy({ where: { id } });
 
     res.json({ message: 'Álbum e fotos deletados com sucesso' });
-
   } catch (error) {
     console.error('Erro ao deletar álbum:', error);
     res.status(500).json({ error: 'Erro ao deletar álbum', details: error.message });
