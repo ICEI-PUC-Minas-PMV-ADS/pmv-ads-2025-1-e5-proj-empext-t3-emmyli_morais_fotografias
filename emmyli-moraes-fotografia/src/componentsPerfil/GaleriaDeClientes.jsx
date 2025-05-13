@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import axios from "axios";
 import {
   Image,
   Settings,
@@ -10,6 +9,7 @@ import {
   MoreVertical,
 } from "lucide-react";
 import FormAdicionarEnsaio from "../componentsPerfil/FormAdicionarEnsaio";
+import { api } from "../services/api";
 
 const GaleriaDeClientes = () => {
   const [galerias, setGalerias] = useState([]);
@@ -54,11 +54,7 @@ const GaleriaDeClientes = () => {
 
   const buscarAlbuns = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/albuns", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await api.get("/api/albuns");
 
       const albunsClientes = response.data.filter((album) => album.origem === 'cliente');
 
@@ -107,12 +103,11 @@ const GaleriaDeClientes = () => {
     try {
       setLoadingUpload(true);
 
-      const response = await axios.post(
-        "http://localhost:3000/api/fotos/adicionar",
+      const response = await api.post(
+        "/api/fotos/adicionar",
         formData,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "multipart/form-data",
           },
         }
@@ -144,11 +139,7 @@ const GaleriaDeClientes = () => {
 
   try {
     setLoadingUpload(true);
-    await axios.delete(`http://localhost:3000/api/fotos/${fotoId}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
+    await api.delete(`/api/fotos/${fotoId}`);
 
     const novaLista = fotosVisuais.filter((_, i) => i !== idx);
     setFotosVisuais(novaLista);
@@ -164,11 +155,7 @@ const excluirAlbum = async () => {
   setMostrarConfirmacaoAlbum(false);
   setLoadingUpload(true);
   try {
-    await axios.delete(`http://localhost:3000/api/albuns/${albumParaExcluir.id}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
+    await api.delete(`/api/albuns/${albumParaExcluir.id}`);
     handleSucesso("Álbum apagado com sucesso!");
     buscarAlbuns();
   } catch {

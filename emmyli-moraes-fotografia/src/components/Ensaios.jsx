@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { useState, useEffect } from "react";
+import { api } from "../services/api";
 
 const Ensaios = ({ ensaiosFiltrados, abrirGaleria, curtidas, setCurtidas }) => {
   const [curtidosAlbuns, setCurtidosAlbuns] = useState({});
@@ -7,7 +7,7 @@ const Ensaios = ({ ensaiosFiltrados, abrirGaleria, curtidas, setCurtidas }) => {
   useEffect(() => {
     const carregarCurtidos = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/visualizacoesCurtidas/curtidas/album");
+        const res = await api.get("/api/visualizacoesCurtidas/curtidas/album");
         const marcados = res.data.albuns.reduce((acc, id) => ({ ...acc, [id]: true }), {});
         setCurtidosAlbuns(marcados);
       } catch (err) {
@@ -21,7 +21,7 @@ const Ensaios = ({ ensaiosFiltrados, abrirGaleria, curtidas, setCurtidas }) => {
     if (curtidosAlbuns[albumId]) return;
 
     try {
-      await axios.post(`http://localhost:3000/api/visualizacoesCurtidas/like/album/${albumId}`);
+      await api.post(`/api/visualizacoesCurtidas/like/album/${albumId}`);
       setCurtidosAlbuns(prev => ({ ...prev, [albumId]: true }));
       setCurtidas(prev => ({ ...prev, [albumId]: (prev[albumId] || 0) + 1 }));
     } catch (err) {

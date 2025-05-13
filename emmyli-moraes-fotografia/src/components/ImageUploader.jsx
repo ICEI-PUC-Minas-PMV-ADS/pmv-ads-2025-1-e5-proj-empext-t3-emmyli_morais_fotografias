@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-regular-svg-icons";
 import Modal from "./Modal";
+import { api } from "../services/api";
 
 const ImageUploader = ({ onSucesso, onErro }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedImageId, setSelectedImageId] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const API_URL = "http://localhost:3000";
   const [images, setImages] = useState([]);
-  const token = localStorage.getItem("token");
   
   useEffect(() => {
     fetchImages();
@@ -20,11 +18,7 @@ const ImageUploader = ({ onSucesso, onErro }) => {
   const fetchImages = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_URL}/api/marcaDagua`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await api.get(`/api/marcaDagua`);
 
       setImages(response.data);
     } catch (error) {
@@ -48,11 +42,7 @@ const ImageUploader = ({ onSucesso, onErro }) => {
 
     try {
       setLoading(true);
-      await axios.post(API_URL + "/api/marcaDagua", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await api.post("/api/marcaDagua", formData);
       fetchImages();
       onSucesso("Upload realizado com sucesso!");
     } catch (error) {
@@ -67,11 +57,7 @@ const ImageUploader = ({ onSucesso, onErro }) => {
     console.log("ID selecionado:", selectedImageId);
     try {
       setLoading(true);
-      await axios.delete(API_URL + "/api/marcaDagua/" + selectedImageId, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await api.delete("/api/marcaDagua/" + selectedImageId);
       fetchImages();
       setModalOpen(false);
       onSucesso("Marca d`água excluída com sucesso!");

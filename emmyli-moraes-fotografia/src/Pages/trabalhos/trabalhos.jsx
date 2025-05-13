@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import MenuNav   from "../../components/MenuNav";
 import Categoria from "../../components/Categoria";
 import Ensaios   from "../../components/Ensaios";
 import Galeria   from "../../components/Galeria";
 import ModalImagem from "../../components/ModalImagem";
+import { api } from "../../services/api";
 
 const Trabalhos = () => {
   const [categoriaSelecionada, setCategoriaSelecionada] = useState("Todos");
@@ -21,9 +21,7 @@ const Trabalhos = () => {
 
   const buscarAlbunsPublicos = async () => {
     try {
-      const { data } = await axios.get("http://localhost:3000/api/albuns", {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-      });
+      const { data } = await api.get("/api/albuns");
       const filtrados = data
       
         .filter(a => a.origem === "publico" && a.descricao && a.fotos.length > 0)
@@ -50,10 +48,8 @@ const Trabalhos = () => {
 
   const abrirGaleria = async (ensaio) => {
     try {
-      await axios.post(
-        `http://localhost:3000/api/visualizacoesCurtidas/view/album/${ensaio.id}`,
-        {},
-        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+      await api.post(
+        `/api/visualizacoesCurtidas/view/album/${ensaio.id}`
       );
     } catch (err) {
       console.error("Falha ao registrar view:", err);

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { FiEdit, FiTrash2, FiSearch } from "react-icons/fi";
-import axios from "axios";
+import { api } from "../services/api";
 
 const Produtos = () => {
 
@@ -28,10 +28,8 @@ const Produtos = () => {
   const token = localStorage.getItem("token");
 
   const buscarProdutos = () => {
-    axios
-      .get("http://localhost:3000/api/produtos?include=evento", {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+    api
+      .get("/api/produtos?include=evento")
       .then((response) => {
         if (Array.isArray(response.data)) {
           setProdutos(response.data);
@@ -46,10 +44,8 @@ const Produtos = () => {
   };
 
   const buscarEventos = () => {
-    axios
-      .get("http://localhost:3000/api/eventos", {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+    api
+      .get("/api/eventos")
       .then((res) => {
         setEventos(res.data || []);
       })
@@ -85,10 +81,8 @@ const Produtos = () => {
   const fecharModal = () => setEditandoProduto(null);
 
   const salvarEdicao = () => {
-    axios
-      .put(`http://localhost:3000/api/produtos/${editandoProduto.id}`, dadosEditados, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+    api
+      .put(`/api/produtos/${editandoProduto.id}`, dadosEditados)
       .then(() => {
         alert("Produto atualizado com sucesso!");
         buscarProdutos();
@@ -103,10 +97,8 @@ const Produtos = () => {
   const removerProduto = (id) => {
     if (!window.confirm("Tem certeza que deseja excluir este produto?")) return;
 
-    axios
-      .delete(`http://localhost:3000/api/produtos/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+    api
+      .delete(`/api/produtos/${id}`)
       .then(() => {
         alert("Produto removido com sucesso!");
         setProdutos((prev) => prev.filter((p) => p.id !== id));
@@ -118,10 +110,8 @@ const Produtos = () => {
   };
 
   const salvarNovoProduto = () => {
-    axios
-      .post("http://localhost:3000/api/produtos", dadosNovoProduto, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+    api
+      .post("/api/produtos", dadosNovoProduto)
       .then(() => {
         alert("Produto cadastrado com sucesso!");
         buscarProdutos();

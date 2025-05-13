@@ -1,7 +1,5 @@
-import axios from 'axios';
-import { getAuthHeader } from "./produtosService"
-
-const API_URL = 'http://localhost:3000';
+import { AxiosError } from 'axios';
+import { api } from './api';
 
 // Função para realizar o login
 
@@ -18,29 +16,15 @@ export interface LoginResponse {
 
 export const loginUser = async (usernameOrEmail: string, password: string) => {
   try {
-    const response = await fetch(`${API_URL}/api/auth/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const { data } = await api.post<LoginResponse>("/api/auth/login", { usernameOrEmail, password });
 
-      },
-      body: JSON.stringify({ usernameOrEmail, password }),
-    });
-
-    if (!response.ok) {
-      throw new Error('O e-mail ou a senha estão incorretos');
-    }
-
-    const data = await response.json();
-    return data as LoginResponse;
+    return data;
   } catch (error) {
-    throw new Error(error.message || 'Ocorreu um erro, tente novamente');
+    const axiosError = error as AxiosError<{message: string}>;
+    throw new Error(axiosError.response?.data.message || error.message || 'Ocorreu um erro, tente novamente');
   }
 };
 
 export const logoutUser = async () => {
-  await axios.post(`${API_URL}/api/auth/logout`,
-    undefined,
-    getAuthHeader()
-  )
+  await api.post("/api/auth/logout")
 }

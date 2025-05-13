@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { useState, useEffect } from "react";
+import { api } from "../services/api";
 
 const Galeria = ({ ensaio, setImagemAtual, setIndiceImagem, fecharGaleria }) => {
   const [curtidasLocais, setCurtidasLocais] = useState({});
@@ -7,7 +7,7 @@ const Galeria = ({ ensaio, setImagemAtual, setIndiceImagem, fecharGaleria }) => 
   useEffect(() => {
     const carregarCurtidas = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/visualizacoesCurtidas/curtidas/foto");
+        const res = await api.get("/api/visualizacoesCurtidas/curtidas/foto");
         const curtidas = res.data.fotos.reduce((acc, id) => ({ ...acc, [id]: true }), {});
         setCurtidasLocais(curtidas);
       } catch (err) {
@@ -22,7 +22,7 @@ const Galeria = ({ ensaio, setImagemAtual, setIndiceImagem, fecharGaleria }) => 
     if (curtidasLocais[fotoId]) return;
 
     try {
-      await axios.post(`http://localhost:3000/api/visualizacoesCurtidas/like/foto/${fotoId}`);
+      await api.post(`/api/visualizacoesCurtidas/like/foto/${fotoId}`);
       setCurtidasLocais(prev => ({ ...prev, [fotoId]: true }));
     } catch (err) {
       console.error("Erro ao curtir foto:", err);

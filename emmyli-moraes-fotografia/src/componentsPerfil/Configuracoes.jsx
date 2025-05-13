@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import axios from "axios";
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
   Image as ImageIcon,
   Settings,
@@ -10,6 +9,7 @@ import {
   MoreVertical
 } from "lucide-react";
 import ImageUploader from "../components/ImageUploader";
+import { api } from "../services/api";
 
 const Configuracoes = () => {
   // --- Estados principais ---
@@ -48,7 +48,7 @@ const Configuracoes = () => {
   
   const fetchAlbuns = useCallback(async () => {
     try {
-      const { data } = await axios.get("http://localhost:3000/api/albuns");
+      const { data } = await api.get("/api/albuns");
       const publicas = data
         .filter((a) => a.origem === "publico")
         .map((a) => ({
@@ -112,15 +112,9 @@ const Configuracoes = () => {
     setLoadingUpload(true);
 
     // mantém o mesmo POST do endpoint
-    const response = await axios.post(
-      "http://localhost:3000/api/fotos/adicionar",
-      fd,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "multipart/form-data",
-        },
-      }
+    const response = await api.post(
+      "/api/fotos/adicionar",
+      fd
     );
 
     const novasFotos = response.data.urls;
@@ -157,9 +151,7 @@ const Configuracoes = () => {
     setMostrarConfirmacaoFoto(false);
     try {
       setLoadingUpload(true);
-      await axios.delete(`http://localhost:3000/api/fotos/${id_foto}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-      });
+      await api.delete(`/api/fotos/${id_foto}`);
       setFotosVisuais((prev) => prev.filter((_, i) => i !== idx));
       handleSucesso("Foto excluída com sucesso!");
     } catch {
@@ -179,11 +171,8 @@ const Configuracoes = () => {
     setMostrarConfirmacaoAlbum(false);
     try {
       setLoadingUpload(true);
-      await axios.delete(
-        `http://localhost:3000/api/albuns/${albumParaExcluir.id}`,
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-        }
+      await api.delete(
+        `/api/albuns/${albumParaExcluir.id}`
       );
       handleSucesso("Álbum apagado com sucesso!");
       fetchAlbuns();

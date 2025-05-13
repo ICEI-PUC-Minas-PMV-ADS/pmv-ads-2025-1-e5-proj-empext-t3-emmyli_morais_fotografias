@@ -1,5 +1,6 @@
 import React, { useContext, createContext, PropsWithChildren, useState, useCallback } from "react";
 import { LoginResponse, loginUser, logoutUser } from "../services/authService";
+import { api } from "../services/api";
 
 const AuthContext = createContext<AuthStorage>({ logar: async () => "", user: {} as UserStorage, logout: async () => { } });
 
@@ -53,6 +54,7 @@ const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
                 });
 
                 setIsAuth(true)
+                api.defaults.headers.Authorization = `Bearer ${data.token}`
 
                 return data;
             } catch (error) {
@@ -63,16 +65,17 @@ const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     const logout =
         async () => {
             await logoutUser();
+            api.defaults.headers.Authorization = "";
             localStorage.removeItem('token');
             localStorage.removeItem('nome');
             localStorage.removeItem('login');
             localStorage.removeItem('email');
             localStorage.removeItem('perfil');
-            
+
             setArmazemUsuario({});
             setIsAuth(false)
         }
-        
+
     return <AuthContext.Provider value={{ user: armazemUsuario, logar: logar, logout: logout }}> {children}</AuthContext.Provider>;
 };
 

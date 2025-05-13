@@ -1,5 +1,5 @@
 import React, { ChangeEvent, MouseEvent, useState } from "react";
-import { editarUsuario } from "../../services/userService";
+import { editarMinhaConta } from "../../services/userService";
 import InputPassword from "../../components/InputPassword";
 
 const PerfilCliente = () => {
@@ -39,7 +39,7 @@ const PerfilCliente = () => {
         senha: formData.senha,
       };
 
-      await editarUsuario(payload);
+      await editarMinhaConta(payload);
       alert("Usuário alterado com sucesso!");
 
       localStorage.setItem('nome', formData.nome);

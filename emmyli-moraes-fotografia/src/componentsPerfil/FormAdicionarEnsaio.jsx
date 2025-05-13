@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { useState, useEffect } from "react";
 import ModalPacote from "../componentsPerfil/ModalPacote";
 import { Plus, Trash2 } from "lucide-react";
+import { api } from "../services/api";
 
 const FormAdicionarEnsaio = ({ onClose, onSave }) => {
   const [abaAtiva, setAbaAtiva] = useState("informacoes");
@@ -26,7 +26,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
 
   const fetchCategorias = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/api/categorias");
+      const res = await api.get("/api/categorias");
       setCategoriasPersonalizadas(res.data);
     } catch {
       // falha silenciosa
@@ -88,9 +88,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
       formData.append("descricao", categoria);
       formData.append("origem", origem);
       imagens.forEach((img) => formData.append("fotos", img));
-      await axios.post("http://localhost:3000/api/albuns", formData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.post("/api/albuns", formData);
       onSave?.("Ensaio criado com sucesso!");
       // reset
       setTitulo("");
@@ -112,7 +110,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
     const nome = novaCategoria.trim();
     if (!nome) return;
     try {
-      const res = await axios.post("http://localhost:3000/api/categorias", { nome });
+      const res = await api.post("/api/categorias", { nome });
       setCategoriasPersonalizadas((prev) => [...prev, res.data]);
       setCategoria(res.data.nome);
       setNovaCategoria("");
@@ -125,7 +123,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
   // remoção da categoria
   const handleDeleteCategoria = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/api/categorias/${id}`);
+      await api.delete(`/api/categorias/${id}`);
       setCategoriasPersonalizadas((prev) => prev.filter((c) => c.id !== id));
       if (categoriasPersonalizadas.find((c) => c.id === id)?.nome === categoria) {
         setCategoria("");
