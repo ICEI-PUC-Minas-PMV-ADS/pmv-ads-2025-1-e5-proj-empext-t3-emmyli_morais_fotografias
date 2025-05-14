@@ -17,7 +17,7 @@ const FotoController = {
         const url = await uploadFotoBunnyStorage(file);
 
         const novaFoto = await DetalheEvento.create({
-          evento_id: 1, // ou altere conforme lógica futura
+          evento_id: 1, 
           foto: url,
           tem_marca_agua: true,
           dtinclusao: new Date(),

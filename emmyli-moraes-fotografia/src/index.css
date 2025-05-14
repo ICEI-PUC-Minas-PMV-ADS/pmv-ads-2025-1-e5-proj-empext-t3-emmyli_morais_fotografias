@@ -1,3 +1,22 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ============================= */
+/*  Anti-print para imagens      */
+/* ============================= */
+@media print {
+  /* Esconde todo elemento com esta classe */
+  .protected-image {
+    display: none !important;
+  }
+  /* E mostra esta mensagem no lugar */
+  .protected-image::after {
+    content: "🔒 Imagem protegida contra impressão";
+    display: block;
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.25rem;
+    color: #999;
+  }
+}

@@ -9,9 +9,7 @@ const {
 const { deleteFotoBunnyStorage, uploadFotoBunnyStorage } = require('../../service/uploadService');
 const { fn, col } = require('sequelize');
 
-/**
- * Retorna todos os álbuns com contagem de visualizações e curtidas
- */
+
 const getAll = async (req, res) => {
   try {
     const albuns = await Albuns.findAll({
@@ -63,9 +61,7 @@ const getAll = async (req, res) => {
   }
 };
 
-/**
- * Busca um álbum específico por ID, com suas fotos
- */
+
 const getById = async (req, res) => {
   const { id } = req.params;
   try {
@@ -88,9 +84,8 @@ const getById = async (req, res) => {
   }
 };
 
-/**
- * Cria um novo álbum e faz upload em paralelo das imagens, usando bulkCreate
- */
+
+
 const create = async (req, res) => {
   try {
     const { nome, descricao, usuario_id, origem } = req.body;
@@ -110,20 +105,20 @@ const create = async (req, res) => {
       dtalteracao: new Date()
     });
 
-    // Faz upload em paralelo e prepara detalhes para bulkCreate
+   
     const detalhes = await Promise.all(imagens.map(async file => {
       const url = await uploadFotoBunnyStorage(file);
       return {
-        evento_id:      1,            // ajuste conforme sua lógica
+        evento_id:      1,            
         foto:           url,
         tem_marca_agua: true,
-        ordem:          0,            // ou outro valor padrão
+        ordem:          0,            
         dtinclusao:     new Date(),
         dtalteracao:    new Date()
       };
     }));
 
-    // Insere detalhes e associa ao álbum de uma só vez
+  
     const fotosCriadas = await DetalheEvento.bulkCreate(detalhes, { returning: true });
     const albunsFotosData = fotosCriadas.map(foto => ({
       album_id: novoAlbum.id,
@@ -140,9 +135,7 @@ const create = async (req, res) => {
   }
 };
 
-/**
- * Atualiza nome e descrição de um álbum existente
- */
+
 const update = async (req, res) => {
   const { id } = req.params;
   const { nome, descricao } = req.body;
@@ -163,9 +156,7 @@ const update = async (req, res) => {
   }
 };
 
-/**
- * Deleta álbum e todas as fotos no BunnyCDN e no banco, em paralelo
- */
+
 const deleteAlbum = async (req, res) => {
   const { id } = req.params;
   try {

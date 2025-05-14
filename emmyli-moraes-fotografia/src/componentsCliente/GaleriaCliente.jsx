@@ -1,5 +1,7 @@
 import React from "react";
 
+import ProtectedImage from '../componentsCliente/ProtectedImage';
+
 const GaleriaCliente = () => {
   return (
     <div className=" font-serif bg-[#F9F9F9] mt-[20px] mb-[20px] min-h-screen py-10 px-4">
