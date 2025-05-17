@@ -1,4 +1,4 @@
-const { AuthLogin, logoutService } = require('../../service/authService');
+const { AuthLogin, logoutService, refreshTokenService } = require('../../service/authService');
 
 const login = async (req, res) => {
   const { usernameOrEmail, password } = req.body;
@@ -21,4 +21,14 @@ const logout = async (req, res) => {
   }
 };
 
-module.exports = { login, logout };
+const refreshToken = async (req, res) => {
+  try {
+    const result = await refreshTokenService(req.body.refreshToken);
+    return res.json(result);
+  } catch (error) {
+    console.error('Erro ao refrescar token:', error.message);
+    return res.status(401).json({ message: error.message });
+  }
+};
+
+module.exports = { login, logout, refreshToken };

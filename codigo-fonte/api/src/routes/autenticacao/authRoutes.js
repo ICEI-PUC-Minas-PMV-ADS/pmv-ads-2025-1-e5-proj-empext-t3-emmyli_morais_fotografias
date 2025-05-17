@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const authController = require('../../controllers/autenticacao/authController'); 
+const authController = require('../../controllers/autenticacao/authController');
 const verifyToken = require('../../middleware/AuthMiddlewareToken');
 
 /**
@@ -92,5 +92,7 @@ router.post('/login', authController.login);
  *         description: Credenciais inválidas
  */
 router.post('/logout', verifyToken, authController.logout);
+
+router.post('/token', authController.refreshToken);
 
 module.exports = router;

@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const cryptografyPassword = require('./cryptographServices');
 const { Op } = require('sequelize');
 const { Usuarios, App001 } = require('../models');
-require('dotenv').config(); 
+require('dotenv').config();
 
 const SECRET_KEY = process.env.JWT_SECRET;
 
@@ -20,7 +20,7 @@ const AuthLogin = async ({ usernameOrEmail, password }) => {
   const isUserAdmin = user.tipo === 'fotografo';
 
   // Usando MD5 para verificar senha (se necessário mudar para bcrypt)
-  const hashedPassword = cryptografyPassword(password);  
+  const hashedPassword = cryptografyPassword(password);
   const validPassword = user.senha_hash === hashedPassword;
 
   if (!validPassword) {
@@ -28,21 +28,27 @@ const AuthLogin = async ({ usernameOrEmail, password }) => {
   }
 
   // Gerar token JWT
-  const token = jwt.sign(
+  const token = gerarToken(
     {
       idusuario: user.id,
       nome: user.nome,
       login: user.login,
       email: user.email,
       perfil: isUserAdmin ? 'FOTOGRAFO_ADM' : 'CLIENTE'
-    },
-    SECRET_KEY,
-    { expiresIn: '1d' }
+    }
   );
 
-  const tokenData = {
-    token,
-    dtexpiracao: new Date(Date.now() + 24 * 60 * 60 * 1000),
+  // Refresh Token JWT
+
+  const refreshToken = gerarRefreshToken(
+    {
+      idusuario: user.id
+    }
+  );
+
+  const refreshTokenData = {
+    token: refreshToken,
+    dtexpiracao: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
     dtinclusao: new Date(),
     dtalteracao: new Date()
   };
@@ -50,13 +56,63 @@ const AuthLogin = async ({ usernameOrEmail, password }) => {
   // Atualiza ou cria o token no banco
   const existingToken = await App001.findOne({ where: { idusuario: user.id } });
   if (existingToken) {
-    await App001.update(tokenData, { where: { idusuario: user.id } });
+    await App001.update(refreshTokenData, { where: { idusuario: user.id } });
   } else {
-    await App001.create({ idusuario: user.id, ...tokenData });
+    await App001.create({ idusuario: user.id, ...refreshTokenData });
   }
 
-  return { token, usuario: { id: user.id, nome: user.nome, login: user.login, email: user.email, perfil: user.tipo } };
+  return { token, refreshToken, usuario: { id: user.id, nome: user.nome, login: user.login, email: user.email, perfil: user.tipo } };
 };
+
+const refreshTokenService = async (refreshTokenRecebido) => {
+  if (!refreshTokenRecebido) {
+    throw new Error('Refresh token não recebido');
+  }
+
+  let veriryToken;
+  try {
+    veriryToken = jwt.verify(refreshTokenRecebido, SECRET_KEY, { auddience: "REFRESH" });
+  } catch (erro) {
+    throw new Error('Refresh token inválido ou expirado')
+  }
+
+  const existingToken = await App001.findOne({ where: { idusuario: veriryToken.idusuario } });
+
+  if (!existingToken || existingToken.token !== refreshTokenRecebido) {
+    throw new Error('Refresh token inválido ou expirado');
+  }
+
+  const user = await Usuarios.findOne({ where: { id: veriryToken.idusuario } })
+
+  const isUserAdmin = user.tipo === 'fotografo';
+
+  const novoToken = gerarToken(
+    {
+      idusuario: user.id,
+      nome: user.nome,
+      login: user.login,
+      email: user.email,
+      perfil: isUserAdmin ? 'FOTOGRAFO_ADM' : 'CLIENTE'
+    }
+  );
+
+  const novoRefreshToken = gerarRefreshToken(
+    {
+      idusuario: user.id
+    }
+  );
+
+  const refreshTokenData = {
+    token: novoRefreshToken,
+    dtexpiracao: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
+    dtinclusao: new Date(),
+    dtalteracao: new Date()
+  };
+
+  await App001.update(refreshTokenData, { where: { idusuario: user.id } });
+
+  return { token: novoToken, refreshToken: novoRefreshToken }
+}
 
 const logoutService = async (idusuario) => {
   const result = await App001.destroy({ where: { idusuario } });
@@ -66,4 +122,20 @@ const logoutService = async (idusuario) => {
   return { message: 'Logout realizado com sucesso' };
 };
 
-module.exports = { AuthLogin, logoutService };
+// Metodo para Gerar token JWT
+const gerarToken = (data) => {
+  return jwt.sign(
+    data,
+    SECRET_KEY,
+    { expiresIn: '15m', audience: "ACCESS" }
+  );
+}
+
+const gerarRefreshToken = (data) => {
+  return jwt.sign(
+    data,
+    SECRET_KEY, { expiresIn: '5d', audience: "REFRESH" }
+  )
+}
+
+module.exports = { AuthLogin, logoutService, refreshTokenService };
