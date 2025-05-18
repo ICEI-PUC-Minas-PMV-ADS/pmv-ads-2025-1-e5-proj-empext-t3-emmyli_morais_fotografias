@@ -11,7 +11,7 @@ import {
 import FormAdicionarEnsaio from "../componentsPerfil/FormAdicionarEnsaio";
 import { api } from "../services/api";
 
-const GaleriaDeClientes = () => {
+const GaleriaDeClientes = ({ albumId }) => {
   const [galerias, setGalerias] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [albumAberto, setAlbumAberto] = useState(null);
@@ -30,7 +30,7 @@ const GaleriaDeClientes = () => {
 
   useEffect(() => {
     buscarAlbuns();
-  }, []);
+  }, [albumId]);
 
   const handleSucesso = (msg) => {
     setTipoMensagem("sucesso");
@@ -73,10 +73,22 @@ const GaleriaDeClientes = () => {
       }));
 
       setGalerias(albunsFormatados);
-    } catch (error) {
-      console.error("Erro ao buscar galerias:", error.response?.data || error.message);
+
+    // SE vier um albumId, já abre-o
+    if (albumId) {
+      const encontrado = albunsFormatados.find((a) => a.id === albumId);
+      if (encontrado) {
+        setAlbumAberto(encontrado);
+        setFotosVisuais(encontrado.fotos);
+      }
     }
-  };
+  } catch (error) {
+    console.error(
+      "Erro ao buscar galerias:",
+      error.response?.data || error.message
+    );
+  }
+};
 
   const abrirAlbum = (galeria) => {
     setMensagem("");

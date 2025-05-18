@@ -1,19 +1,51 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import MenuNav from "../../components/MenuNav";
-
+import { api } from "../../services/api";
 import fotografaa from "../../img/fotografaa.jpg";
 import fotografaaaa from "../../img/fotografaaaa.jpg";
 
 const Home = () => {
-  
+ const [recentes, setRecentes] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchRecentes = async () => {
+      try {
+        const { data } = await api.get("/api/albuns");
+        const publicos = data
+          .filter((a) => a.origem === "publico" && a.fotos.length > 0)
+          .sort(
+            (a, b) =>
+              new Date(b.dtinclusao).getTime() - new Date(a.dtinclusao).getTime()
+          )
+          .slice(0, 4)
+          .map((a) => ({
+            id: a.id,
+            nome: a.nome,
+            imagem: a.fotos[0].foto.foto,
+            categoria: a.descricao,           // ← adiciona categoria aqui
+            visualizacoes: a.visualizacoes || 0,
+            curtidas: a.totalCurtidas  || 0
+          }));
+        setRecentes(publicos);
+      } catch (err) {
+        console.error("Erro ao buscar álbuns públicos:", err);
+      }
+    };
+    fetchRecentes();
+  }, []);
+
+  // Se houver menos slides que slidesToShow, desliga infinite para não clonar
+  const slidesToShow = 3;
   const settings = {
     dots: true,
-    infinite: true,
+    infinite: recentes.length > slidesToShow,
     speed: 500,
-    slidesToShow: 3,
+    slidesToShow,
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 4000,
@@ -21,13 +53,13 @@ const Home = () => {
       {
         breakpoint: 1024,
         settings: {
-          slidesToShow: 2,
+          slidesToShow: Math.min(2, recentes.length),
         },
       },
       {
         breakpoint: 768,
         settings: {
-          slidesToShow: 1,
+          slidesToShow: Math.min(1, recentes.length),
         },
       },
     ],
@@ -37,10 +69,14 @@ const Home = () => {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 1, 
+    slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 4000,
+  };
+
+  const abrirNoTrabalhos = (id) => {
+    navigate("/trabalhos", { state: { albumId: id } });
   };
 
   return (
@@ -75,36 +111,59 @@ const Home = () => {
 
         
 
+      {/* Trabalhos recentes */}
       <section className="p-20 text-center max-w-7xl mx-auto w-full">
-      <h2 className="text-2xl sm:text-4xl mb-6 whitespace-nowrap">
-        Trabalhos recentes
-      </h2>
+        <h2 className="text-2xl sm:text-4xl mb-6 whitespace-nowrap">
+          Trabalhos recentes
+        </h2>
 
         <Slider {...settings}>
-          {["PRI & JANAINA", "CHRIS & KLEBER", "SU & CARLA", "Emyli"].map((nome, index) => (
-            <div key={index} className="p-4">
-              <div className="bg-[#E8E6E0] shadow-md rounded-full overflow-hidden flex flex-col">
+          {recentes.map((album) => (
+            <div key={album.id} className="p-4">
+              <div
+                className="bg-[#E8E6E0] shadow-md rounded-full overflow-hidden flex flex-col cursor-pointer"
+                onClick={() => abrirNoTrabalhos(album.id)}
+              >
                 <div className="w-full">
-                  <img 
-                    src={fotografaa} 
-                    alt={nome} 
-                    className="inline-block cursor-pointer hover:scale-105 ease-in-out rounded-full" 
+                  <img
+                    src={album.imagem}
+                    alt={album.nome}
+                    onError={(e) => (e.currentTarget.src = fotografaa)}
+                    className="inline-block hover:scale-105 ease-in-out rounded-full"
                   />
                 </div>
-                <div className="bg-[#E8E6E0] p-4">
-                  <p className="text-[#252525] font-semibold">{nome}</p>
-                  <span>Ensaio</span>
+
+                <div className="bg-[#E8E6E0] p-4 font-semibold">
+                  <p className="text-[#252525]">{album.nome}</p>
+                  <span className="text-[#c09b2d] text-sm">{album.categoria}</span>
+                </div>
+
+                {/* Rodapé com visualizações e curtidas */}
+                <div className="bg-[#E8E6E0] flex justify-center items-center gap-4 py-2">
+                  {/* Visualizações */}
+                  <span className="text-[#252525] text-sm flex items-center gap-1">
+                    👁 {album.visualizacoes}
+                  </span>
+
+                  {/* Curtidas */}
+                  <span className="text-[#252525] text-sm flex items-center gap-1">
+                    <img
+                      src="/icons/coracao-vermelho.svg"
+                      alt="Curtidas"
+                      className="w-5 h-5"
+                    />
+                    {album.curtidas}
+                  </span>
                 </div>
               </div>
             </div>
           ))}
         </Slider>
-
       </section>
 
        
 
-        
+        {/* Depoimentos */}
 
       <section className="p-20 text-center justify-center max-w-6xl mx-auto w-full">
         <h2 className="text-3xl mb-10">Depoimentos</h2>

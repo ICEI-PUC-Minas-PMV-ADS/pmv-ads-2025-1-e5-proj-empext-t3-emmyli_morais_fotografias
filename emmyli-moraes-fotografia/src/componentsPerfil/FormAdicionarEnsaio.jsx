@@ -81,7 +81,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
     }
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
+      
       const formData = new FormData();
       formData.append("usuario_id", 1);
       formData.append("nome", titulo);

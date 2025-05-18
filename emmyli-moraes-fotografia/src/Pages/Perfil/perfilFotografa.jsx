@@ -11,16 +11,19 @@ const PerfilFotografa = () => {
   const [currentPage, setCurrentPage] = useState("acessoRapido");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [selectedItem, setSelectedItem] = useState("acessoRapido");
+  const [selectedAlbumId, setSelectedAlbumId] = useState(null);
 
-  const handleSelect = (item) => {
+  const handleSelect = (item, albumId = null) => {
     setSelectedItem(item);
     setCurrentPage(item);
+    setSelectedAlbumId(albumId);
+
   };
 
   const renderPage = () => {
     switch (currentPage) {
       case "galeria":
-        return <GaleriaDeClientes />;
+        return <GaleriaDeClientes albumId={selectedAlbumId} />;
       case "controleVendas":
         return <ControleDeVendas />;
       case "cadastros":
@@ -28,9 +31,10 @@ const PerfilFotografa = () => {
       case "produtos":
         return <ProdutosEventos />;
       case "configuracao":
-        return <Configuracoes />;
+        return <Configuracoes albumId={selectedAlbumId} />;
+
       default:
-        return <AcessoRapido />;
+        return <AcessoRapido setPage={handleSelect} />;
     }
   };
 

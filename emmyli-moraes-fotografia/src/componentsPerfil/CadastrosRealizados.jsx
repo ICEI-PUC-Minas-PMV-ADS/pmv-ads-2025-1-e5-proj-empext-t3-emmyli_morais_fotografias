@@ -44,7 +44,7 @@ const CadastrosRealizados = () => {
       const users = await buscaTodosUsuarios();
       setUsuarios(users);
     } catch (error) {
-      console.error("Erro ao buscar usuários");
+      console.error("Erro ao buscar usuários", error);
     } finally {
       setLoading(false);
     }
@@ -74,7 +74,7 @@ const CadastrosRealizados = () => {
     } catch (error) {
       setTipoMensagem("erro");
       setMensagem("Ocorreu um erro ao excluir o usuário!");
-      console.error("Erro ao remover usuário");
+      console.error("Erro ao remover usuário", error);
     } finally {
       setLoading(false);
     }
@@ -90,7 +90,7 @@ const CadastrosRealizados = () => {
       setMensagem("Usuário editado com sucesso!");
     } catch (error) {
       setTipoMensagem("error");
-      setMensagem("Ocorreu um erro ao editar usuário!");
+      setMensagem("Ocorreu um erro ao editar usuário!", error);
     } finally {
       setLoading(false);
     }

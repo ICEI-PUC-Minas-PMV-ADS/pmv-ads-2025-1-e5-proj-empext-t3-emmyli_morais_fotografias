@@ -1,13 +1,22 @@
-import { useEffect, useState } from "react";
-import MenuNav   from "../../components/MenuNav";
+import { useEffect, useState, useRef } from "react";
+import { useLocation } from "react-router-dom";
+import MenuNav from "../../components/MenuNav";
 import Categoria from "../../components/Categoria";
-import Ensaios   from "../../components/Ensaios";
-import Galeria   from "../../components/Galeria";
+import Ensaios from "../../components/Ensaios";
+import Galeria from "../../components/Galeria";
 import ModalImagem from "../../components/ModalImagem";
 import { api } from "../../services/api";
 
 const Trabalhos = () => {
-  const [categoriaSelecionada, setCategoriaSelecionada] = useState("Todos");
+  // captura o albumId vindo da Home (via navigate state)
+  const location = useLocation();
+  const albumIdDaHome = location.state?.albumId ?? null;
+
+  // ref para garantir que só abrimos o álbum vindo da Home uma única vez
+  
+
+  const [categoriaSelecionada, setCategoriaSelecionada] =
+    useState("Todos");
   const [categorias, setCategorias] = useState(["Todos"]);
   const [ensaios, setEnsaios] = useState([]);
   const [galeriaAberta, setGaleriaAberta] = useState(null);
@@ -15,36 +24,53 @@ const Trabalhos = () => {
   const [indiceImagem, setIndiceImagem] = useState(0);
   const [curtidas, setCurtidas] = useState({});
 
+  const abriuRef = useRef(false);
+
   useEffect(() => {
+    const buscarAlbunsPublicos = async () => {
+      try {
+        const { data } = await api.get("/api/albuns");
+
+        const filtrados = data
+          .filter(
+            (a) =>
+              a.origem === "publico" &&
+              a.descricao &&
+              a.fotos?.length > 0
+          )
+          .map((a) => ({
+            id: a.id,
+            titulo: a.nome,
+            categoria: a.descricao,
+            capa: a.fotos[0]?.foto?.foto || "",
+            fotos: a.fotos.map((f) => ({
+              id: f.foto?.id,
+              url: f.foto?.foto,
+            })),
+            visualizacoes: a.visualizacoes ?? 0,
+            curtidas: a.totalCurtidas ?? 0,
+          }));
+
+        setEnsaios(filtrados);
+
+        const unicas = Array.from(
+          new Set(filtrados.map((e) => e.categoria))
+        );
+        setCategorias(["Todos", ...unicas]);
+
+        // se veio da Home e ainda não abrimos, já abre direto
+        if (albumIdDaHome && !abriuRef.current) {
+          abriuRef.current = true;
+          const en = filtrados.find((e) => e.id === albumIdDaHome);
+          if (en) abrirGaleria(en);
+        }
+      } catch (err) {
+        console.error("Erro ao buscar públicos:", err);
+      }
+    };
+
     buscarAlbunsPublicos();
-  }, []);
-
-  const buscarAlbunsPublicos = async () => {
-    try {
-      const { data } = await api.get("/api/albuns");
-      const filtrados = data
-      
-        .filter(a => a.origem === "publico" && a.descricao && a.fotos.length > 0)
-        .map(a => ({
-          id: a.id,
-          titulo: a.nome,
-          categoria: a.descricao,
-          capa: a.fotos[0]?.foto?.foto,
-          fotos: a.fotos.map(f => ({
-            id: f.foto?.id,
-            url: f.foto?.foto
-          })).filter(f => f.url),
-          visualizacoes: a.visualizacoes || 0,
-          curtidas: a.totalCurtidas || 0
-        }));
-
-      const unicas = [...new Set(filtrados.map(e=>e.categoria))];
-      setCategorias(["Todos", ...unicas]);
-      setEnsaios(filtrados);
-    } catch (err) {
-      console.error("Erro ao buscar públicos:", err);
-    }
-  };
+  }, [albumIdDaHome]);
 
   const abrirGaleria = async (ensaio) => {
     try {
@@ -57,14 +83,17 @@ const Trabalhos = () => {
     setGaleriaAberta(ensaio);
   };
 
-  const ensaiosFiltrados = 
-    categoriaSelecionada==="Todos"
+  const ensaiosFiltrados =
+    categoriaSelecionada === "Todos"
       ? ensaios
-      : ensaios.filter(e=>e.categoria===categoriaSelecionada);
+      : ensaios.filter(
+          (e) => e.categoria === categoriaSelecionada
+        );
 
   return (
     <div className="font-serif bg-[#0B3727] min-h-screen text-white">
       <MenuNav />
+
       <Categoria
         categorias={categorias}
         categoriaSelecionada={categoriaSelecionada}

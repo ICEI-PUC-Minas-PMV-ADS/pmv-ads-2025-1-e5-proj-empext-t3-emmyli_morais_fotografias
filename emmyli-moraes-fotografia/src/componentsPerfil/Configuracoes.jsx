@@ -11,9 +11,9 @@ import {
 import ImageUploader from "../components/ImageUploader";
 import { api } from "../services/api";
 
-const Configuracoes = () => {
+const Configuracoes = ({ albumId }) => {
   // --- Estados principais ---
-  const [abaAtiva, setAbaAtiva] = useState("marca_dagua");
+   const [abaAtiva, setAbaAtiva] = useState(albumId ? "criar_galeria" : "marca_dagua");
   const [mensagem, setMensagem] = useState("");
   const [tipoMensagem, setTipoMensagem] = useState("");
   const [galerias, setGalerias] = useState([]);
@@ -70,6 +70,18 @@ const Configuracoes = () => {
 
   
   useEffect(() => {
+    if (abaAtiva === "criar_galeria") fetchAlbuns();
+  }, [abaAtiva, fetchAlbuns]);
+
+  useEffect(() => {
+    if (albumId && galerias.length > 0 && !albumAberto) {
+      const gal = galerias.find((g) => g.id === albumId);
+      if (gal) abrirAlbum(gal);
+    }
+  }, [albumId, galerias]);
+
+  
+  useEffect(() => {
     if (!mensagem) return;
     const id = setTimeout(() => {
       setMensagem("");
@@ -79,9 +91,6 @@ const Configuracoes = () => {
   }, [mensagem]);
 
   
-  useEffect(() => {
-    if (abaAtiva === "criar_galeria") fetchAlbuns();
-  }, [abaAtiva, fetchAlbuns]);
 
   const toggleMenu = (key) => setMenuAberto((prev) => (prev === key ? null : key));
 
