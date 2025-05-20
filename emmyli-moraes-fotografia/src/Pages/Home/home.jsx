@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import MenuNav from "../../components/MenuNav";
-import { api } from "../../services/api";
+import { anonApi } from "../../services/api";
 import fotografaa from "../../img/fotografaa.jpg";
 import fotografaaaa from "../../img/fotografaaaa.jpg";
 
@@ -15,7 +15,7 @@ const Home = () => {
   useEffect(() => {
     const fetchRecentes = async () => {
       try {
-        const { data } = await api.get("/api/albuns");
+        const { data } = await anonApi.get("/api/albuns");
         const publicos = data
           .filter((a) => a.origem === "publico" && a.fotos.length > 0)
           .sort(

@@ -47,8 +47,8 @@ const AuthLogin = async ({ usernameOrEmail, password }) => {
   );
 
   const refreshTokenData = {
-    token: refreshToken,
-    dtexpiracao: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
+    token: refreshToken.informacao,
+    dtexpiracao: new Date(Date.now() + refreshToken.expiresIn * 1000),
     dtinclusao: new Date(),
     dtalteracao: new Date()
   };
@@ -103,8 +103,8 @@ const refreshTokenService = async (refreshTokenRecebido) => {
   );
 
   const refreshTokenData = {
-    token: novoRefreshToken,
-    dtexpiracao: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
+    token: novoRefreshToken.informacao,
+    dtexpiracao: new Date(Date.now() + novoRefreshToken.expiresIn * 1000),
     dtinclusao: new Date(),
     dtalteracao: new Date()
   };
@@ -122,20 +122,33 @@ const logoutService = async (idusuario) => {
   return { message: 'Logout realizado com sucesso' };
 };
 
-// Metodo para Gerar token JWT
+
+const quinzeMinutosEmSegundos = 15 * 60
+
 const gerarToken = (data) => {
-  return jwt.sign(
+  const informacao = jwt.sign(
     data,
     SECRET_KEY,
-    { expiresIn: '15m', audience: "ACCESS" }
-  );
+    { expiresIn: quinzeMinutosEmSegundos, audience: "ACCESS" }
+  )
+  return {
+    informacao, 
+    expiresIn: quinzeMinutosEmSegundos
+  };
 }
 
+const cincoDiasEmSegundos = 5 * 24 * 60 * 60 
+
 const gerarRefreshToken = (data) => {
-  return jwt.sign(
+  const informacao = jwt.sign(
     data,
     SECRET_KEY, { expiresIn: '5d', audience: "REFRESH" }
   )
+  return {
+    informacao,
+    expiresIn: cincoDiasEmSegundos
+  }
+  
 }
 
 module.exports = { AuthLogin, logoutService, refreshTokenService };
