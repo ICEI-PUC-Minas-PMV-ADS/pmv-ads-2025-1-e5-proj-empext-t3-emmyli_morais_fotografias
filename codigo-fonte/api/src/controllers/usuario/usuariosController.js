@@ -10,7 +10,7 @@ class UsuariosController extends Api_Controller {
 
   async create(req, res) {
     try {
-      const { nome, email, login, senha } = req.body;
+      const { nome, email, login, senha_hash } = req.body;
       console.log( req.body);
       const usuarioExistente = await Usuarios.findOne({ where: { login } });
 
@@ -25,12 +25,12 @@ class UsuariosController extends Api_Controller {
           .json({ error: "Este e-mail já está cadastrado!" });
       }
       
-      const senha_hash = cryptografyPassword(senha);
+      const senha_hash_criptografada = cryptografyPassword(senha_hash);
       const novoUsuario = await Usuarios.create({
         nome,
         email,
         login,
-        senha_hash,
+        senha_hash: senha_hash_criptografada,
         tipo: "cliente",
       });
 

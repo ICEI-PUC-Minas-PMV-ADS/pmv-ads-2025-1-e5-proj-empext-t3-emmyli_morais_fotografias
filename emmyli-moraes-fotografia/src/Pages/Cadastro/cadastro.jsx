@@ -39,7 +39,7 @@ const Cadastro = () => {
         nome: formData.nome,
         email: formData.email,
         login: formData.login,
-        senha: formData.senha
+        senha_hash: formData.senha
       };
 
       await cadastrarUsuario(payload);
