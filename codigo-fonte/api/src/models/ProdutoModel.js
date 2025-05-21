@@ -17,10 +17,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false
       },
-      id_evento: {
+      /*id_evento: {
         type: DataTypes.INTEGER,
         allowNull: false
-      },
+      },*/
       ativo: {
         type: DataTypes.BOOLEAN,
         defaultValue: true
@@ -46,13 +46,13 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: false
     });
   
-    Produto.associate = (models) => {
+    /*Produto.associate = (models) => {
       Produto.belongsTo(models.Eventos, {
         foreignKey: 'id_evento',
         as: 'evento',
         onDelete: 'CASCADE'
       });
-    };
+    };*/
   
     return Produto;
   };

@@ -2,7 +2,15 @@
 const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  class MarcaDagua extends Model {}
+  class MarcaDagua extends Model {
+    static associate(models) {      
+      MarcaDagua.hasMany(models.Eventos, {
+        foreignKey: 'idmarcadagua',
+        as: 'eventos',
+        onDelete: 'SET NULL'
+      });
+    }
+  }
 
   MarcaDagua.init({
     id: {

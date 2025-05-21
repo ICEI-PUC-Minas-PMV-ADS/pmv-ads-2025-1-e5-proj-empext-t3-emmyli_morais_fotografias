@@ -4,10 +4,18 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Eventos extends Model {
     static associate(models) {
+      // Associação com DetalheEvento (1:N)
       Eventos.hasMany(models.DetalheEvento, {
         foreignKey: 'evento_id',
         as: 'detalhes',
         onDelete: 'CASCADE'
+      });
+
+      // Associação com MarcaDagua (N:1)
+      Eventos.belongsTo(models.MarcaDagua, {
+        foreignKey: 'idmarcadagua',
+        as: 'marcaDagua',
+        onDelete: 'SET NULL'
       });
     }
   }
@@ -38,6 +46,22 @@ module.exports = (sequelize, DataTypes) => {
     publico: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
+    },
+    exibirtrabalho: {             
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true
+    },
+    idmarcadagua: {                
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'marca_dagua',
+        key: 'id'
+      }
+    },
+    urlevento: {
+      type: DataTypes.TEXT
     },
     dtinclusao: {
       type: DataTypes.DATE,

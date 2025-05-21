@@ -31,11 +31,7 @@ module.exports = (sequelize, DataTypes) => {
     foto: {
       type: DataTypes.TEXT,
       allowNull: false
-    },
-    tem_marca_agua: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true
-    },
+    },    
     ordem: {
       type: DataTypes.INTEGER
     },
