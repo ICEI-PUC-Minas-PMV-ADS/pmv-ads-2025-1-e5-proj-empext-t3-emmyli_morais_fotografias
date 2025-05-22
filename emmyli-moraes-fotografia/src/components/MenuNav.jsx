@@ -2,25 +2,30 @@ import React, { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import logo from "../img/logo.png";
+import { useAuth } from "../context/authContext";
+import UserAvatar from "./UserAvatar";
 
 const MenuNav = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const location = useLocation(); 
+  const { user } = useAuth();
+
+  const location = useLocation();
   const menuItems = [
     { name: "Início", path: "/" },
     { name: "Trabalhos", path: "/trabalhos" },
     { name: "Contatos", path: "/contato" },
     { name: "Sobre", path: "/sobre" },
-  /*  { name: "Área do Cliente", path: "/areadocliente" }, */
-    { name: "Login", path: "/login" },
+    /*  { name: "Área do Cliente", path: "/areadocliente" }, */
   ];
 
   return (
     <header className="bg-[#E8E6E0] p-6 flex justify-between items-center relative">
-      
+
       <div className="flex items-center">
-        <img src={logo} alt="Logo Emmyli Fotografias" className="h-20" />
+        <Link to="/">
+          <img src={logo} alt="Logo Emmyli Fotografias" className="h-20 cursor-pointer" />
+        </Link>
       </div>
 
       {/* Botão de Menu Responsivo */}
@@ -35,14 +40,29 @@ const MenuNav = () => {
             <li key={item.name} className="cursor-pointer">
               <Link
                 to={item.path}
-                className={`${
-                  location.pathname === item.path ? "text-[#c09b2d]" : "text-[#252525]"
-                }`}
+                className={`${location.pathname === item.path ? "text-[#c09b2d]" : "text-[#252525]"
+                  }`}
               >
                 {item.name}
               </Link>
             </li>
           ))}
+
+          {
+            user.token ?
+              <Link to="/PerfilCliente" className="flex items-center justify-center">
+                <UserAvatar name={user.nome} size={60} className="bg-gray-300" />
+              </Link> :
+              <li key="login" className="cursor-pointer">
+                <Link
+                  to="/login"
+                  className={`${location.pathname === "/login" ? "text-[#c09b2d]" : "text-[#252525]"}`}
+                >
+                  Login
+                </Link>
+              </li>
+          }
+
         </ul>
       </nav>
 
@@ -53,19 +73,37 @@ const MenuNav = () => {
             <X size={30} />
           </button>
           <ul className="text-lg space-y-6 text-[#252525]">
-            {menuItems.map((item) => (
-              <li key={item.name} className="cursor-pointer">
-                <Link
-                  to={item.path}
-                  onClick={() => setMenuOpen(false)}
-                  className={`${
-                    location.pathname === item.path ? "text-[#c09b2d]" : "text-[#252525]"
-                  }`}
-                >
-                  {item.name}
-                </Link>
-              </li>
-            ))}
+            {
+              menuItems.map((item) => (
+                <li key={item.name} className="cursor-pointer">
+                  <Link
+                    to={item.path}
+                    onClick={() => setMenuOpen(false)}
+                    className={`${location.pathname === item.path ? "text-[#c09b2d]" : "text-[#252525]"
+                      }`}
+                  >
+                    {item.name}
+                  </Link>
+                </li>
+              ))
+            }
+
+            {
+              user.token ?
+                <Link to="/PerfilCliente" className="flex items-center justify-center">
+                  <UserAvatar name={user.nome} size={50} />
+                </Link> :
+                <li key="login" className="cursor-pointer">
+                  <Link
+                    to="/login"
+                    onClick={() => setMenuOpen(false)}
+                    className={`${location.pathname === "/login" ? "text-[#c09b2d]" : "text-[#252525]"}`}
+                  >
+                    Login
+                  </Link>
+                </li>
+            }
+
           </ul>
         </nav>
       )}

@@ -3,6 +3,8 @@ import { FaImage, FaShoppingCart, FaUser } from "react-icons/fa";
 import { Menu } from "lucide-react";
 import logo from "../img/logo.png";
 import { useAuth } from "../context/authContext";
+import { Link } from "react-router-dom";
+import UserAvatar from "../components/UserAvatar";
 
 const MenuNavPerfilCliente = ({
   onSelect,
@@ -38,7 +40,7 @@ const MenuNavPerfilCliente = ({
 
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
 
-  const {logout} = useAuth()
+  const {user, logout} = useAuth()
 
   return (
     <>
@@ -56,7 +58,10 @@ const MenuNavPerfilCliente = ({
             >
               <Menu size={28} />
             </button>
+
+            <Link to="/">
             <img src={logo} alt="Logo" className="h-20" />
+            </Link>
           </div>
 
           <ul className="space-y-4">
@@ -87,7 +92,9 @@ const MenuNavPerfilCliente = ({
             className={`flex justify-center mb-6 transition-opacity duration-300 
             ${isOpen ? "opacity-100" : "opacity-0"}`}
           >
+            <Link to="/">
             <img src={logo} alt="Logo" className="h-24 mx-auto" />
+            </Link>
           </div>
 
           <ul className="space-y-4">
@@ -124,12 +131,7 @@ const MenuNavPerfilCliente = ({
         </button>
 
         <div className="relative">
-          <button
-            onClick={toggleMenu}
-            className="bg-gray-200 p-2 rounded-full text-[#c09b2d] font-semibold"
-          >
-            EM
-          </button>
+          <UserAvatar name={user?.nome} onClick={toggleMenu} />
 
           {isMenuOpen && (
             <div className="absolute right-0 mt-2 bg-white shadow-md rounded-md p-2 z-50">

@@ -4,7 +4,6 @@ import { cadastrarUsuario } from "../../services/userService";
 import MenuNav from "../../components/MenuNav";
 import logo from "../../img/logo.png";
 import { Link } from "react-router-dom";
-import { Eye, EyeOff } from "lucide-react"; // Ícones para mostrar/ocultar senha
 import InputPassword from "../../components/InputPassword";
 
 const Cadastro = () => {
@@ -18,8 +17,6 @@ const Cadastro = () => {
   });
 
   const [error, setError] = useState(null);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

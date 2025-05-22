@@ -1,6 +1,7 @@
 import React, { ChangeEvent, MouseEvent, useState } from "react";
 import { editarMinhaConta } from "../../services/userService";
 import InputPassword from "../../components/InputPassword";
+import UserAvatar from "../../components/UserAvatar";
 
 const PerfilCliente = () => {
   const [formData, setFormData] = useState({
@@ -62,11 +63,7 @@ const PerfilCliente = () => {
       </h1>
 
       <div className="flex items-center gap-4 mb-6">
-        <img
-          src="https://i.pravatar.cc/100"
-          alt="Foto do usuário"
-          className="w-24 h-24 rounded-full object-cover"
-        />
+        <UserAvatar name={nome} size={100} />
         <div>
           <p className="text-lg font-semibold">{nome}</p>
           <p className="text-gray-600">{email}</p>

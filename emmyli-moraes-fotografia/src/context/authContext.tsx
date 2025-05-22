@@ -22,7 +22,7 @@ interface UserStorage {
     nome?: string;
     login?: string;
     email?: string;
-    perfil?: string
+    perfil?: string;
 }
 interface Token {
     informacao: string;
@@ -30,7 +30,7 @@ interface Token {
 }
 
 const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
-    const [armazemUsuario, setArmazemUsuario] = useState<UserStorage>(() => {
+    const [userStorage, setUserStorage] = useState<UserStorage>(() => {
         const token = localStorage.getItem('informacaoToken')
 
         if (!token)
@@ -70,7 +70,7 @@ const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
                 localStorage.setItem('login', data.usuario.login);
                 localStorage.setItem('email', data.usuario.email);
                 localStorage.setItem('perfil', data.usuario.perfil);
-                setArmazemUsuario({
+                setUserStorage({
                     email: data.usuario.email,
                     login: data.usuario.login,
                     nome: data.usuario.nome,
@@ -98,10 +98,10 @@ const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
             await logoutUser();
             cleanUserInfos()
 
-            setArmazemUsuario({});
+            setUserStorage({});
         }
 
-    return <AuthContext.Provider value={{ user: armazemUsuario, logar: logar, logout: logout }}> {children}</AuthContext.Provider>;
+    return <AuthContext.Provider value={{ user: userStorage, logar: logar, logout: logout }}> {children}</AuthContext.Provider>;
 };
 
 export default AuthProvider;
