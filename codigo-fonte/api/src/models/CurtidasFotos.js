@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const CurtidaFoto = sequelize.define("CurtidaFoto", {
+  const CurtidaFoto = sequelize.define('CurtidaFoto', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -8,17 +8,22 @@ module.exports = (sequelize, DataTypes) => {
     },
     id_foto: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      field: 'id_foto'
     },
-    ip: {
-      type: DataTypes.STRING(100)
+    ip_usuario: {
+      type: DataTypes.STRING(100),
+      allowNull: false,
+      field: 'ip_usuario'
     },
-    criado_em: {
+    dtinclusao: {
       type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+      field: 'dtinclusao'
     }
   }, {
-    tableName: "curtidas_fotos",
+    tableName: 'curtidas_foto', 
     timestamps: false
   });
 

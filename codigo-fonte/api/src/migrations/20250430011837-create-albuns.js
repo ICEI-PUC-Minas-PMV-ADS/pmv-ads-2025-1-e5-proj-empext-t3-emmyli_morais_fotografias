@@ -1,3 +1,4 @@
+// migrations/20250430011837-create-albuns.js
 'use strict';
 
 module.exports = {
@@ -19,18 +20,35 @@ module.exports = {
         onDelete: 'CASCADE'
       },
       nome: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(255),
         allowNull: false
       },
       descricao: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
+        allowNull: true
+      },
+      origem: {
+        type: Sequelize.STRING(50),
+        allowNull: false,
+        defaultValue: 'cliente'
+      },
+      categoria_id: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        references: {
+          model: 'categorias',
+          key: 'id'
+        },
+        onDelete: 'SET NULL'
       },
       dtinclusao: {
         type: Sequelize.DATE,
+        allowNull: false,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },
       dtalteracao: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        allowNull: true
       }
     });
   },

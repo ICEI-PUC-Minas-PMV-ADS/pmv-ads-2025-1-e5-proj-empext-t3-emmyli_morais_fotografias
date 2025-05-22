@@ -1,3 +1,4 @@
+// src/models/Albuns.js
 'use strict';
 const { Model } = require('sequelize');
 
@@ -10,13 +11,18 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'CASCADE',
       });
 
+      Albuns.belongsTo(models.Categoria, {
+        foreignKey: 'categoria_id',
+        as: 'categoria',
+        onDelete: 'SET NULL',
+      });
+
       Albuns.hasMany(models.AlbumFotos, {
         foreignKey: 'album_id',
         as: 'fotos',
         onDelete: 'CASCADE',
       });
 
-      // ← associações para visualizações e curtidas de álbum
       Albuns.hasMany(models.VisualizacaoAlbum, {
         foreignKey: 'album_id',
         as: 'visualizacoesAlbuns',
@@ -51,6 +57,11 @@ module.exports = (sequelize, DataTypes) => {
     origem: {
       type: DataTypes.STRING(50),
       defaultValue: 'cliente'
+    },
+    // **novo campo**:
+    categoria_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     },
     dtinclusao: {
       type: DataTypes.DATE,
