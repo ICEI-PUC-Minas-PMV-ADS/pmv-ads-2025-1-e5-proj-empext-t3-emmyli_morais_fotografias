@@ -36,7 +36,16 @@ const verifyToken = require('../../middleware/AuthMiddlewareToken');
  *         publico:
  *           type: bolean
  *           description: Campo destinado a marcar se evento é publico
- *           $ref: '#/components/schemas/Evento'
+ *         exibirtrabalho:
+ *           type: bolean
+ *           description: Eventos que serão exibidos na area de trabalho
+ *         idmarcadagua:
+ *           type: integer
+ *           description: identificação da marca dagua utlizada para fotos do envento
+ *         urlevento:
+ *           type: string
+ *           description: Url para acesso de um album, criado quando o evento é público
+ *           $ref: '#/components/schemas/Eventos'
  */
 
 
@@ -127,6 +136,7 @@ const verifyToken = require('../../middleware/AuthMiddlewareToken');
  *         description: |
  *           Incluir associações relacionadas na consulta. Exemplos de associações possíveis:
  *           - `DetalheEvento`: Inclui o detalhe do evento.
+ *           - `MarcaDagua`: Inclui a marca dagua ligada ao evento.
  *     responses:
  *       200:
  *         description: Sucesso
