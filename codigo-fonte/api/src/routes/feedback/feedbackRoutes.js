@@ -206,6 +206,6 @@ router.get('/', feedbackController.getAll);
 router.get('/:id', feedbackController.getById);
 router.post('/', feedbackController.create);
 router.put('/:id', checkFotografo, feedbackController.update); //rota disponível apenas para fotógrafos
-router.delete('/:id', feedbackController.delete);
+router.delete('/:id', checkFotografo, feedbackController.delete);  //rota disponível apenas para fotógrafos
 
 module.exports = router;
