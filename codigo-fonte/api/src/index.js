@@ -54,7 +54,7 @@ app.use('/api/myAccount', verifyToken, myAccountRoutes);
   res.json({ message: 'Acesso permitido!' });
 });*/
 
-// rota protegida
+// Marca d'água
 app.use('/api/marcaDagua', verifyToken, marcaDaguaRoutes);
 
 // Albuns e fotos
@@ -72,6 +72,9 @@ app.use('/api/produtos', verifyToken, produtosRoutes);
 
 //eventos
 app.use('/api/eventos', verifyToken, eventosRoutes);
+
+//Feedbacks
+app.use('/api/feedbacks', verifyToken, require('./routes/feedback/feedbackRoutes'));  
 
 app.listen(port, () => {
   console.log(`Servidor rodando em http://localhost:${port}`);
