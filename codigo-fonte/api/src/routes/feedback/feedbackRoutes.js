@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Api_Controller = require('../../controllers/Api_Controller');
 const feedbackController = new Api_Controller('Feedbacks');
+const checkFotografo = require('../../middleware/checkFotografo');
 
 /**
  * @swagger
@@ -15,6 +16,7 @@ const feedbackController = new Api_Controller('Feedbacks');
  *         - albumId
  *         - feedback
  *         - satisfacao
+ *         - exibirfeedback
  *       properties:
  *         id:
  *           type: integer
@@ -31,12 +33,16 @@ const feedbackController = new Api_Controller('Feedbacks');
  *         satisfacao:
  *           type: integer
  *           description: 'Nível de satisfação do usuário (ex: 1 a 5)'
+ *         exibirfeedback:
+ *           type: boolean
+ *           description: Indica se o feedback deve ser exibido na página incial do site
  *       example:
  *         id: 1
  *         usuarioId: 123
  *         albumId: 456
  *         feedback: "Gostei muito do álbum!"
  *         satisfacao: 5
+ *         exibirfeedback: false
  */
 
 /**
@@ -199,7 +205,7 @@ const feedbackController = new Api_Controller('Feedbacks');
 router.get('/', feedbackController.getAll);
 router.get('/:id', feedbackController.getById);
 router.post('/', feedbackController.create);
-router.put('/:id', feedbackController.update);
+router.put('/:id', checkFotografo, feedbackController.update); //rota disponível apenas para fotógrafos
 router.delete('/:id', feedbackController.delete);
 
 module.exports = router;
