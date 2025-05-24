@@ -6,7 +6,8 @@ const AuthContext = createContext<AuthStorage>(
     {
         logar: async () => "",
         user: {} as UserStorage,
-        logout: async () => { }
+        logout: async () => { },
+        update: ({ }) => { }
     }
 );
 
@@ -14,6 +15,7 @@ interface AuthStorage {
     user: UserStorage;
     logar: (userEmailOrLogin: string, password: string) => Promise<string | LoginResponse>;
     logout: () => Promise<void>
+    update: (user: LoginResponse) => void
 }
 
 interface UserStorage {
@@ -101,7 +103,37 @@ const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
             setUserStorage({});
         }
 
-    return <AuthContext.Provider value={{ user: userStorage, logar: logar, logout: logout }}> {children}</AuthContext.Provider>;
+    const update = (data: LoginResponse) => {
+        const dataExpiracaoToken = new Date(Date.now() + data.token.expiresIn * 1000);// TODO: Fazer o backend já retornar essa informação
+        const dataExpiracaoRefreshToken = new Date(Date.now() + data.refreshToken.expiresIn * 1000);// TODO: Fazer o backend já retornar essa informação
+
+
+        localStorage.setItem('informacaoToken', data.token!.informacao);
+        localStorage.setItem('dataExpiracaoToken', dataExpiracaoToken.toString());
+        localStorage.setItem('informacaoRefreshToken', data.refreshToken!.informacao);
+        localStorage.setItem('dataExpiracaoRefreshToken', dataExpiracaoRefreshToken.toString());
+        localStorage.setItem('nome', data.usuario.nome);
+        localStorage.setItem('login', data.usuario.login);
+        localStorage.setItem('email', data.usuario.email);
+        localStorage.setItem('perfil', data.usuario.perfil);
+
+        setUserStorage({
+            email: data.usuario.email,
+            login: data.usuario.login,
+            nome: data.usuario.nome,
+            perfil: data.usuario.perfil,
+            token: {
+                informacao: data.token.informacao,
+                dataExpiracao: dataExpiracaoToken
+            },
+            refreshToken: {
+                informacao: data.refreshToken.informacao,
+                dataExpiracao: dataExpiracaoRefreshToken
+            }
+        })
+    }
+
+    return <AuthContext.Provider value={{ user: userStorage, logar: logar, logout: logout, update: update }}> {children}</AuthContext.Provider>;
 };
 
 export default AuthProvider;

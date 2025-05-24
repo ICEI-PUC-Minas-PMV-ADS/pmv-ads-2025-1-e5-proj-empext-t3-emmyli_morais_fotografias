@@ -54,6 +54,12 @@ export const logoutUser = async () => {
   await api.post("/api/auth/logout")
 }
 
+export const forgotPassword = async (email: string) => {
+     await anonApi.post('api/auth/forgot_password', {
+      email
+     })
+}
+
 // Metodo para logout
 
 export const cleanUserInfos = () => {

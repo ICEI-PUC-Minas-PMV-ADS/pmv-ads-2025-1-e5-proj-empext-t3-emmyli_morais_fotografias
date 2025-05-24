@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import MenuNav from "../../components/MenuNav";
 import logo from "../../img/logo.png";
 import { Link } from "react-router-dom";
+import { forgotPassword } from "../../services/authService";
 
 const EsqueciSenha = () => {
   const [email, setEmail] = useState("");
@@ -22,8 +23,8 @@ const EsqueciSenha = () => {
     }
 
     try {
-      // Algo pra chamar a API para recuperar a senha
-      // Tipo: await api.recuperarSenha(email);
+      
+      forgotPassword(email)
 
       setMensagem("Se o e-mail estiver cadastrado, você receberá instruções para redefinir sua senha pelo email.");
     } catch (error) {

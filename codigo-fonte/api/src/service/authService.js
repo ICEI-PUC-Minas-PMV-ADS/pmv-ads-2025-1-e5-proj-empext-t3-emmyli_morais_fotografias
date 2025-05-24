@@ -7,6 +7,7 @@ require('dotenv').config();
 
 const SECRET_KEY = process.env.JWT_SECRET;
 
+const cincoDiasEmSegundos = 5 * 24 * 60 * 60 
 const AuthLogin = async ({ usernameOrEmail, password }) => {
   let user = await Usuarios.findOne({
     where: {
@@ -44,7 +45,8 @@ const AuthLogin = async ({ usernameOrEmail, password }) => {
   const refreshToken = gerarRefreshToken(
     {
       idusuario: user.id
-    }
+    },
+    cincoDiasEmSegundos
   );
 
   const refreshTokenData = {
@@ -97,7 +99,6 @@ const refreshTokenService = async (refreshTokenRecebido) => {
     }
   );
   
-  const cincoDiasEmSegundos = 5 * 24 * 60 * 60 
   const novoRefreshToken = gerarRefreshToken(
     {
       idusuario: user.id
