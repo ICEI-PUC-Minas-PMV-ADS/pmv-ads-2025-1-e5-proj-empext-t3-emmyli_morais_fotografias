@@ -1,7 +1,7 @@
 import { useState } from "react";
 import MenuNavPerfil from "../../componentsPerfil/MenuNavPerfil";
 import AcessoRapido from "../../componentsPerfil/AcessoRapido";
-import GaleriaDeClientes from "../../componentsPerfil/GaleriaDeClientes";
+import Eventos from "../../componentsPerfil/Eventos";
 import ControleDeVendas from "../../componentsPerfil/ControleDeVendas";
 import CadastrosRealizados from "../../componentsPerfil/CadastrosRealizados";
 import ProdutosEventos from "../../componentsPerfil/Produtos";
@@ -22,8 +22,8 @@ const PerfilFotografa = () => {
 
   const renderPage = () => {
     switch (currentPage) {
-      case "galeria":
-        return <GaleriaDeClientes albumId={selectedAlbumId} />;
+      case "eventos":
+        return <Eventos albumId={selectedAlbumId} />;
       case "controleVendas":
         return <ControleDeVendas />;
       case "cadastros":

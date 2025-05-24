@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
 
       AlbumFotos.belongsTo(models.DetalheEvento, {
         foreignKey: 'id_foto',
+        allowNull: true,
         as: 'foto',
         onDelete: 'CASCADE'
       });

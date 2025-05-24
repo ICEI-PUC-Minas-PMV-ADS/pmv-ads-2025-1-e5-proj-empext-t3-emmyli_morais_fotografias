@@ -6,14 +6,14 @@ import { api } from "../services/api";
 const FormAdicionarEnsaio = ({ onClose, onSave }) => {
   const [abaAtiva, setAbaAtiva] = useState("informacoes");
   const [titulo, setTitulo] = useState("");
-  const [categoria, setCategoria] = useState("");
-  const [mostrarModalCategoria, setMostrarModalCategoria] = useState(false);
-  const [categoriasPersonalizadas, setCategoriasPersonalizadas] = useState([]);
-  const [novaCategoria, setNovaCategoria] = useState("");
+  //const [categoria, setCategoria] = useState("");
+  //const [mostrarModalCategoria, setMostrarModalCategoria] = useState(false);
+ // const [categoriasPersonalizadas, setCategoriasPersonalizadas] = useState([]);
+  //const [novaCategoria, setNovaCategoria] = useState("");
   const [imagens, setImagens] = useState([]);
-  const [pacotes, setPacotes] = useState([]);
-  const [pacotesSelecionados, setPacotesSelecionados] = useState([]);
-  const [mostrarModal, setMostrarModal] = useState(false);
+  //const [pacotes, setPacotes] = useState([]);
+//  const [pacotesSelecionados, setPacotesSelecionados] = useState([]);
+  //const [mostrarModal, setMostrarModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [mensagem, setMensagem] = useState("");
   const [tipoMensagem, setTipoMensagem] = useState("");
@@ -21,17 +21,17 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
 
   // carrega categorias do banco
   useEffect(() => {
-    fetchCategorias();
+    //fetchCategorias();
   }, []);
 
-  const fetchCategorias = async () => {
+  /*const fetchCategorias = async () => {
     try {
       const res = await api.get("/api/categorias");
       setCategoriasPersonalizadas(res.data);
     } catch {
       // falha silenciosa
     }
-  };
+  };*/
 
   const handleErro = (msg) => {
     setTipoMensagem("erro");
@@ -58,46 +58,47 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
     setImagens(nov);
   };
 
-  const abrirModalPacote = () => setMostrarModal(true);
-  const fecharModalPacote = () => setMostrarModal(false);
-  const adicionarNovoPacote = (novoPacote) => {
+  //const abrirModalPacote = () => setMostrarModal(true);
+  //const fecharModalPacote = () => setMostrarModal(false);
+ /* const adicionarNovoPacote = (novoPacote) => {
     setPacotes((prev) => [...prev, novoPacote]);
     setMostrarModal(false);
-  };
-  const handlePacoteChange = (pacote) => {
+  };*/
+
+  /*const handlePacoteChange = (pacote) => {
     setPacotesSelecionados((prev) =>
       prev.includes(pacote)
         ? prev.filter((p) => p !== pacote)
         : [...prev, pacote]
     );
-  };
+  };*/
 
   const handleSubmit = (e) => e.preventDefault();
 
   const handleAvancar = async () => {
-    if (!titulo || !categoria || imagens.length === 0) {
+    if (!titulo || imagens.length === 0) {
       handleErro("Preencha todas as informações e adicione imagens!");
       return;
     }
     try {
       setLoading(true);
       
-      const formData = new FormData();
+      /*const formData = new FormData();
       formData.append("usuario_id", 1);
       formData.append("nome", titulo);
-      formData.append("descricao", categoria);
+      formData.append("descricao", "");
       formData.append("origem", origem);
       imagens.forEach((img) => formData.append("fotos", img));
       await api.post("/api/albuns", formData);
       onSave?.("Ensaio criado com sucesso!");
       // reset
       setTitulo("");
-      setCategoria("");
+      //setCategoria("");
       setImagens([]);
       setPacotes([]);
       setPacotesSelecionados([]);
       setAbaAtiva("informacoes");
-      onClose?.();
+      onClose?.();*/
     } catch {
       handleErro("Erro ao criar ensaio!");
     } finally {
@@ -106,7 +107,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
   };
 
   // criação de nova categoria no banco
-  const handleAddCategoria = async () => {
+  /*const handleAddCategoria = async () => {
     const nome = novaCategoria.trim();
     if (!nome) return;
     try {
@@ -118,10 +119,10 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
     } catch {
       handleErro("Erro ao criar categoria.");
     }
-  };
+  };*/
 
   // remoção da categoria
-  const handleDeleteCategoria = async (id) => {
+  /*const handleDeleteCategoria = async (id) => {
     try {
       await api.delete(`/api/categorias/${id}`);
       setCategoriasPersonalizadas((prev) => prev.filter((c) => c.id !== id));
@@ -131,7 +132,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
     } catch {
       handleErro("Erro ao remover categoria.");
     }
-  };
+  };*/
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
@@ -147,7 +148,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
             ×
           </button>
           <div className="flex justify-center items-center border-b border-[#b1783d] pb-2 mb-6">
-            <h1 className="text-3xl text-[#b1783d]">Galeria</h1>
+            <h1 className="text-3xl text-[#b1783d]">Eventos</h1>
           </div>
           <div className="flex border-b mb-6">
             <button
@@ -185,7 +186,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
               <div className="flex space-x-4 flex-wrap">
                 <div className="flex-1 space-y-6">
                   <div>
-                    <label className="block font-medium mb-1">Título do Ensaio</label>
+                    <label className="block font-medium mb-1">Título do Evento</label>
                     <input
                       type="text"
                       value={titulo}
@@ -194,7 +195,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
                     />
                   </div>
 
-                  <div>
+                  {/*<div>
                     <div className="flex items-center justify-between mb-1">
                       <label className="block font-medium">Categoria</label>
                       <button
@@ -218,7 +219,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
                         </option>
                       ))}
                     </select>
-                  </div>
+                  </div>*/}
 
                   <div>
                     <label className="block font-medium mb-1">Imagens do Ensaio</label>
@@ -265,7 +266,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
                       />{" "}
                       Privado
                     </label>
-                    <label>
+                    <label className="mr-4">
                       <input
                         type="radio"
                         name="origem"
@@ -275,10 +276,20 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
                       />{" "}
                       Público
                     </label>
+                    <label className="mr-4">
+                      <input
+                        type="radio"
+                        name="origem"
+                        value="exibirtrabalho"
+                        checked={origem === "exibirtrabalho"}
+                        onChange={(e) => setOrigem(e.target.value)}
+                      />{" "}
+                      Exibir no site como Trabalho
+                    </label>
                   </div>
                 </div>
 
-                {origem !== "publico" && (
+                {/*origem !== "publico" && (
                   <div className="w-full sm:w-[22rem]">
                     <label className="block font-medium mb-3">Pacotes:</label>
                     {pacotes.map((pacote, idx) => (
@@ -299,7 +310,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
                     </p>
                     <ModalPacote isOpen={mostrarModal} onClose={fecharModalPacote} onSave={adicionarNovoPacote} />
                   </div>
-                )}
+                )*/}
               </div>
 
               <div className="flex justify-end">
@@ -326,17 +337,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
                   className="w-full border rounded px-4 py-2"
                 />
               </div>
-              <div className="flex items-center gap-4">
-                <span className="text-[#996633]">Download</span>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" className="sr-only peer" />
-                  <div className="w-11 h-6 bg-[#ccc] rounded-full peer peer-checked:bg-[#b1783d]
-                    after:content-[''] after:absolute after:top-[2px] after:left-[2px]
-                    after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all
-                    peer-checked:after:translate-x-full"
-                  ></div>
-                </label>
-              </div>
+             
               <div>
                 <p className="mb-2">Ativar marca d'água:</p>
                 <label className="mr-4">
@@ -359,7 +360,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
           
 
           {/** MODAL CATEGORIA **/}
-          {mostrarModalCategoria && (
+          {/*mostrarModalCategoria && (
             <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
               <div className="bg-white rounded-xl px-6 py-5 w-full max-w-sm shadow-xl font-serif">
                 <h2 className="text-[#b1783d] text-xl font-bold mb-4">Categorias</h2>
@@ -398,7 +399,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
                 </div>
               </div>
             </div>
-          )}
+          )*/}
         </div>
 
       

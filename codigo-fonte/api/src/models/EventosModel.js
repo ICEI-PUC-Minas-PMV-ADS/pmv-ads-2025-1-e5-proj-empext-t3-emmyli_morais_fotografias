@@ -28,20 +28,23 @@ module.exports = (sequelize, DataTypes) => {
     },
     nome: {
       type: DataTypes.STRING(255),
-      allowNull: false
+      
     },
     descricao: {
-      type: DataTypes.TEXT
+      type: DataTypes.TEXT,
+      allowNull: true
     },
     data_evento: {
       type: DataTypes.DATEONLY,
       allowNull: false
     },
     hora_evento: {
-      type: DataTypes.TIME
+      type: DataTypes.TIME,
+      allowNull: true
     },
     local: {
-      type: DataTypes.STRING(255)
+      type: DataTypes.STRING(255),
+      allowNull: true
     },
     publico: {
       type: DataTypes.BOOLEAN,
@@ -62,7 +65,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     urlevento: {
       type: DataTypes.TEXT
-    },
+    },   
     dtinclusao: {
       type: DataTypes.DATE,
       defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
