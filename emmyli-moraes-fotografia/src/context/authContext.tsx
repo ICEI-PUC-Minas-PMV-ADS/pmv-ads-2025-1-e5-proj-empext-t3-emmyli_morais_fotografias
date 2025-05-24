@@ -131,6 +131,8 @@ const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
                 dataExpiracao: dataExpiracaoRefreshToken
             }
         })
+
+        api.defaults.headers.Authorization = `Bearer ${data.token.informacao}`
     }
 
     return <AuthContext.Provider value={{ user: userStorage, logar: logar, logout: logout, update: update }}> {children}</AuthContext.Provider>;

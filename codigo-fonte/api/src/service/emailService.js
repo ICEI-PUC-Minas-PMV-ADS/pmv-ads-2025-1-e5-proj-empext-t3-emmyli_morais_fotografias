@@ -13,7 +13,7 @@ const sendResetPasswordEmail = (token, nome, email) => {
     transport.sendMail({
         to: email,
         from,
-        html: `<p>Ola, ${nome}. Você esqueceu sua senha? Não tem problema, utilize esse token: ${token} </p>`,
+        html: `<p>Ola, ${nome}. Você esqueceu sua senha? Não tem problema, utilize esse token: <a href="http://localhost:5173/AcessandoEmail/${token}">clique aqui para acessar o sistema</a> </p>`,
     }, (error) => {
         if (error)
             console.log(error)
