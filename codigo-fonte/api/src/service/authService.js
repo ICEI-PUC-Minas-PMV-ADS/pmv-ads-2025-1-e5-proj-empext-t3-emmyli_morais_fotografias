@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const cryptografyPassword = require('./cryptographServices');
 const { Op } = require('sequelize');
 const { Usuarios, App001 } = require('../models');
+const {sendResetPasswordEmail} = require('./emailService')
 require('dotenv').config();
 
 const SECRET_KEY = process.env.JWT_SECRET;
@@ -83,9 +84,9 @@ const refreshTokenService = async (refreshTokenRecebido) => {
   }
 
   const user = await Usuarios.findOne({ where: { id: veriryToken.idusuario } })
-
+  
   const isUserAdmin = user.tipo === 'fotografo';
-
+  
   const novoToken = gerarToken(
     {
       idusuario: user.id,
@@ -95,11 +96,13 @@ const refreshTokenService = async (refreshTokenRecebido) => {
       perfil: isUserAdmin ? 'FOTOGRAFO_ADM' : 'CLIENTE'
     }
   );
-
+  
+  const cincoDiasEmSegundos = 5 * 24 * 60 * 60 
   const novoRefreshToken = gerarRefreshToken(
     {
       idusuario: user.id
-    }
+    },
+    cincoDiasEmSegundos
   );
 
   const refreshTokenData = {
@@ -122,8 +125,44 @@ const logoutService = async (idusuario) => {
   return { message: 'Logout realizado com sucesso' };
 };
 
+const forgotPasswordService = async ( email ) => {
+	 const user = await Usuarios.findOne({
+    where: {
+      email: email 
+    }
+  });
+
+	if (!user)
+		return;
+
+  const dezMinutosEmSegundos = 10 * 60
+	const emailToken = gerarRefreshToken(
+    {
+      idusuario: user.id
+    },
+    dezMinutosEmSegundos
+  );
+
+  const emailTokenData = {
+    token: emailToken.informacao,
+    dtexpiracao: new Date(Date.now() + emailToken.expiresIn * 1000),
+    dtinclusao: new Date(),
+    dtalteracao: new Date()
+  };
+  
+  const existingToken = await App001.findOne({ where: { idusuario: user.id } });
+  if (existingToken) {
+    await App001.update(emailTokenData, { where: { idusuario: user.id } });
+  } else {
+    await App001.create({ idusuario: user.id, ...emailTokenData });
+  }
+
+  sendResetPasswordEmail(emailToken.informacao, user.nome, user.email)
+}
+
 
 const quinzeMinutosEmSegundos = 15 * 60
+
 
 const gerarToken = (data) => {
   const informacao = jwt.sign(
@@ -137,18 +176,18 @@ const gerarToken = (data) => {
   };
 }
 
-const cincoDiasEmSegundos = 5 * 24 * 60 * 60 
 
-const gerarRefreshToken = (data) => {
+const gerarRefreshToken = (data, tempoExpiracao) => {
   const informacao = jwt.sign(
     data,
-    SECRET_KEY, { expiresIn: '5d', audience: "REFRESH" }
+    SECRET_KEY, { expiresIn: tempoExpiracao, audience: "REFRESH" }
   )
   return {
     informacao,
-    expiresIn: cincoDiasEmSegundos
+    expiresIn: tempoExpiracao
   }
   
 }
 
-module.exports = { AuthLogin, logoutService, refreshTokenService };
+
+module.exports = { AuthLogin, logoutService, refreshTokenService, forgotPasswordService };
