@@ -3,6 +3,7 @@ import MenuNavPerfilCliente from "../../componentsCliente/MenuNavPerfilCliente";
 import GaleriaCliente from "../../componentsCliente/GaleriaCliente";
 import CarrinhoCliente from "../../componentsCliente/CarrinhoCliente";
 import PerfilCliente from "../../Pages/PerfilCliente/PerfilCliente";
+import FeedbackCliente from "../../componentsCliente/FeedbackCliente";
 
 const Cliente = () => {
   const [selectedItem, setSelectedItem] = useState("perfil");
@@ -16,6 +17,8 @@ const Cliente = () => {
         return <CarrinhoCliente />;
       case "perfil":
         return <PerfilCliente />;
+      case "feedback":
+        return <FeedbackCliente />;
       default:
         return <PerfilCliente />;
     }
