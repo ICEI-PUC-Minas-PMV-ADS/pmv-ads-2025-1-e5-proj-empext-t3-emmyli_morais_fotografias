@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaImage, FaShoppingCart, FaUser } from "react-icons/fa";
+import { FaImage, FaShoppingCart, FaUser, FaCommentDots } from "react-icons/fa";
 import { Menu } from "lucide-react";
 import logo from "../img/logo.png";
 import { useAuth } from "../context/authContext";
@@ -20,6 +20,7 @@ const MenuNavPerfilCliente = ({
     { name: "Perfil", icon: <FaUser />, key: "perfil" },
     { name: "Galeria", icon: <FaImage />, key: "galeria" },
     { name: "Carrinho", icon: <FaShoppingCart />, key: "carrinho" },
+    { name: "Feedback", icon: <FaCommentDots  />, key: "feedback" },
   ];
 
   useEffect(() => {
