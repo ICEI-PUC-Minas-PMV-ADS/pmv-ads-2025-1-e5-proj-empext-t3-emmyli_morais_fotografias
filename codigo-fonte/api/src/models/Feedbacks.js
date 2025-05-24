@@ -4,14 +4,14 @@ module.exports = (sequelize, DataTypes) => {
       // Feedback pertence a um único usuário
       Feedbacks.belongsTo(models.Usuarios, {
         foreignKey: 'usuarioId',
-        as: 'usuarios',
+        as: 'usuario',
         onDelete: 'CASCADE'
       });
 
       // Feedback pertence a um único álbum
       Feedbacks.belongsTo(models.Albuns, {
         foreignKey: 'albumId',
-        as: 'albuns',
+        as: 'album',
         onDelete: 'CASCADE'
       });
     }
@@ -39,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    exibirtrabalho: {
+    exibirfeedback: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false
