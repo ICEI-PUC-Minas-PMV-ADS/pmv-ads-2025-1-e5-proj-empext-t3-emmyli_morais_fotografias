@@ -8,10 +8,10 @@ import {
   Trash,
   MoreVertical,
 } from "lucide-react";
-import FormAdicionarEnsaio from "../componentsPerfil/FormAdicionarEnsaio";
+import FormAdicionarEnsaio from "./FormAdicionarEnsaio";
 import { api } from "../services/api";
 
-const GaleriaDeClientes = ({ albumId }) => {
+const Eventos = ({ albumId }) => {
   const [galerias, setGalerias] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [albumAberto, setAlbumAberto] = useState(null);
@@ -316,13 +316,13 @@ const excluirAlbum = async () => {
             <div className="mb-4">
               
 
-              <h1 className="text-2xl font-bold text-[#c09b2d] border-b-2 border-[#c09b2d] pb-2">Galeria de Clientes</h1>
+              <h1 className="text-2xl font-bold text-[#c09b2d] border-b-2 border-[#c09b2d] pb-2">Eventos</h1>
 
               <button
                 onClick={() => setMostrarModal(true)}
                 className="mt-4 bg-[#c09b2d] hover:bg-[#a48322] text-white px-4 py-2 rounded-xl shadow-md transition duration-300"
               >
-                Criar nova galeria
+                Criar novo Evento
               </button>
             </div>
 
@@ -522,4 +522,4 @@ const excluirAlbum = async () => {
   );
 };
 
-export default GaleriaDeClientes;
+export default Eventos;

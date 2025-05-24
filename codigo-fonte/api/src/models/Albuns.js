@@ -63,6 +63,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: true
     },
+    downloadfoto: {             
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
     dtinclusao: {
       type: DataTypes.DATE,
       defaultValue: sequelize.literal('CURRENT_TIMESTAMP')

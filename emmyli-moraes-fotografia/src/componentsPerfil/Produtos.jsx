@@ -23,9 +23,6 @@ const Produtos = () => {
     observacoes: "",
     evento_id: "",
   });
-  const [eventos, setEventos] = useState([]);
-
-  const token = localStorage.getItem("token");
 
   const buscarProdutos = () => {
     api
@@ -43,7 +40,7 @@ const Produtos = () => {
       });
   };
 
-  const buscarEventos = () => {
+ /* const buscarEventos = () => {
     api
       .get("/api/eventos")
       .then((res) => {
@@ -52,11 +49,11 @@ const Produtos = () => {
       .catch((err) => {
         console.error("Erro ao buscar eventos:", err);
       });
-  };
+  };*/
 
   useEffect(() => {
     buscarProdutos();
-    buscarEventos();
+    //buscarEventos();
   }, []);
 
   const produtosFiltrados = produtos.filter((produto) => {
@@ -165,7 +162,6 @@ const Produtos = () => {
               <th className="py-4 px-6 text-left">Qtd. Fotos</th>
               <th className="py-4 px-6 text-left">Preço</th>
               <th className="py-4 px-6 text-left">Observações</th>
-              <th className="py-4 px-6 text-left">Evento</th>
               <th className="py-4 px-6 text-center">Ações</th>
             </tr>
           </thead>
@@ -183,7 +179,6 @@ const Produtos = () => {
                     R$ {parseFloat(produto.preco).toFixed(2)}
                   </td>
                   <td className="py-4 px-6">{produto.observacoes}</td>
-                  <td className="py-4 px-6">{produto.evento?.nome || "—"}</td>
                   <td className="py-4 px-6 flex justify-center space-x-4">
                     <button
                       onClick={() => abrirModalEdicao(produto)}
@@ -220,8 +215,7 @@ const Produtos = () => {
             <div key={produto.id} className="bg-white rounded-lg shadow p-4">
               <p><strong>Descrição:</strong> {produto.descricao}</p>
               <p><strong>Qtd. Fotos:</strong> {produto.quantidade_fotos}</p>
-              <p><strong>Preço:</strong> R$ {parseFloat(produto.preco).toFixed(2)}</p>
-              <p><strong>Evento:</strong> {produto.evento?.nome || "—"}</p>
+              <p><strong>Preço:</strong> R$ {parseFloat(produto.preco).toFixed(2)}</p>              
               <p><strong>Observações:</strong> {produto.observacoes}</p>
               <div className="flex justify-end mt-2 space-x-4">
                 <button
@@ -320,22 +314,7 @@ const Produtos = () => {
                   }
                   className="w-full border p-2 rounded"
                 />
-              </div>
-
-              <div>
-                <label className="block mb-1">Evento</label>
-                <select
-                  disabled
-                  value={dadosEditados.evento_id}
-                  className="w-full border p-2 rounded bg-gray-100 text-gray-600 cursor-not-allowed"
-                >
-                  {eventos.map((evento) => (
-                    <option key={evento.id} value={evento.id}>
-                      {evento.nome}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              </div>              
 
               <div className="flex justify-between mt-4">
                 <button
@@ -433,26 +412,7 @@ const Produtos = () => {
                   }
                   className="w-full border p-2 rounded"
                 />
-              </div>
-
-              <div>
-                <label className="block mb-1">Evento</label>
-                <select
-                  required
-                  value={dadosNovoProduto.id_evento}
-                  onChange={(e) =>
-                    setDadosNovoProduto({ ...dadosNovoProduto, id_evento: e.target.value })
-                  }
-                  className="w-full border p-2 rounded"
-                >
-                  <option value="">Selecione um evento</option>
-                  {eventos.map((evento) => (
-                    <option key={evento.id} value={evento.id}>
-                      {evento.nome}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              </div>             
 
               <div className="flex justify-between mt-4">
                 <button

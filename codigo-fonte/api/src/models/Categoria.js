@@ -1,24 +1,29 @@
 // src/models/Categoria.js
+
+'use strict';
+const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
-  const Categoria = sequelize.define(
-    "Categoria",
-    {
-      id: {
+  class Categoria extends Model {    
+  }
+
+  Categoria.init({
+    id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
-      },
-      nome: {
+    },
+    nome: {
         type: DataTypes.STRING(100),
         allowNull: false,
         unique: true
-      }
-    },
-    {
-      tableName: "categorias",
-      timestamps: false    // <-- desliga o createdAt / updatedAt
     }
-  );
+  }, {
+    sequelize,
+    modelName: 'Categoria',
+    tableName: 'categorias',
+    timestamps: false
+  });
 
   return Categoria;
 };
