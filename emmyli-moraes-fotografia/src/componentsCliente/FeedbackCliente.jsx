@@ -12,40 +12,8 @@ const FeedbackCliente = () => {
   const [satisfacao, setSatisfacao] = useState(0);
   const [feedback, setFeedback] = useState("");
   const [usuarioInfo, setUsuarioInfo] = useState(null);
-
-  useEffect(() => {
-    const fetchAlbuns = async () => {
-      setLoading(true);
-      try {
-        const response = await api.get("/api/albuns");
-        setAlbuns(response.data);
-        const albunsCliente = response.data.filter(
-          (album) => album.origem === "cliente"
-        );
-
-        const albunsFormatados = albunsCliente.map((album) => ({
-          id: album.id,
-          cliente: album.usuario?.nome || "Cliente",
-          nome: album.nome,
-          descricao: album.descricao || "",
-          fotos:
-            album.fotos?.map((f) => ({
-              id_foto: f.foto?.id,
-              url: f.foto?.foto,
-            })) || [],
-          imagem: album.fotos?.[0]?.foto?.foto || "",
-          data: new Date(album.dtinclusao).toLocaleDateString("pt-BR") || "",
-        }));
-
-        setAlbuns(albunsFormatados);
-      } catch (error) {
-        console.error("Erro ao carregar os dados:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchAlbuns();
-  }, []);
+  const [mensagem, setMensagem] = useState("");
+  const [tipoMensagem, setTipoMensagem] = useState("");
 
   useEffect(() => {
     const fetchUsuarioInfo = () => {
@@ -56,6 +24,53 @@ const FeedbackCliente = () => {
     fetchUsuarioInfo();
   }, []);
 
+  useEffect(() => {
+    fetchAlbuns();
+  }, [usuarioInfo]);
+
+  const fetchAlbuns = async () => {
+    if (!usuarioInfo?.idusuario) return;
+    setLoading(true);
+    try {
+      const filter = `?usuarioId=${usuarioInfo?.idusuario}&sem_feedback=true`;
+      const response = await api.get("/api/albuns" + filter);
+      setAlbuns(response.data);
+      const albunsCliente = response.data.filter(
+        (album) => album.origem === "cliente"
+      );
+
+      const albunsFormatados = albunsCliente.map((album) => ({
+        id: album.id,
+        cliente: album.usuario?.nome || "Cliente",
+        nome: album.nome,
+        descricao: album.descricao || "",
+        fotos:
+          album.fotos?.map((f) => ({
+            id_foto: f.foto?.id,
+            url: f.foto?.foto,
+          })) || [],
+        imagem: album.fotos?.[0]?.foto?.foto || "",
+        data: new Date(album.dtinclusao).toLocaleDateString("pt-BR") || "",
+      }));
+
+      setAlbuns(albunsFormatados);
+    } catch (error) {
+      console.error("Erro ao carregar os dados:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSucesso = (msg) => {
+    setTipoMensagem("sucesso");
+    setMensagem(msg);
+    fetchAlbuns();
+  };
+  const handleErro = (msg) => {
+    setTipoMensagem("erro");
+    setMensagem(msg);
+  };
+
   const handleFeedback = async () => {
     setLoading(true);
     try {
@@ -65,17 +80,21 @@ const FeedbackCliente = () => {
         feedback,
         satisfacao,
       });
+
       if (response.status === 201) {
-        alert("Feedback enviado com sucesso!");
+        handleSucesso("Feedback enviado com sucesso!");
         setIsModalOpen(false);
         setAlbumSelecionado(null);
         setFeedback("");
         setSatisfacao(0);
       } else {
-        alert("Erro ao enviar feedback.");
+        handleErro("Erro ao enviar feedback.");
       }
     } catch (error) {
       console.error("Erro ao enviar feedback:", error);
+      handleErro("Erro ao enviar feedback.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -105,13 +124,13 @@ const FeedbackCliente = () => {
                 <input
                   type="checkbox"
                   className="absolute top-2 left-2 z-10 w-5 h-5 accent-[#c09b2d] "
-                  checked={item.id === albumSelecionado.album_id}
+                  checked={item.id === albumSelecionado?.album_id}
                   onChange={(e) => {
                     e.stopPropagation();
                     if (e.target.checked) {
                       setAlbumSelecionado({
                         album_id: item.id,
-                        album_nome: item.nome
+                        album_nome: item.nome,
                       });
                       setIsModalOpen(true);
                     } else {
@@ -145,7 +164,9 @@ const FeedbackCliente = () => {
           </>
         ) : (
           <div className="col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-4 xl:col-span-5 text-center">
-            <p className="text-gray-500">Não há nenhum álbum disponível para realizar feedback.</p>
+            <p className="text-gray-500">
+              Não há nenhum álbum disponível para realizar feedback.
+            </p>
           </div>
         )}
 
