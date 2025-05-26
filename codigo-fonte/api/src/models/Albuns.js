@@ -34,6 +34,12 @@ module.exports = (sequelize, DataTypes) => {
         as: 'curtidasAlbuns',
         onDelete: 'CASCADE',
       });
+
+      Albuns.hasOne(models.Feedbacks, {
+        foreignKey: 'albumId',
+        as: 'feedbacks',
+        onDelete: 'CASCADE',
+      });
     }
   }
 
