@@ -74,7 +74,7 @@ app.use('/api/produtos', verifyToken, produtosRoutes);
 app.use('/api/eventos', verifyToken, eventosRoutes);
 
 //Feedbacks
-app.use('/api/feedbacks', verifyToken, require('./routes/feedback/feedbackRoutes'));  
+app.use('/api/feedbacks', require('./routes/feedback/feedbackRoutes'));  
 
 app.listen(port, () => {
   console.log(`Servidor rodando em http://localhost:${port}`);

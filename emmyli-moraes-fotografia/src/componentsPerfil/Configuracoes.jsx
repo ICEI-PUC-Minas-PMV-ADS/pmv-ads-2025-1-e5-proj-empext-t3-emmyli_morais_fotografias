@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import ImageUploader from "../components/ImageUploader";
 import { api } from "../services/api";
-import { FaStar, FaTrash } from "react-icons/fa";
+import { FaStar } from "react-icons/fa";
 import Modal from "../components/Modal";
 
 const Configuracoes = ({ albumId }) => {
@@ -494,7 +494,7 @@ const Configuracoes = ({ albumId }) => {
                   <td className="px-4 py-2">{feedback.feedback}</td>
                   <p className="flex items-center mt-2 justify-center">
                     {Array.from({ length: feedback.satisfacao }, (_, i) => (
-                      <FaStar key={i} color="gold" />
+                      <FaStar key={i} color="c09b2d" />
                     ))}
                   </p>
                   <td className="px-4 py-2">

@@ -111,8 +111,7 @@ const FeedbackCliente = () => {
                     if (e.target.checked) {
                       setAlbumSelecionado({
                         album_id: item.id,
-                        album_nome: item.nome,
-                        album_cliente: "Bárbara Sena",
+                        album_nome: item.nome
                       });
                       setIsModalOpen(true);
                     } else {

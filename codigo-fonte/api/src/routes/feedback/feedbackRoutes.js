@@ -3,7 +3,7 @@ const router = express.Router();
 const Api_Controller = require('../../controllers/Api_Controller');
 const feedbackController = new Api_Controller('Feedbacks');
 const checkFotografo = require('../../middleware/checkFotografo');
-
+const verifyToken = require('../../middleware/AuthMiddlewareToken');
 /**
  * @swagger
  * components:
@@ -203,8 +203,8 @@ const checkFotografo = require('../../middleware/checkFotografo');
  */
 
 router.get('/', feedbackController.getAll);
-router.get('/:id', feedbackController.getById);
-router.post('/', feedbackController.create);
+router.get('/:id', verifyToken, feedbackController.getById);
+router.post('/', verifyToken, feedbackController.create);
 router.put('/:id', checkFotografo, feedbackController.update); //rota disponível apenas para fotógrafos
 router.delete('/:id', checkFotografo, feedbackController.delete);  //rota disponível apenas para fotógrafos
 
