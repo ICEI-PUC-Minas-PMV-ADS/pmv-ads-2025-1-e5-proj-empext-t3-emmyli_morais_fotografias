@@ -44,9 +44,15 @@ const Home = () => {
 
   useEffect(() => {
     const fetchDepoimentos = async () => {
-      const filter = "?exibirfeedback=true&include=usuario,album";
       try {
-        const response = await api.get("/api/feedbacks" + filter);
+        const response = await api.get("/api/feedbacks", {
+          params: {
+            filters: {
+              exibirfeedback: true,
+            },
+            include: "usuario,album",
+          },
+        });
         const allDepoimentos = response.data;
         setDepoimentos(allDepoimentos);
       } catch (error) {
@@ -84,7 +90,7 @@ const Home = () => {
 
   const settingsDepoimentos = {
     dots: true,
-    infinite: true,
+    infinite: false,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
