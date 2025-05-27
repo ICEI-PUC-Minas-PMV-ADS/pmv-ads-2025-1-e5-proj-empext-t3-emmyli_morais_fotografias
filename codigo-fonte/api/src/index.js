@@ -70,6 +70,9 @@ app.use('/api/visualizacoesCurtidas', vcRoutes);
 //produtos
 app.use('/api/produtos', verifyToken, produtosRoutes);
 
+//eventos
+app.use('/api/eventos', eventosRoutes);
+
 //Feedbacks
 app.use('/api/feedbacks', require('./routes/feedback/feedbackRoutes'));  
 
