@@ -15,6 +15,11 @@ module.exports = (sequelize, DataTypes) => {
         as: 'curtidasFotos',
         onDelete: 'CASCADE',
       });
+
+      DetalheEvento.hasMany(models.Comentarios, {
+        foreignKey: 'detalheEventoId',
+        as: 'comentarios'
+      });
     }
   }
 

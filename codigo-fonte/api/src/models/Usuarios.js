@@ -45,7 +45,13 @@ module.exports = (sequelize, DataTypes) => {
         as: 'detalhes',
         onDelete: 'CASCADE'
       });
-    };
+
+      Usuarios.hasMany(models.Comentarios, {
+        foreignKey: 'usuarioId',
+        as: 'comentarios'
+      });
+
+  };
   
     return Usuarios;
   };

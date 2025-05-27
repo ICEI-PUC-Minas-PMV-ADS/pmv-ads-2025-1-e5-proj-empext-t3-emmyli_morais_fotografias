@@ -70,11 +70,11 @@ app.use('/api/visualizacoesCurtidas', vcRoutes);
 //produtos
 app.use('/api/produtos', verifyToken, produtosRoutes);
 
-//eventos
-app.use('/api/eventos', verifyToken, eventosRoutes);
-
 //Feedbacks
 app.use('/api/feedbacks', require('./routes/feedback/feedbackRoutes'));  
+
+//Comentários
+app.use('/api/comentarios', verifyToken, require('./routes/comentario/comentariosRoutes'));
 
 app.listen(port, () => {
   console.log(`Servidor rodando em http://localhost:${port}`);
