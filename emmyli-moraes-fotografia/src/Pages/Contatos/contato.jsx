@@ -3,29 +3,30 @@ import MenuNav from "../../components/MenuNav";
 import { ContatoEmail } from "../../services/authService";
 
 const Contato = () => {
-  const [formData, setFormData] = useState({
+  const [form, setForm] = useState({
     nome: "",
     email: "",
     telefone: "",
     mensagem: ""
   });
 
-  const [status, setStatus] = useState<null | "success" | "error">(null);
+  //const [status, setStatus] = useState < null | "success" | "error" > (null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
-      await ContatoEmail(formData);
-      setStatus("success");
-      setFormData({ nome: "", email: "", telefone: "", mensagem: "" }); // limpa o form
+      await ContatoEmail(form);
+      alert("Mensagem enviada com sucesso!");
+      setForm({ nome: "", email: "", telefone: "", mensagem: "" });
     } catch (error) {
-      console.error("Erro ao enviar:", error);
-      setStatus("error");
+      console.error("Erro ao enviar mensagem:", error);
+      alert("Ocorreu um erro ao enviar sua mensagem. Tente novamente.");
     }
   };
 
@@ -33,7 +34,7 @@ const Contato = () => {
     <div className="font-serif bg-[#0B3727] min-h-screen text-[#c09b2d] flex flex-col">
       <MenuNav />
       <div className="flex flex-col md:flex-row items-center justify-center px-6 md:px-[15%] pt-28 pb-16 gap-12">
-        
+
         {/* Texto e Contatos */}
         <div className="w-full md:w-1/2 text-center md:text-left">
           <h1 className="text-[#d9a766] text-3xl sm:text-4xl md:text-6xl font-bold mb-8">Fale Comigo!</h1>
@@ -55,34 +56,32 @@ const Contato = () => {
 
         {/* Formulário */}
         <div className="w-full md:w-1/2">
-          <form className="flex flex-col gap-4 text-sm sm:text-base" onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-sm sm:text-base">
             <label className="text-white font-semibold text-sm sm:text-base">Seu Nome Completo:</label>
             <input
-              name="nome"
               type="text"
-              value={formData.nome}
+              name="nome"
+              value={form.nome}
               onChange={handleChange}
               className="p-2 sm:p-3 bg-gray-200 text-black rounded-md outline-none text-sm sm:text-base"
               placeholder="Digite seu nome"
-              required
             />
 
             <label className="text-white font-semibold text-sm sm:text-base">Seu Melhor E-Mail:</label>
             <input
-              name="email"
               type="email"
-              value={formData.email}
+              name="email"
+              value={form.email}
               onChange={handleChange}
               className="p-2 sm:p-3 bg-gray-200 text-black rounded-md outline-none text-sm sm:text-base"
               placeholder="Digite seu e-mail"
-              required
             />
 
             <label className="text-white font-semibold text-sm sm:text-base">Seu Telefone/WhatsApp:</label>
             <input
-              name="telefone"
               type="tel"
-              value={formData.telefone}
+              name="telefone"
+              value={form.telefone}
               onChange={handleChange}
               className="p-2 sm:p-3 bg-gray-200 text-black rounded-md outline-none text-sm sm:text-base"
               placeholder="Digite seu telefone"
@@ -91,12 +90,11 @@ const Contato = () => {
             <label className="text-white font-semibold text-sm sm:text-base">Mensagem:</label>
             <textarea
               name="mensagem"
-              value={formData.mensagem}
+              value={form.mensagem}
               onChange={handleChange}
               className="p-2 sm:p-3 bg-gray-200 text-black rounded-md outline-none text-sm sm:text-base"
               placeholder="Digite sua mensagem"
-              rows={4}
-              required
+              rows="4"
             ></textarea>
 
             <button
@@ -105,14 +103,8 @@ const Contato = () => {
             >
               Enviar
             </button>
-
-            {status === "success" && (
-              <p className="text-green-400 mt-2">Mensagem enviada com sucesso!</p>
-            )}
-            {status === "error" && (
-              <p className="text-red-400 mt-2">Erro ao enviar. Tente novamente.</p>
-            )}
           </form>
+
         </div>
       </div>
     </div>
