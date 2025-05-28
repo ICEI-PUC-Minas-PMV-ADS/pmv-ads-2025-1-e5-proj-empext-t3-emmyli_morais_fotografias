@@ -60,6 +60,15 @@ export const forgotPassword = async (email: string) => {
      })
 }
 
+export const ContatoEmail = async (dados: {
+  nome: string;
+  email: string;
+  telefone: string;
+  mensagem: string;
+}) => {
+  return await anonApi.post('api/auth/contatoEmail', dados);
+};
+
 // Metodo para logout
 
 export const cleanUserInfos = () => {

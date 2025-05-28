@@ -1,37 +1,50 @@
 import { useState, useEffect } from "react";
-import ModalPacote from "../componentsPerfil/ModalPacote";
-import { Plus, Trash2 } from "lucide-react";
 import { api } from "../services/api";
+
 
 const FormAdicionarEnsaio = ({ onClose, onSave }) => {
   const [abaAtiva, setAbaAtiva] = useState("informacoes");
   const [titulo, setTitulo] = useState("");
-  //const [categoria, setCategoria] = useState("");
-  //const [mostrarModalCategoria, setMostrarModalCategoria] = useState(false);
- // const [categoriasPersonalizadas, setCategoriasPersonalizadas] = useState([]);
-  //const [novaCategoria, setNovaCategoria] = useState("");
   const [imagens, setImagens] = useState([]);
-  //const [pacotes, setPacotes] = useState([]);
-//  const [pacotesSelecionados, setPacotesSelecionados] = useState([]);
-  //const [mostrarModal, setMostrarModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [mensagem, setMensagem] = useState("");
   const [tipoMensagem, setTipoMensagem] = useState("");
   const [origem, setOrigem] = useState("cliente");
 
-  // carrega categorias do banco
-  useEffect(() => {
-    //fetchCategorias();
-  }, []);
+  const [descricao, setDescricao] = useState("");
+  const [dataEvento, setDataEvento] = useState("");
+  const [horaEvento, setHoraEvento] = useState("");
+  const [localEvento, setLocalEvento] = useState("");
 
-  /*const fetchCategorias = async () => {
-    try {
-      const res = await api.get("/api/categorias");
-      setCategoriasPersonalizadas(res.data);
-    } catch {
-      // falha silenciosa
+  const [urlAlbum, setUrlAlbum] = useState("");
+  const [ativarMarca, setAtivarMarca] = useState(true);
+
+  const [marcasDagua, setMarcasDagua] = useState([]);
+  const [marcaSelecionada, setMarcaSelecionada] = useState("");
+
+  
+  useEffect(() => {
+    if (origem === "cliente") {
+      const chaveUnica = crypto.randomUUID().slice(0, 8);
+      setUrlAlbum(`http://localhost:5173/album/${chaveUnica}`);
+    } else {
+      setUrlAlbum("");
     }
-  };*/
+  }, [origem]);
+
+  useEffect(() => {
+  const buscarMarcas = async () => {
+    try {
+      const response = await api.get("/api/marcaDagua");
+      setMarcasDagua(response.data || []);
+    } catch (err) {
+      console.error("Erro ao buscar marcas d’água:", err);
+    }
+  };
+  buscarMarcas();
+}, []);
+
+ 
 
   const handleErro = (msg) => {
     setTipoMensagem("erro");
@@ -58,83 +71,56 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
     setImagens(nov);
   };
 
-  //const abrirModalPacote = () => setMostrarModal(true);
-  //const fecharModalPacote = () => setMostrarModal(false);
- /* const adicionarNovoPacote = (novoPacote) => {
-    setPacotes((prev) => [...prev, novoPacote]);
-    setMostrarModal(false);
-  };*/
-
-  /*const handlePacoteChange = (pacote) => {
-    setPacotesSelecionados((prev) =>
-      prev.includes(pacote)
-        ? prev.filter((p) => p !== pacote)
-        : [...prev, pacote]
-    );
-  };*/
+  
 
   const handleSubmit = (e) => e.preventDefault();
 
   const handleAvancar = async () => {
-    if (!titulo || imagens.length === 0) {
-      handleErro("Preencha todas as informações e adicione imagens!");
-      return;
-    }
-    try {
-      setLoading(true);
-      
-      /*const formData = new FormData();
-      formData.append("usuario_id", 1);
-      formData.append("nome", titulo);
-      formData.append("descricao", "");
-      formData.append("origem", origem);
-      imagens.forEach((img) => formData.append("fotos", img));
-      await api.post("/api/albuns", formData);
-      onSave?.("Ensaio criado com sucesso!");
-      // reset
-      setTitulo("");
-      //setCategoria("");
-      setImagens([]);
-      setPacotes([]);
-      setPacotesSelecionados([]);
-      setAbaAtiva("informacoes");
-      onClose?.();*/
-    } catch {
-      handleErro("Erro ao criar ensaio!");
-    } finally {
-      setLoading(false);
-    }
-  };
+  if (!titulo || imagens.length === 0) {
+    handleErro("Preencha todas as informações e adicione imagens!");
+    return;
+  }
 
-  // criação de nova categoria no banco
-  /*const handleAddCategoria = async () => {
-    const nome = novaCategoria.trim();
-    if (!nome) return;
-    try {
-      const res = await api.post("/api/categorias", { nome });
-      setCategoriasPersonalizadas((prev) => [...prev, res.data]);
-      setCategoria(res.data.nome);
-      setNovaCategoria("");
-      setMostrarModalCategoria(false);
-    } catch {
-      handleErro("Erro ao criar categoria.");
-    }
-  };*/
+  try {
+    setLoading(true);
 
-  // remoção da categoria
-  /*const handleDeleteCategoria = async (id) => {
-    try {
-      await api.delete(`/api/categorias/${id}`);
-      setCategoriasPersonalizadas((prev) => prev.filter((c) => c.id !== id));
-      if (categoriasPersonalizadas.find((c) => c.id === id)?.nome === categoria) {
-        setCategoria("");
-      }
-    } catch {
-      handleErro("Erro ao remover categoria.");
-    }
-  };*/
+    
+    const formData = new FormData();
+    imagens.forEach((img, index) => {
+      formData.append("imagens[]", img);
+    });
 
+    // Dados do evento
+    formData.append("nome", titulo);
+    formData.append("descricao", descricao);
+    formData.append("data_evento", dataEvento);
+    formData.append("hora_evento", horaEvento);
+    formData.append("local", localEvento);
+    formData.append("publico", origem === "publico");
+    formData.append("exibirtrabalho", origem === "exibirtrabalho");
+    formData.append("idmarcadagua", marcaSelecionada || 0);
+    formData.append("urlevento", urlAlbum);    
+
+    const { data } = await api.post("/api/eventos", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    onSave?.(data);
+    onClose();
+  } catch (err) {
+    handleErro("Erro ao criar ensaio!" + err);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+  
   return (
+
+     
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
 
       {loading && (
@@ -142,7 +128,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
           <div className="animate-spin h-12 w-12 border-4 border-[#c09b2d] border-t-transparent rounded-full"></div>
         </div>
       )}
-
+      <form onSubmit={handleSubmit} className="space-y-8 overflow-auto max-h-[650px]">
         <div className="bg-[#f2eee6] w-full max-w-4xl rounded-2xl p-6 shadow-lg relative font-serif">
           <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl font-bold">
             ×
@@ -162,13 +148,13 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
               Informações
             </button>
             <button
-              disabled={origem === "publico"}
+              /*disabled={origem === "publico"}*/
               className={`ml-4 px-4 py-2 font-semibold transition ${
                 abaAtiva === "configuracoes"
                   ? "border-b-4 border-[#c09b2d] text-[#c09b2d]"
                   : "text-gray-500 hover:text-[#c09b2d]"
-              } ${origem === "publico" ? "opacity-40 cursor-not-allowed" : ""}`}
-              onClick={() => origem !== "publico" && setAbaAtiva("configuracoes")}
+              } `}
+              onClick={() => setAbaAtiva("configuracoes")}
             >
               Configurações
             </button>
@@ -182,7 +168,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
 
           {/** ABA INFORMAÇÕES **/}
           {abaAtiva === "informacoes" && (
-            <form onSubmit={handleSubmit} className="space-y-6 overflow-auto max-h-[450px]">
+           <div className="space-y-6 mt-6">
               <div className="flex space-x-4 flex-wrap">
                 <div className="flex-1 space-y-6">
                   <div>
@@ -194,33 +180,48 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
                       className="w-full p-2 border border-gray-300 rounded"
                     />
                   </div>
+                  <div>
+                    <label className="block font-medium mb-1">Descrição</label>
+                    <textarea
+                      value={descricao}
+                      onChange={(e) => setDescricao(e.target.value)}
+                      className="w-full p-2 border border-gray-300 rounded"
+                      rows={3}
+                    />
+                  </div>
 
-                  {/*<div>
-                    <div className="flex items-center justify-between mb-1">
-                      <label className="block font-medium">Categoria</label>
-                      <button
-                        type="button"
-                        onClick={() => setMostrarModalCategoria(true)}
-                        className="p-1 border rounded-full text-[#c09b2d] hover:bg-[#c09b2d] hover:text-white"
-                      >
-                        <Plus size={15} />
-                      </button>
+                  <div className="flex space-x-4">
+                    <div className="flex-1">
+                      <label className="block font-medium mb-1">Data do Evento</label>
+                      <input
+                        type="date"
+                        value={dataEvento}
+                        onChange={(e) => setDataEvento(e.target.value)}
+                        className="w-full p-2 border border-gray-300 rounded"
+                      />
                     </div>
-                    <select
-                      value={categoria}
-                      onChange={(e) => setCategoria(e.target.value)}
-                      className="w-full p-2 border rounded"
-                      required
-                    >
-                      <option value="">Selecione</option>
-                      {categoriasPersonalizadas.map((cat) => (
-                        <option key={cat.id} value={cat.nome}>
-                          {cat.nome}
-                        </option>
-                      ))}
-                    </select>
-                  </div>*/}
 
+                    <div className="flex-1">
+                      <label className="block font-medium mb-1">Hora do Evento</label>
+                      <input
+                        type="time"
+                        value={horaEvento}
+                        onChange={(e) => setHoraEvento(e.target.value)}
+                        className="w-full p-2 border border-gray-300 rounded"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-medium mb-1">Local do Evento</label>
+                    <input
+                      type="text"
+                      value={localEvento}
+                      onChange={(e) => setLocalEvento(e.target.value)}
+                      className="w-full p-2 border border-gray-300 rounded"
+                    />
+                  </div>
+                  
                   <div>
                     <label className="block font-medium mb-1">Imagens do Ensaio</label>
                     <input
@@ -289,28 +290,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
                   </div>
                 </div>
 
-                {/*origem !== "publico" && (
-                  <div className="w-full sm:w-[22rem]">
-                    <label className="block font-medium mb-3">Pacotes:</label>
-                    {pacotes.map((pacote, idx) => (
-                      <div key={idx} className="border p-2 rounded mb-2">
-                        <input
-                          type="checkbox"
-                          checked={pacotesSelecionados.includes(pacote)}
-                          onChange={() => handlePacoteChange(pacote)}
-                        />
-                        <span className="ml-2 font-medium">{pacote.nome}</span>
-                      </div>
-                    ))}
-                    <p
-                      onClick={abrirModalPacote}
-                      className="text-sm text-[#d4a531] cursor-pointer mt-2 hover:underline"
-                    >
-                      Adicionar Novo Pacote
-                    </p>
-                    <ModalPacote isOpen={mostrarModal} onClose={fecharModalPacote} onSave={adicionarNovoPacote} />
-                  </div>
-                )*/}
+                
               </div>
 
               <div className="flex justify-end">
@@ -323,87 +303,82 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
                   {loading ? "Enviando..." : "Criar"}
                 </button>
               </div>
-            </form>
+           </div>
           )}
 
           {/** ABA CONFIGURAÇÕES **/}
-          {abaAtiva === "configuracoes" && origem !== "publico" && (
-            <div className="space-y-6 mt-6">
-              <div>
-                <label className="block mb-1 text-[#996633]">URL do álbum:</label>
-                <input
-                  type="text"
-                  placeholder="fotos-jerry"
-                  className="w-full border rounded px-4 py-2"
-                />
-              </div>
-             
+          {abaAtiva === "configuracoes" && (
+          <div className="space-y-6 mt-6">
+            <div className="flex gap-2 mt-2">
+              <label className="block mb-1 text-[#996633]">URL do álbum:</label>
+              <input
+                type="text"
+                value={urlAlbum}
+                readOnly
+                className="flex-1 border rounded px-4 py-2 bg-gray-100 cursor-not-allowed"
+              />
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(urlAlbum);
+                }}
+                className="bg-[#c09b2d] text-white px-3 py-2 rounded hover:bg-[#a88724]"
+                type="button"
+              >
+                Copiar
+              </button>
+            </div>             
               <div>
                 <p className="mb-2">Ativar marca d'água:</p>
                 <label className="mr-4">
-                  <input type="radio" name="marca" defaultChecked /> Sim
+                <input
+                  type="radio"
+                  name="marca"
+                  checked={ativarMarca}
+                  onChange={() => setAtivarMarca(true)}
+                />{" "} Sim
                 </label>
-                <label>
-                  <input type="radio" name="marca" /> Não
-                </label>
+              <label>
+                <input
+                  type="radio"
+                  name="marca"
+                  checked={!ativarMarca}
+                  onChange={() => setAtivarMarca(false)}
+                />{" "} Não
+              </label>
               </div>
+            {ativarMarca && (
               <div>
                 <label className="block mb-1 text-[#996633]">Marca d’água:</label>
-                <select className="w-full border rounded px-4 py-2">
-                  <option>Marca d’água 1</option>
-                  <option>Marca d’água 2</option>
+                <select
+                  className="w-full border rounded px-4 py-2"
+                  value={marcaSelecionada}
+                  onChange={(e) => setMarcaSelecionada(e.target.value)}
+                >
+                  <option value="">Selecione</option>
+                  {marcasDagua.map((marca) => (
+                    <option key={marca.id} value={marca.id}>
+                      {marca.imagem}
+                    </option>
+                  ))}
                 </select>
               </div>
-            </div>
-          )}
-
-          
-
-          {/** MODAL CATEGORIA **/}
-          {/*mostrarModalCategoria && (
-            <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-              <div className="bg-white rounded-xl px-6 py-5 w-full max-w-sm shadow-xl font-serif">
-                <h2 className="text-[#b1783d] text-xl font-bold mb-4">Categorias</h2>
-                <div className="flex gap-2 mb-4">
-                  <input
-                    type="text"
-                    placeholder="Nova categoria"
-                    value={novaCategoria}
-                    onChange={(e) => setNovaCategoria(e.target.value)}
-                    className="flex-1 p-2 border rounded"
-                  />
-                  <button
-                    onClick={handleAddCategoria}
-                    className="bg-[#c09b2d] text-white px-4 rounded"
-                  >
-                    <Plus size={16} />
-                  </button>
-                </div>
-                <ul className="space-y-2 max-h-48 overflow-auto">
-                  {categoriasPersonalizadas.map((cat) => (
-                    <li key={cat.id} className="flex justify-between items-center border p-2 rounded">
-                      <span>{cat.nome}</span>
-                      <button onClick={() => handleDeleteCategoria(cat.id)} className="text-red-600">
-                        <Trash2 size={16} />
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-                <div className="flex justify-end mt-4">
-                  <button
-                    onClick={() => setMostrarModalCategoria(false)}
-                    className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-                  >
-                    Fechar
-                  </button>
-                </div>
+            )}
+            <div className="flex justify-end">
+                <button
+                  type="button"
+                  onClick={handleAvancar}
+                  disabled={loading}
+                  className="bg-[#c09b2d] text-white px-6 py-2 rounded hover:bg-[#a88724]"
+                >
+                  {loading ? "Enviando..." : "Criar"}
+                </button>
               </div>
-            </div>
-          )*/}
+          </div>
+        )}          
         </div>
-
-      
+      </form>             
     </div>
+     
   );
 };
 

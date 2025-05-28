@@ -17,9 +17,9 @@ const Home = () => {
   useEffect(() => {
     const fetchRecentes = async () => {
       try {
-        const { data } = await anonApi.get("/api/albuns");
+        const { data } = await api.get("/api/eventos/?include=detalhes");
         const publicos = data
-          .filter((a) => a.origem === "publico" && a.fotos.length > 0)
+          .filter((a) => a.exibirtrabalho === true && a.detalhes.length > 0)
           .sort(
             (a, b) =>
               new Date(b.dtinclusao).getTime() -
@@ -29,8 +29,7 @@ const Home = () => {
           .map((a) => ({
             id: a.id,
             nome: a.nome,
-            imagem: a.fotos[0].foto.foto,
-            categoria: a.descricao, // ← adiciona categoria aqui
+            imagem: a.detalhes[0].foto,
             visualizacoes: a.visualizacoes || 0,
             curtidas: a.totalCurtidas || 0,
           }));

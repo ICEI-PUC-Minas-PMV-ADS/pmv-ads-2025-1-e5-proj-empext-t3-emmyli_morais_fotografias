@@ -29,22 +29,17 @@ const Trabalhos = () => {
   useEffect(() => {
     const buscarAlbunsPublicos = async () => {
       try {
-        const { data } = await api.get("/api/albuns");
+        const { data } = await api.get("/api/eventos/?include=detalhes");
 
         const filtrados = data
-          .filter(
-            (a) =>
-              a.origem === "publico" &&
-              a.descricao &&
-              a.fotos?.length > 0
-          )
+          .filter((a) => a.exibirtrabalho === true && a.detalhes.length > 0 )
           .map((a) => ({
             id: a.id,
             titulo: a.nome,
             categoria: a.descricao,
-            capa: a.fotos[0]?.foto?.foto || "",
-            fotos: a.fotos.map((f) => ({
-              id: f.foto?.id,
+            capa: a.detalhes[0]?.foto?.foto || "",
+            fotos: a.detalhes.map((f) => ({
+              id: f.id,
               url: f.foto?.foto,
             })),
             visualizacoes: a.visualizacoes ?? 0,

@@ -29,7 +29,7 @@ const Eventos = ({ albumId }) => {
   const [albumParaExcluir, setAlbumParaExcluir] = useState(null);
 
   useEffect(() => {
-    buscarAlbuns();
+    buscarEventos();
   }, [albumId]);
 
   const handleSucesso = (msg) => {
@@ -52,43 +52,40 @@ const Eventos = ({ albumId }) => {
     }
   }, [mensagem]);
 
-  const buscarAlbuns = async () => {
-    try {
-      const response = await api.get("/api/albuns");
+  const buscarEventos = async () => {
+  try {
+    const response = await api.get("/api/eventos/?include=detalhes");    
 
-      const albunsClientes = response.data.filter((album) => album.origem === 'cliente');
+    const eventosFormatados = response.data.map((evento) => ({
+      id: evento.id,
+      cliente: evento.usuario?.nome || "Cliente",
+      nome: evento.nome,
+      descricao: evento.descricao || "",
+      fotos:
+        evento.detalhes?.map((f) => ({
+          id_foto: f.id,
+          url: f.foto,
+        })) || [],
+      imagem: evento.detalhes?.[0]?.foto || "",
+      data: new Date(evento.dtinclusao).toLocaleDateString("pt-BR") || "",
+    }));
 
-      const albunsFormatados = albunsClientes.map((album) => ({
-        id: album.id,
-        cliente: album.usuario?.nome || "Cliente",
-        nome: album.nome,
-        descricao: album.descricao || "",
-        fotos:
-          album.fotos?.map((f) => ({
-            id_foto: f.foto?.id,
-            url: f.foto?.foto,
-          })) || [],
-        imagem: album.fotos?.[0]?.foto?.foto || "",
-        data: new Date(album.dtinclusao).toLocaleDateString("pt-BR") || "",
-      }));
+    
+    
+    setGalerias(eventosFormatados);
 
-      setGalerias(albunsFormatados);
-
-    // SE vier um albumId, já abre-o
     if (albumId) {
-      const encontrado = albunsFormatados.find((a) => a.id === albumId);
+      const encontrado = eventosFormatados.find((e) => e.id === albumId);
       if (encontrado) {
         setAlbumAberto(encontrado);
         setFotosVisuais(encontrado.fotos);
       }
     }
   } catch (error) {
-    console.error(
-      "Erro ao buscar galerias:",
-      error.response?.data || error.message
-    );
+    console.error("Erro ao buscar eventos:", error.response?.data || error.message);
   }
 };
+
 
   const abrirAlbum = (galeria) => {
     setMensagem("");
@@ -167,9 +164,9 @@ const excluirAlbum = async () => {
   setMostrarConfirmacaoAlbum(false);
   setLoadingUpload(true);
   try {
-    await api.delete(`/api/albuns/${albumParaExcluir.id}`);
+    await api.delete(`/api/eventos/${albumParaExcluir.id}`);
     handleSucesso("Álbum apagado com sucesso!");
-    buscarAlbuns();
+    buscarEventos();
   } catch {
     handleErro("Erro ao apagar álbum.");
   } finally {
@@ -395,7 +392,7 @@ const excluirAlbum = async () => {
           <FormAdicionarEnsaio
             onSave={(mensagemSucesso) => {
               setMostrarModal(false);
-              buscarAlbuns();
+              buscarEventos();
               if (mensagemSucesso) handleSucesso(mensagemSucesso); // ✅ exibe a mensagem por cima do botão
             }}
             onClose={() => setMostrarModal(false)}
