@@ -21,4 +21,17 @@ const sendResetPasswordEmail = (token, nome, email) => {
 
 }
 
-module.exports = { sendResetPasswordEmail };
+const sendCotnatoEmail = ( nome, email = 'rcassianoj@yahoo.com.br') => {
+
+    transport.sendMail({
+        to: email,
+        email,
+        html: `<p>Ola, ${nome}. teste contato site</p>`,
+    }, (error) => {
+        if (error)
+            console.log(error)
+    })
+
+}
+
+module.exports = { sendResetPasswordEmail, sendCotnatoEmail };
