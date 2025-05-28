@@ -8,9 +8,9 @@ const AcessoRapido = ({ setPage }) => {
   useEffect(() => {
     const fetchRecentes = async () => {
       try {
-        const { data } = await api.get("/api/albuns");
+        const { data } = await api.get("/api/eventos/?include=detalhes");
         const todas = data.filter(
-          (a) => (a.origem === "cliente" || a.origem === "publico") && a.fotos.length > 0
+          (a) => (a.exibirtrabalho === true || a.publico === true) && a.detalhes.length > 0
         );
         // ordena por data (desc) e pega top 3
         todas.sort((a, b) => new Date(b.dtinclusao) - new Date(a.dtinclusao));
@@ -21,10 +21,10 @@ const AcessoRapido = ({ setPage }) => {
           id: a.id,
           nome: a.nome,
           data: new Date(a.dtinclusao).toLocaleDateString("pt-BR"),
-          status: a.origem === "publico" ? "Público" : "Privado",
-          imagens: a.fotos?.length || 0,
+          status:  a.publico === true ? "Público" : "Privado",
+          imagens: a.detalhes?.length || 0,
           favoritos: a.curtidasAlbuns || 0, // suposição: já veio via include no getAll
-          imagem: a.fotos?.[0]?.foto?.foto || "", 
+          imagem: a.detalhes?.[0]?.foto || "", 
         }));
 
         setColecoes(mapeadas);
