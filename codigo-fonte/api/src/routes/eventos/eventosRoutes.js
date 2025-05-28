@@ -2,10 +2,9 @@ const express = require('express');
 const router = express.Router();
 const eventosController = require('../../controllers/enventos/EventosController');
 
+const checkFotografo = require('../../middleware/checkFotografo');
 const verifyToken = require('../../middleware/AuthMiddlewareToken');
-
-// Rotas padrão do CRUD
-
+const upload = require('../../middleware/UploadImage');
 /**
  * @swagger
  * components:
@@ -13,13 +12,15 @@ const verifyToken = require('../../middleware/AuthMiddlewareToken');
  *     Eventos:
  *       type: object
  *       required:
- *         - id *         
+ *         - nome 
+ *         - local
+ *         - idmarcadagua          
  *       properties:
  *         id:
  *           type: integer
  *           description: Número de identifação do evento
  *         nome:
- *           type: integer
+ *           type: string
  *           description: Nome do Evento
  *         descricao:
  *           type: string
@@ -45,7 +46,10 @@ const verifyToken = require('../../middleware/AuthMiddlewareToken');
  *         urlevento:
  *           type: string
  *           description: Url para acesso de um album, criado quando o evento é público
- *           $ref: '#/components/schemas/Eventos'
+ *         detalhes:
+ *           type: array
+ *           description: Lista de fotos (detalhes) do evento
+ *           $ref: '#/components/schemas/DetalheEvento'
  */
 
 
@@ -56,7 +60,9 @@ const verifyToken = require('../../middleware/AuthMiddlewareToken');
  *     DetalheEvento:
  *       type: object
  *       required:
- *         - id        
+ *         - evento_id
+ *         - foto
+ *         - ordem        
  *       properties:
  *         id:
  *           type: integer
@@ -67,9 +73,6 @@ const verifyToken = require('../../middleware/AuthMiddlewareToken');
  *         foto:
  *           type: string
  *           description: Url da Foto
- *         tem_marca_agua:
- *           type: bolean
- *           description: Se a foto tem marca dgua 
  *         ordem:
  *           type: integer
  *           description: ordenação das fotos
@@ -148,7 +151,7 @@ const verifyToken = require('../../middleware/AuthMiddlewareToken');
  *                 $ref: '#/components/schemas/Eventos'
  */
 
-router.get('/', eventosController.getAll);
+router.get('/',eventosController.getAll);
 /**
  * @swagger
  * /api/eventos/{id}:
@@ -189,7 +192,7 @@ router.get('/:id', eventosController.getById);
  *       201:
  *         description: Evento criado com sucesso
  */
-router.post('/', eventosController.create);
+router.post('/', upload.array('imagens[]'), eventosController.create);
 
 /**
  * @swagger
