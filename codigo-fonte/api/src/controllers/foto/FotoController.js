@@ -19,17 +19,16 @@ const FotoController = {
         const novaFoto = await DetalheEvento.create({
           evento_id: 1, 
           foto: url,
-          tem_marca_agua: true,
           dtinclusao: new Date(),
           dtalteracao: new Date(),
         });
 
-        await AlbumFotos.create({
+        /*await AlbumFotos.create({
           album_id,
           id_foto: novaFoto.id,
           dtinclusao: new Date(),
           dtalteracao: new Date(),
-        });
+        });*/
 
         urls.push({
           id_foto: novaFoto.id,
