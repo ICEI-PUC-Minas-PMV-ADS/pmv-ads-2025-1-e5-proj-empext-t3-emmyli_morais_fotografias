@@ -1,5 +1,5 @@
 const { AuthLogin, logoutService, refreshTokenService, forgotPasswordService } = require('../../service/authService');
-
+const {sendCotnatoEmail} = require('../../service/emailService')
 const login = async (req, res) => {
   const { usernameOrEmail, password } = req.body;
   try {
@@ -41,4 +41,14 @@ const forgotPassword = async (req, res) => {
   }
 };
 
-module.exports = { login, logout, refreshToken, forgotPassword };
+const contatoEmail = async (req, res) => {
+  try {
+    await sendCotnatoEmail(req.body.email, req.body.nome,);
+    return res.status(204).json();
+  } catch (error) {
+    console.error('Erro ao enviar email:', error.message);
+    return res.status(400).json({ message: error.message });
+  }
+};
+
+module.exports = { login, logout, refreshToken, forgotPassword,contatoEmail };
