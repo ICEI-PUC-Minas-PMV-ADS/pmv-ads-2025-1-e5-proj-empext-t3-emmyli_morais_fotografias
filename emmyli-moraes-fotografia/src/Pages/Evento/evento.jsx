@@ -90,7 +90,7 @@ const Evento = () => {
       const baseUrl = "http://localhost:3000/api/eventos";
 
       // Construindo a URL de requisição com os filtros corretamente
-      const filter = `?filters%5Burlevento%5D=http%3A%2F%2Flocalhost%3A5173%2Falbum%2F${id}&include=detalhes`;
+      const filter = `?filters%5Burlevento%5D=http%3A%2F%2Flocalhost%3A5173%2Falbum%2F${id}&include=detalhes,marcaDagua`;
 
       // Fazendo a requisição GET com o filtro correto
       const response = await api.get(baseUrl + filter);
@@ -170,11 +170,11 @@ const Evento = () => {
             <div className="flex-1">
               <div className="relative mb-8 border-b-2 border-[#c09b2d]">
                 {fotos && (
-                <img
-                  className="w-screen h-screen object-cover opacity-40"
-                  alt="Capa do evento"
-                  src={fotos[0]?.foto}
-                />
+                  <img
+                    className="w-screen h-screen object-cover opacity-40"
+                    alt="Capa do evento"
+                    src={fotos[0]?.foto}
+                  />
                 )}
                 <div className="absolute inset-0 flex items-center justify-center">
                   {evento?.nome && (
@@ -233,7 +233,7 @@ const Evento = () => {
                     {/* Checkbox */}
                     <input
                       type="checkbox"
-                      className="absolute top-2 left-2 z-10 w-5 h-5 accent-yellow-600"
+                      className="absolute top-2 left-2 z-20 w-5 h-5 accent-yellow-600"
                       checked={imagemSelecionada.includes(foto)}
                       onChange={(e) => {
                         e.stopPropagation();
@@ -247,6 +247,7 @@ const Evento = () => {
                       }}
                     />
 
+                    {/* Foto principal */}
                     <img
                       src={foto.foto}
                       alt={`Foto ${foto.id + 1}`}
@@ -256,6 +257,18 @@ const Evento = () => {
                         setIndiceSelecionado(foto);
                       }}
                     />
+
+                    {evento?.marcaDagua?.imagem && (
+                      <div
+                        className="absolute inset-0 z-10 pointer-events-none opacity-40"
+                        style={{
+                          backgroundImage: `url(${evento.marcaDagua.imagem})`,
+                          backgroundRepeat: "repeat",
+                          backgroundSize: "200px auto", 
+                          mixBlendMode: "multiply", 
+                        }}
+                      />
+                    )}
                   </div>
                 ))}
               </div>
@@ -293,6 +306,19 @@ const Evento = () => {
                 alt="Zoom"
                 className="max-h-[90vh] w-auto object-contain rounded-xl shadow-lg"
               />
+
+              {/* Marca d'água sobreposta com repetição */}
+              {evento?.marcaDagua?.imagem && (
+                <div
+                  className="absolute inset-0 z-10 pointer-events-none opacity-40"
+                  style={{
+                    backgroundImage: `url(${evento.marcaDagua.imagem})`,
+                    backgroundRepeat: "repeat",
+                    backgroundSize: "200px auto", 
+                    mixBlendMode: "multiply",
+                  }}
+                />
+              )}
 
               <div className="absolute top-1/2 left-4 transform -translate-y-1/2">
                 <button
