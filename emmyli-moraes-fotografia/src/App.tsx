@@ -9,6 +9,7 @@ import Trabalhos from "./Pages/trabalhos/trabalhos";
 import { AuthFotografaRoutes } from "./routes/auth.fotografa.routes";
 import { AuthClientRoutes } from "./routes/auth.cliente.routes";
 import { AnonRoutes } from "./routes/anon.routes";
+import Evento from "./Pages/Evento/evento";
 
 const App = () => {
 
@@ -68,6 +69,9 @@ const App = () => {
           <Route element={<IsValidRouter isAnon />}>
             {AnonRoutes()}
           </ Route>
+
+          <Route path="/album/:id" element={<Evento />} />
+
         </Routes>
       </AuthProvider>
     </BrowserRouter>
