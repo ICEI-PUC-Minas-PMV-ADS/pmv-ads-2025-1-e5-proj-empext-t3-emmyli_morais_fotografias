@@ -35,7 +35,7 @@ const MenuNav = () => {
 
       {/* Menu normal em telas grandes */}
       <nav className="hidden md:flex">
-        <ul className="flex gap-8 list-none text-xl mr-10">
+        <ul className="flex gap-8 list-none text-xl mr-10 items-center justify-center">
           {menuItems.map((item) => (
             <li key={item.name} className="cursor-pointer">
               <Link
