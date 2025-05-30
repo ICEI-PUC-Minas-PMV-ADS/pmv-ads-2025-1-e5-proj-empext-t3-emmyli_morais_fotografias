@@ -26,7 +26,7 @@ const Produtos = () => {
 
   const buscarProdutos = () => {
     api
-      .get("/api/produtos?include=evento")
+      .get("/api/produtos?")
       .then((response) => {
         if (Array.isArray(response.data)) {
           setProdutos(response.data);

@@ -17,6 +17,13 @@ module.exports = (sequelize, DataTypes) => {
         as: 'marcaDagua',
         onDelete: 'SET NULL'
       });
+
+      Eventos.belongsToMany(models.Produto, {
+        through: 'EventoProduto',
+        foreignKey: 'eventoId',
+        otherKey: 'produtoId',
+        as: 'produtos',
+      });
     }
   }
 

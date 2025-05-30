@@ -46,13 +46,14 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: false
     });
   
-    /*Produto.associate = (models) => {
-      Produto.belongsTo(models.Eventos, {
-        foreignKey: 'id_evento',
-        as: 'evento',
-        onDelete: 'CASCADE'
+    Produto.associate = (models) => {
+      Produto.belongsToMany(models.Eventos, {
+        through: 'EventoProduto',
+        foreignKey: 'produtoId',
+        otherKey: 'eventoId',
+        as: 'eventos',
       });
-    };*/
+    };
   
     return Produto;
   };

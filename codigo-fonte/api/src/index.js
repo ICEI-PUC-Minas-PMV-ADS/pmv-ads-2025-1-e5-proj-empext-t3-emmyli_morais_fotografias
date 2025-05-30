@@ -9,6 +9,9 @@ const myAccountRoutes = require('./routes/usuario/myAccountRoutes');
 const marcaDaguaRoutes = require('./routes/marcaDagua/marcaDaguaRoutes');
 const produtosRoutes = require('./routes/produtos/produtosRoutes');
 const eventosRoutes = require('./routes/eventos/eventosRoutes');
+const feedbackRoutes = require('./routes/feedback/feedbackRoutes');
+const comentarioRoutes = require('./routes/comentario/comentariosRoutes');
+const eventoProdutoRoutes = require('./routes/evento_produto/evento_produtoRoutes');
 
 const vcRoutes = require('./routes/visualizacoesCurtidas/visualizacoesCurtidasRoutes');
 
@@ -74,10 +77,13 @@ app.use('/api/produtos', verifyToken, produtosRoutes);
 app.use('/api/eventos', eventosRoutes);
 
 //Feedbacks
-app.use('/api/feedbacks', require('./routes/feedback/feedbackRoutes'));  
+app.use('/api/feedbacks', feedbackRoutes);  
 
 //Comentários
-app.use('/api/comentarios', verifyToken, require('./routes/comentario/comentariosRoutes'));
+app.use('/api/comentarios', verifyToken, comentarioRoutes);
+
+//EventoProduto 
+app.use('/api/EventoProduto', verifyToken, eventoProdutoRoutes);
 
 app.listen(port, () => {
   console.log(`Servidor rodando em http://localhost:${port}`);
