@@ -1,9 +1,9 @@
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import { api } from "../services/api";
 import { Plus } from "lucide-react";
 import ModalPacote from "../componentsPerfil/ModalPacote";
 
-const FormAdicionarEnsaio = ({ onClose, onSave }) => {
+const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
   const [abaAtiva, setAbaAtiva] = useState("informacoes");
   const [titulo, setTitulo] = useState("");
   const [imagens, setImagens] = useState([]);
@@ -48,6 +48,19 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
     buscarMarcas();
   }, []);
 
+  useEffect(() => {
+    if (dadosIniciais) {
+      setTitulo(dadosIniciais.nome || "");
+      setDescricao(dadosIniciais.descricao || "");
+      setDataEvento(dadosIniciais.data_evento || "");
+      setHoraEvento(dadosIniciais.hora_evento || "");
+      setLocalEvento(dadosIniciais.local || "");
+      setUrlAlbum(dadosIniciais.urlevento || "");
+      setMarcaSelecionada(dadosIniciais.idmarcadagua || "");
+
+    }
+  }, [dadosIniciais]);
+
   const handleErro = (msg) => {
     setTipoMensagem("erro");
     setMensagem(msg);
@@ -76,13 +89,15 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
   const handleSubmit = (e) => e.preventDefault();
 
   const handleAvancar = async () => {
-    if (!titulo || imagens.length === 0) {
+    /*if (!titulo || imagens.length === 0) {
       handleErro("Preencha todas as informações e adicione imagens!");
       return;
-    }
+    }*/
 
     try {
       setLoading(true);
+
+      //console.log(dadosIniciais);return;
 
       const formData = new FormData();
       imagens.forEach((img, index) => {
@@ -100,16 +115,24 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
       formData.append("idmarcadagua", marcaSelecionada || 0);
       formData.append("urlevento", urlAlbum);
 
-      // 1. Cria o evento
-      const { data } = await api.post("/api/eventos", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      let data = null;
+      if (dadosIniciais?.id) {
+        const response = await api.put(`/api/eventos/${dadosIniciais.id}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        data = response.data;
+      } else {
+        const response = await api.post("/api/eventos", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        data = response.data;
+      }
 
       const eventoId = data.id;
-      console.log("eventoId", eventoId);
-      // Faz um POST para cada produto
       const vincularProdutos = produtosSelecionados.map((produtoId) =>
         api.post("/api/EventoProduto", {
           eventoId,
@@ -118,7 +141,6 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
       );
 
       await Promise.all(vincularProdutos);
-      console.log("vincularProdutos:", vincularProdutos);
       onSave?.(data);
       onClose();
     } catch (err) {
@@ -164,22 +186,20 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
           </div>
           <div className="flex border-b mb-6">
             <button
-              className={`px-4 py-2 font-semibold transition ${
-                abaAtiva === "informacoes"
-                  ? "border-b-4 border-[#c09b2d] text-[#c09b2d]"
-                  : "text-gray-500 hover:text-[#c09b2d]"
-              }`}
+              className={`px-4 py-2 font-semibold transition ${abaAtiva === "informacoes"
+                ? "border-b-4 border-[#c09b2d] text-[#c09b2d]"
+                : "text-gray-500 hover:text-[#c09b2d]"
+                }`}
               onClick={() => setAbaAtiva("informacoes")}
             >
               Informações
             </button>
             <button
               /*disabled={origem === "publico"}*/
-              className={`ml-4 px-4 py-2 font-semibold transition ${
-                abaAtiva === "configuracoes"
-                  ? "border-b-4 border-[#c09b2d] text-[#c09b2d]"
-                  : "text-gray-500 hover:text-[#c09b2d]"
-              } `}
+              className={`ml-4 px-4 py-2 font-semibold transition ${abaAtiva === "configuracoes"
+                ? "border-b-4 border-[#c09b2d] text-[#c09b2d]"
+                : "text-gray-500 hover:text-[#c09b2d]"
+                } `}
               onClick={() => setAbaAtiva("configuracoes")}
             >
               Configurações
@@ -320,42 +340,48 @@ const FormAdicionarEnsaio = ({ onClose, onSave }) => {
                     />
                   </div>
 
-                  <div>
-                    <label className="block font-medium mb-1">
-                      Imagens do Ensaio
-                    </label>
-                    <input
-                      type="file"
-                      multiple
-                      onChange={handleImageChange}
-                      className="mb-2"
-                    />
-                    {imagens.length > 0 && (
-                      <div className="mt-2 bg-white p-4 border border-gray-300 rounded w-[20rem] sm:w-full">
-                        <h3 className="text-lg font-medium mb-2">
-                          Fotos Selecionadas:
-                        </h3>
-                        <div className="grid grid-cols-3 md:grid-cols-5 gap-2 max-h-80 overflow-auto">
-                          {imagens.map((img, idx) => (
-                            <div key={idx} className="relative">
-                              <img
-                                src={URL.createObjectURL(img)}
-                                alt={`preview-${idx}`}
-                                className="h-32 object-cover rounded"
-                              />
-                              <button
-                                type="button"
-                                onClick={() => removerImagem(idx)}
-                                className="absolute top-1 text-white bg-[#c09b2d] p-1 rounded-full hover:bg-[#a88724]"
-                              >
-                                ×
-                              </button>
-                            </div>
-                          ))}
+
+                  {!dadosIniciais?.id && (
+                    <div>
+                      <label className="block font-medium mb-1">
+                        Imagens do Ensaio
+                      </label>
+                      <input
+                        type="file"
+                        multiple
+                        onChange={handleImageChange}
+                        className="mb-2"
+                      />
+                      {imagens.length > 0 && (
+                        <div className="mt-2 bg-white p-4 border border-gray-300 rounded w-[20rem] sm:w-full">
+                          <h3 className="text-lg font-medium mb-2">
+                            Fotos Selecionadas:
+                          </h3>
+                          <div className="grid grid-cols-3 md:grid-cols-5 gap-2 max-h-80 overflow-auto">
+                            {imagens.map((img, idx) => (
+                              <div key={idx} className="relative">
+                                <img
+                                  src={URL.createObjectURL(img)}
+                                  alt={`preview-${idx}`}
+                                  className="h-32 object-cover rounded"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => removerImagem(idx)}
+                                  className="absolute top-1 text-white bg-[#c09b2d] p-1 rounded-full hover:bg-[#a88724]"
+                                >
+                                  ×
+                                </button>
+                              </div>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    )}
-                  </div>
+                      )}
+                    </div>
+                  )}
+
+
+
 
                   <div>
                     <p className="mb-2 font-medium">Visibilidade:</p>

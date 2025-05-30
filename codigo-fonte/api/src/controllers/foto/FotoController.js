@@ -17,7 +17,7 @@ const FotoController = {
         const url = await uploadFotoBunnyStorage(file);
 
         const novaFoto = await DetalheEvento.create({
-          evento_id: 1, 
+          evento_id: album_id, 
           foto: url,
           dtinclusao: new Date(),
           dtalteracao: new Date(),

@@ -14,6 +14,9 @@ const Home = () => {
   const navigate = useNavigate();
   const [depoimentos, setDepoimentos] = useState([]);
 
+  const [busca, setBusca] = useState("");
+  const [resultados, setResultados] = useState([]);
+
   useEffect(() => {
     const fetchRecentes = async () => {
       try {
@@ -99,6 +102,20 @@ const Home = () => {
 
   const abrirNoTrabalhos = (id) => {
     navigate("/trabalhos", { state: { albumId: id } });
+  };
+
+  const buscarEventos = async () => {
+    try {
+      const response = await api.get("/api/eventos", {
+        params: {
+          publico: true,
+          search: busca,
+        },
+      });
+      setResultados(response.data);
+    } catch (error) {
+      console.error("Erro ao buscar eventos:", error);
+    }
   };
 
   return (
@@ -213,6 +230,46 @@ const Home = () => {
           </Slider>
         </section>
       )}
+
+      <section className="p-10 text-center max-w-3xl mx-auto w-full">
+        <h2 className="text-2xl sm:text-3xl mb-4">Buscar eventos públicos</h2>
+
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <input
+            type="text"
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+            placeholder="Digite o nome do evento..."
+            className="p-2 rounded border text-black"
+          />
+          <button
+            onClick={buscarEventos}
+            className="bg-[#c09b2d] text-white px-4 py-2 rounded hover:bg-yellow-600"
+          >
+            Buscar
+          </button>
+        </div>
+
+        <div className="mt-6">
+          {resultados.length > 0 ? (
+            <ul className="space-y-2 text-left">
+              {resultados.map((evento) => (
+                <li key={evento.id}>
+                  <a
+                    href={`/evento/${evento.urlevento || evento.id}`}
+                    className="text-[#d5bc6f] hover:underline"
+                  >
+                    {evento.nome}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            busca && <p className="text-[#a0a0a0] mt-4">Nenhum evento encontrado.</p>
+          )}
+        </div>
+      </section>
+
     </div>
   );
 };

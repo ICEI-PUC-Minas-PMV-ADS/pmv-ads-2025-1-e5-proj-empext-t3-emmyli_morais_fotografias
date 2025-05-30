@@ -29,7 +29,13 @@ class Api_Controller {
       //prepara query
       const offset = (page - 1) * limit;
       const orderArray = orderBy.split(',').map((field, index) => [field, order.split(',')[index] || 'ASC']);
-      const whereClause = { ...filters };
+      const { search, ...otherFilters } = filters;
+      
+      let whereClause = { ...otherFilters };
+      if (search) {
+        whereClause.nome = { [Op.iLike]: `%${search}%` }; 
+     }
+
       const group = groupBy ? groupBy.split(',') : [];
       
       //pega a o relacionamento incluido na url
