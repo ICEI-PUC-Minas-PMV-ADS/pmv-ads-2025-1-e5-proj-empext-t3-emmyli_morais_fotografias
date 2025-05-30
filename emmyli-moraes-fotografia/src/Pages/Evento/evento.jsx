@@ -68,7 +68,8 @@ const Evento = () => {
     console.log("imagemSelecionada:", imagemSelecionada);
     console.log("imagemClickada:", imagemClickada);
     console.log("indiceImagemAtual", indiceImagemAtual);
-  }, [imagemSelecionada, imagemClickada, indiceImagemAtual]);
+    console.log("pacoteSelecionado", pacoteSelecionado);
+  }, [imagemSelecionada, imagemClickada, indiceImagemAtual, pacoteSelecionado]);
 
   useEffect(() => {
     const mostrarComentarios = async () => {
@@ -85,14 +86,19 @@ const Evento = () => {
     mostrarComentarios();
   }, [imagemClickada, comentario]);
 
-  
-    useEffect(() => {
-      const fetchProdutos = async () => {
-        const response = await api.get("/api/produtos");
-        setProdutos(response.data);
-      };
-      fetchProdutos();
-    }, []);
+  useEffect(() => {
+    const fetchProdutos = async () => {
+      const response = await api.get("/api/produtos");
+      setProdutos(response.data);
+    };
+    fetchProdutos();
+  }, []);
+
+  useEffect(() => {
+  if (produtos && produtos.length > 0) {
+    setPacoteSelecionado(produtos[0].id);
+  }
+}, [produtos]);
 
   const buscarEvento = async () => {
     try {
@@ -210,7 +216,7 @@ const Evento = () => {
               {produtos && (
                 <div className="flex flex-col justify-center items-center border-b-2 border-[#c09b2d]">
                   <p className="text-white mb-2 text-lg">Selecione o pacote:</p>
-                 
+
                   <select
                     className="max-w-1/2 p-2 border border-gray-300 rounded-lg mb-8"
                     onChange={(e) => {
@@ -218,11 +224,15 @@ const Evento = () => {
                       setPacoteSelecionado(pacoteSelecionado);
                     }}
                   >
-                     {produtos.map((produto) => (
-                    <option value={produto.id}>
-                      {produto.quantidade_fotos} fotos por R$ {produto.preco}
-                    </option>
- 
+                    {produtos.map((produto) => (
+                      <option value={produto.id}>
+                        {produto.quantidade_fotos}{" "}
+                        {produto.quantidade_fotos > 1 ? "fotos" : "foto"} por{" "}
+                        {new Intl.NumberFormat("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                        }).format(produto.preco)}
+                      </option>
                     ))}
                   </select>
                 </div>
