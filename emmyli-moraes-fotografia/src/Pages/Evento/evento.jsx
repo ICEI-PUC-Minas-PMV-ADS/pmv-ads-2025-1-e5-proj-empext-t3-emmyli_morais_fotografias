@@ -22,6 +22,7 @@ const Evento = () => {
   const [abrirComentarios, setAbrirComentarios] = useState(null);
   const [mostrarIconComentario, setMostrarIconComentario] = useState(true);
   const [indiceImagemAtual, setIndiceImagemAtual] = useState(null);
+  const [produtos, setProdutos] = useState([]);
 
   useEffect(() => {
     const carregarComentarios = async () => {
@@ -83,6 +84,15 @@ const Evento = () => {
     };
     mostrarComentarios();
   }, [imagemClickada, comentario]);
+
+  
+    useEffect(() => {
+      const fetchProdutos = async () => {
+        const response = await api.get("/api/produtos");
+        setProdutos(response.data);
+      };
+      fetchProdutos();
+    }, []);
 
   const buscarEvento = async () => {
     try {
@@ -197,29 +207,26 @@ const Evento = () => {
                   </button>
                 </div>
               </div>
-              <div className="flex flex-col justify-center items-center border-b-2 border-[#c09b2d]">
-                <p className="text-white mb-2 text-lg">Selecione o pacote:</p>
-                <select
-                  className="max-w-1/2 p-2 border border-gray-300 rounded-lg mb-8"
-                  onChange={(e) => {
-                    const pacoteSelecionado = e.target.value;
-                    setPacoteSelecionado(pacoteSelecionado);
-                  }}
-                >
-                  <option value="pacote1">
-                    Pacote 1 - 10 fotos por R$ 100,00
-                  </option>
-                  <option value="pacote2">
-                    Pacote 2 - 20 fotos por R$ 200,00
-                  </option>
-                  <option value="pacote3">
-                    Pacote 3 - 30 fotos por R$ 300,00
-                  </option>
-                  <option value="pacote4">
-                    Pacote 4 - 40 fotos por R$ 400,00
-                  </option>
-                </select>
-              </div>
+              {produtos && (
+                <div className="flex flex-col justify-center items-center border-b-2 border-[#c09b2d]">
+                  <p className="text-white mb-2 text-lg">Selecione o pacote:</p>
+                 
+                  <select
+                    className="max-w-1/2 p-2 border border-gray-300 rounded-lg mb-8"
+                    onChange={(e) => {
+                      const pacoteSelecionado = e.target.value;
+                      setPacoteSelecionado(pacoteSelecionado);
+                    }}
+                  >
+                     {produtos.map((produto) => (
+                    <option value={produto.id}>
+                      {produto.quantidade_fotos} fotos por R$ {produto.preco}
+                    </option>
+ 
+                    ))}
+                  </select>
+                </div>
+              )}
 
               <div
                 className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4 p-8"
@@ -264,8 +271,8 @@ const Evento = () => {
                         style={{
                           backgroundImage: `url(${evento.marcaDagua.imagem})`,
                           backgroundRepeat: "repeat",
-                          backgroundSize: "200px auto", 
-                          mixBlendMode: "multiply", 
+                          backgroundSize: "200px auto",
+                          mixBlendMode: "multiply",
                         }}
                       />
                     )}
@@ -314,7 +321,7 @@ const Evento = () => {
                   style={{
                     backgroundImage: `url(${evento.marcaDagua.imagem})`,
                     backgroundRepeat: "repeat",
-                    backgroundSize: "200px auto", 
+                    backgroundSize: "200px auto",
                     mixBlendMode: "multiply",
                   }}
                 />
