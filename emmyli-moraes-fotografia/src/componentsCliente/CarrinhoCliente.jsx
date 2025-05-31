@@ -30,7 +30,7 @@ const CarrinhoCliente = () => {
       setCarrinhoInfo(response.data);
     };
     getCarrinho();
-  }, [usuarioInfo, carrinhoInfo]);
+  }, [usuarioInfo]);
 
   useEffect(() => {
     if (!mensagem) return;
