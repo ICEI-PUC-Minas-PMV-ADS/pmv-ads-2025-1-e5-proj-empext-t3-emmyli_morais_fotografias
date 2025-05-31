@@ -7,6 +7,7 @@ import {
   ArrowLeft,
   Trash,
   MoreVertical,
+  Star,
 } from "lucide-react";
 import FormAdicionarEnsaio from "./FormAdicionarEnsaio";
 import { api } from "../services/api";
@@ -33,7 +34,7 @@ const Eventos = ({ albumId }) => {
   const [eventoSelecionado, setEventoSelecionado] = useState(null);
 
   const handleAbrirConfiguracoes = (evento) => {
-    setEventoSelecionado(evento); 
+    setEventoSelecionado(evento);
     setModalEditarAberto(true);
   };
 
@@ -312,14 +313,29 @@ const Eventos = ({ albumId }) => {
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
+
+                                api.put(`/api/eventos/${eventoAberto.id}/primeira_imagem`, { detalheId: foto.id_foto })
+                                eventoAberto.imagem = foto.url
+                                setEventoAberto({ ...eventoAberto });
+                              }
+                              }
+                              className="flex w-full items-center gap-2 px-4 py-2 text-green-600 hover:bg-green-100 whitespace-nowrap"
+                            >
+                              <Star size={16} />
+                              Definir Capa
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
                                 setFotoParaExcluir({ id_foto: foto.id_foto, idx });
                                 setMostrarConfirmacao(true);
                               }}
-                              className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-100"
+                              className="flex w-full items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-100 whitespace-nowrap"
                             >
                               <Trash size={16} />
                               Excluir
                             </button>
+
                           </div>
                         )}
                       </div>
@@ -329,11 +345,11 @@ const Eventos = ({ albumId }) => {
               </div>
 
               {modalEditarAberto && (
-                 <FormAdicionarEnsaio
-                    onClose={handleFecharModal}
-                    dadosIniciais={eventoAberto} 
-               />
-      )}
+                <FormAdicionarEnsaio
+                  onClose={handleFecharModal}
+                  dadosIniciais={eventoAberto}
+                />
+              )}
             </div>
           </>
         ) : (
