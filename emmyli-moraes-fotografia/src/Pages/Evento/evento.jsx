@@ -170,6 +170,28 @@ const Evento = () => {
     }
   };
 
+  const handleComentario = async (e) => {
+    e.stopPropagation();
+    if (!comentario.trim()) {
+      alert("Por favor, escreva um comentário.");
+      return;
+    }
+    try {
+      console.log("comentario:", comentario);
+      const response = await api.post("/api/comentarios", {
+        usuarioId: usuarioInfo.idusuario,
+        detalheEventoId: imagemClickada.id,
+        Comentario: comentario,
+      });
+
+      console.log("Comentário salvo:", response.data);
+      setShowModal(false);
+      setComentario("");
+    } catch (error) {
+      console.error("Erro ao salvar comentário:", error.message);
+    }
+  };
+
   const apagarComentario = async (idComentario) => {
     try {
       const response = await api.delete(`/api/comentarios/${idComentario}`);
