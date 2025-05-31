@@ -90,14 +90,30 @@ const Home = () => {
     ],
   };
 
+  // --- Configurações do slider para "Depoimentos" (mesma lógica de infinite) ---
+  const slidesToShowDepoimentos = 1;
   const settingsDepoimentos = {
     dots: true,
-    infinite: false,
+    infinite: depoimentos.length > slidesToShowDepoimentos,
     speed: 500,
-    slidesToShow: 1,
+    slidesToShow: Math.min(slidesToShowDepoimentos, depoimentos.length),
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 4000,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: Math.min(2, depoimentos.length),
+        },
+      },
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: Math.min(1, depoimentos.length),
+        },
+      },
+    ],
   };
 
   const abrirNoTrabalhos = (id) => {
@@ -198,7 +214,7 @@ const Home = () => {
         </Slider>
       </section>
 
-      {/* Depoimentos */}
+      {/* Depoimentos (com a mesma lógica de infinite) */}
       {depoimentos.length > 0 && (
         <section className="p-20 text-center justify-center max-w-6xl mx-auto w-full">
           <h2 className="text-3xl mb-10">Depoimentos</h2>

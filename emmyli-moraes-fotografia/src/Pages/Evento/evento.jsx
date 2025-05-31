@@ -115,30 +115,29 @@ const Evento = () => {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      //  Bloquear PrintScreen: limpa clipboard e seta isSnipping
-      if (e.key === "PrintScreen"|| e.keyCode === 44) {
+      // “PrintScreen” ou keyCode 44
+      if (e.key === "PrintScreen" || e.keyCode === 44) {
         e.preventDefault?.();
         try {
           navigator.clipboard.writeText("");
-        } catch () {
-          
-        }
+        } catch {}
         setIsSnipping(true);
       }
-      // Bloquear Ctrl+P (Windows/Linux) ou ⌘+P (Mac)
+      // Bloquear Ctrl+P / ⌘+P (impressão de página)
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "p") {
         e.preventDefault?.();
       }
-      // Se pressionar SHIFT → embaçar
+      // Apertou Shift → embaçar todas as imagens
       if (e.key === "Shift") {
         setIsSnipping(true);
       }
-      // Se pressionar Windows/Meta → embaçar
+      // Apertou Windows/Meta → embaçar todas as imagens
       if (e.key === "Meta") {
         setIsSnipping(true);
       }
     };
-     // Ao soltar Shift ou Meta, removemos o blur 
+
+    // 2) Ao soltar Shift ou Meta, removemos o blur (se não houver outro motivo ativo)
     const handleKeyUp = (e) => {
       if (e.key === "Shift") {
         setIsSnipping(false);
