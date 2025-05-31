@@ -12,7 +12,7 @@ const eventosRoutes = require('./routes/eventos/eventosRoutes');
 const feedbackRoutes = require('./routes/feedback/feedbackRoutes');
 const comentarioRoutes = require('./routes/comentario/comentariosRoutes');
 const eventoProdutoRoutes = require('./routes/evento_produto/evento_produtoRoutes');
-
+const carrinhoRoutes = require('./routes/carrinho/carrinhoRoutes')
 const vcRoutes = require('./routes/visualizacoesCurtidas/visualizacoesCurtidasRoutes');
 
 const setupSwagger = require('./swagger');
@@ -84,6 +84,9 @@ app.use('/api/comentarios', verifyToken, comentarioRoutes);
 
 //EventoProduto 
 app.use('/api/EventoProduto', verifyToken, eventoProdutoRoutes);
+
+//Carrinho 
+app.use('/api/Carrinho', verifyToken, carrinhoRoutes);
 
 app.listen(port, () => {
   console.log(`Servidor rodando em http://localhost:${port}`);
