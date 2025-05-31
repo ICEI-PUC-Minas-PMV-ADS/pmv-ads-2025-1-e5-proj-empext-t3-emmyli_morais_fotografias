@@ -4,11 +4,9 @@ import { api } from "../../services/api";
 import { FaCommentDots, FaTrash } from "react-icons/fa";
 import Modal from "../../components/Modal";
 import { parseJwt } from "../../utils/jwtUtils";
-import { useCarrinho } from "../../context/carrinhoContext";
 import { useNavigate } from "react-router-dom";
 
 const Evento = () => {
-  const { adicionarAoCarrinho } = useCarrinho();
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
   const [usuarioInfo, setUsuarioInfo] = useState(null);

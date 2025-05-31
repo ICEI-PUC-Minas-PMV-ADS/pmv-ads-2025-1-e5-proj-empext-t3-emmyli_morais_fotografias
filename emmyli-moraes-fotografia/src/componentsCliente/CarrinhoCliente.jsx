@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
-import { useCarrinho } from "../context/carrinhoContext";
 import { api } from "../services/api";
 import { parseJwt } from "../utils/jwtUtils";
 
 const CarrinhoCliente = () => {
-  const { carrinho } = useCarrinho();
   const [carrinhoInfo, setCarrinhoInfo] = useState([]);
   const [usuarioInfo, setUsuarioInfo] = useState(null);
 
