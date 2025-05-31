@@ -40,7 +40,7 @@ const CarrinhoCliente = () => {
     }, 5000);
     return () => clearTimeout(id);
   }, [mensagem]);
-  
+
   const handleSucesso = (msg) => {
     setTipoMensagem("sucesso");
     setMensagem(msg);
@@ -174,6 +174,11 @@ const CarrinhoCliente = () => {
                 </button>
                 <button
                   onClick={() => {
+                    if (!carrinhoSelecionado) {
+                      setIsModalOpen(false);
+                      handleErro("Selecione o item que deseja excluir.");
+                      return;
+                    }
                     excluirCarrinho(carrinhoSelecionado.carrinho_id);
                     setIsModalOpen(false);
                   }}
