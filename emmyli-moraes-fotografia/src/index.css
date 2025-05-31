@@ -2,43 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ============================= */
-/*  Anti-print para imagens      */
-/* ============================= */
-@media print {
-  /* Esconde todo elemento com esta classe */
-  .protected-image {
-    display: none !important;
+
+@layer components {
+
+  .protectable-imgs {
+    position: relative;
   }
-  /* E mostra esta mensagem no lugar */
-  .protected-image::after {
-    content: "🔒 Imagem protegida contra impressão";
-    display: block;
-    text-align: center;
-    padding: 2rem;
-    font-size: 1.25rem;
-    color: #999;
+
+
+  .protectable-imgs.blurred img {
+    @apply filter blur-lg opacity-50 transition-all duration-200 ease-in-out;
   }
 }
-
-/* Largura da barra */
-::-webkit-scrollbar {
-  width: 5px;
-}
-
-/* Fundo da barra (trilha) */
-::-webkit-scrollbar-track {
-  background: none;
-}
-
-/* Parte "arrastável" da barra */
-::-webkit-scrollbar-thumb {
-  background-color: grey; /* cor normal da thumb */
-  border-radius: 10px;
-}
-
-/* Sem hover especial */
-::-webkit-scrollbar-thumb:hover {
-  background-color: rgb(94, 85, 85); /* mesma cor para manter uniforme */
-}
-
