@@ -109,17 +109,13 @@ const CarrinhoCliente = () => {
                         <input
                           type="checkbox"
                           checked={
-                            carrinho.id === carrinhoSelecionado?.carrinho_id
+                            carrinho.id === carrinhoSelecionado?.id
                           }
                           onChange={(e) => {
                             e.stopPropagation();
                             if (e.target.checked) {
-                              setCarrinhoSelecionado({
-                                carrinho_id: carrinho.id,
-                              });
-                              console.log(
-                                "carrinhoSelecionado",
-                                carrinhoSelecionado
+                              setCarrinhoSelecionado(
+                                carrinho,
                               );
                             } else {
                               setCarrinhoSelecionado([]);
@@ -179,7 +175,7 @@ const CarrinhoCliente = () => {
                       handleErro("Selecione o item que deseja excluir.");
                       return;
                     }
-                    excluirCarrinho(carrinhoSelecionado.carrinho_id);
+                    excluirCarrinho(carrinhoSelecionado.id);
                     setIsModalOpen(false);
                   }}
                   className="px-4 py-2 rounded bg-[#c09b2d] text-white hover:bg-[#7e6931]"
