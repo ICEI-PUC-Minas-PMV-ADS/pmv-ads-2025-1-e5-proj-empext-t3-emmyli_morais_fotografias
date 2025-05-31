@@ -1,12 +1,14 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect, useRef, use } from "react";
 import { api } from "../../services/api";
-import { useNavigate } from "react-router-dom";
 import { FaCommentDots, FaTrash } from "react-icons/fa";
 import Modal from "../../components/Modal";
 import { parseJwt } from "../../utils/jwtUtils";
+import { useCarrinho } from "../../context/carrinhoContext";
+import { useNavigate } from "react-router-dom";
 
 const Evento = () => {
+  const { adicionarAoCarrinho } = useCarrinho();
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
   const [usuarioInfo, setUsuarioInfo] = useState(null);
@@ -23,6 +25,7 @@ const Evento = () => {
   const [mostrarIconComentario, setMostrarIconComentario] = useState(true);
   const [indiceImagemAtual, setIndiceImagemAtual] = useState(null);
   const [produtos, setProdutos] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const carregarComentarios = async () => {
@@ -95,10 +98,10 @@ const Evento = () => {
   }, []);
 
   useEffect(() => {
-  if (produtos && produtos.length > 0) {
-    setPacoteSelecionado(produtos[0].id);
-  }
-}, [produtos]);
+    if (produtos && produtos.length > 0) {
+      setPacoteSelecionado(produtos[0]);
+    }
+  }, [produtos]);
 
   const buscarEvento = async () => {
     try {
@@ -135,34 +138,37 @@ const Evento = () => {
     }
   };
 
-  const handleComprar = () => {
+  const handleComprar = async () => {
     if (imagemSelecionada.length === 0) {
       alert("Selecione pelo menos uma imagem para comprar.");
       return;
     }
 
-    setSelectedItem("carrinho");
-  };
+    const preco = pacoteSelecionado.preco;
+    const quantidade = imagemSelecionada.length;
+    const total = preco * quantidade;
 
-  const handleComentario = async (e) => {
-    e.stopPropagation();
-    if (!comentario.trim()) {
-      alert("Por favor, escreva um comentário.");
-      return;
-    }
+    const payload = {
+      usuario_id: usuarioInfo.idusuario,
+      evento_id: evento.id,
+      descricao: evento.descricao,
+      preco_unitario: preco,
+      quantidade,
+      total,
+      fotos: imagemSelecionada.map((id) => ({ id_foto: id })),
+    };
+
     try {
-      console.log("comentario:", comentario);
-      const response = await api.post("/api/comentarios", {
-        usuarioId: usuarioInfo.idusuario,
-        detalheEventoId: imagemClickada.id,
-        Comentario: comentario,
-      });
+      const response = await api.post("api/carrinho", payload);
 
-      console.log("Comentário salvo:", response.data);
-      setShowModal(false);
-      setComentario("");
+      if (!response.data) {
+        throw new Error("Erro ao adicionar ao carrinho.");
+      }
+
+      navigate("/carrinho");
     } catch (error) {
-      console.error("Erro ao salvar comentário:", error.message);
+      console.error(error);
+      alert("Erro ao finalizar compra.");
     }
   };
 
@@ -220,12 +226,15 @@ const Evento = () => {
                   <select
                     className="max-w-1/2 p-2 border border-gray-300 rounded-lg mb-8"
                     onChange={(e) => {
-                      const pacoteSelecionado = e.target.value;
-                      setPacoteSelecionado(pacoteSelecionado);
+                      const idSelecionado = Number(e.target.value);
+                      const produto = produtos.find(
+                        (p) => p.id === idSelecionado
+                      );
+                      setPacoteSelecionado(produto); // aqui você salva o objeto inteiro!
                     }}
                   >
                     {produtos.map((produto) => (
-                      <option value={produto.id}>
+                      <option key={produto.id} value={produto.id}>
                         {produto.quantidade_fotos}{" "}
                         {produto.quantidade_fotos > 1 ? "fotos" : "foto"} por{" "}
                         {new Intl.NumberFormat("pt-BR", {

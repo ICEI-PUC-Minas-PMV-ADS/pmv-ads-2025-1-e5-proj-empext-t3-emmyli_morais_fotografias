@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import MenuNavPerfilCliente from "../../componentsCliente/MenuNavPerfilCliente";
 import GaleriaCliente from "../../componentsCliente/GaleriaCliente";
 import CarrinhoCliente from "../../componentsCliente/CarrinhoCliente";
@@ -23,6 +24,15 @@ const Cliente = () => {
         return <PerfilCliente />;
     }
   };
+
+  const location = useLocation();
+
+  // Atualiza selectedItem conforme a rota atual
+  useEffect(() => {
+    console.log("inclui carrinho?", location.pathname.includes("carrinho"))
+    if (location.pathname.includes("carrinho")) setSelectedItem("carrinho");
+  }, [location.pathname]);
+
 
   return (
     <div
