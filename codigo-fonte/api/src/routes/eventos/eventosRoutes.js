@@ -242,6 +242,8 @@ router.put('/:id', eventosController.update);
  */
 router.delete('/:id', eventosController.delete);
 
+router.put('/:id/primeira_imagem', eventosController.updateFirstImage)
+
 // Rota específica para pegar perfil do usuário
 //router.get('/:id/perfil', usuariosController.getProfile);
 

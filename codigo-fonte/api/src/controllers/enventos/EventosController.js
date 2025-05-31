@@ -141,6 +141,48 @@ class EventosController extends Api_Controller {
       return res.status(500).json({ error: "Erro ao atualizar evento" });
     }
   }
+
+  async updateFirstImage(req, res) {
+  try {
+    const eventoId = req.params.id;
+    const { detalheId } = req.body;
+
+    const evento = await Eventos.findByPk(eventoId, {
+      include: [{ model: DetalheEvento, as: 'detalhes' }]
+    });
+
+    if (!evento) {
+      return res.status(404).json({ error: "Evento não encontrado" });
+    }
+
+    const detalheParaPorEmPrimeiro = evento.detalhes.find((detalhe) => detalhe.id === detalheId);
+
+    if (!detalheParaPorEmPrimeiro) {
+      return res.status(404).json({ error: "Detalhe não encontrado no evento" });
+    }
+
+    // Remove o detalhe da posição atual e adiciona no final
+    const indexDeDetalhe = evento.detalhes.indexOf(detalheParaPorEmPrimeiro);
+    evento.detalhes.splice(indexDeDetalhe, 1);
+    evento.detalhes.unshift(detalheParaPorEmPrimeiro);
+
+    // Atualiza a ordem de todos os detalhes
+    const atualizacoes = evento.detalhes.map((detalhe, index) =>
+      DetalheEvento.update(
+        { ordem: index },
+        { where: { id: detalhe.id } }
+      )
+    );
+
+    await Promise.all(atualizacoes);
+
+    return res.status(204).send(); // Sem conteúdo, mas sucesso
+  } catch (error) {
+    console.error("Erro ao atualizar ordem dos detalhes:", error);
+    return res.status(500).json({ error: "Erro interno no servidor" });
+  }
+}
+
 }
 
 module.exports = new EventosController();
