@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
-import { FaBolt, FaImage, FaDollarSign, FaUserPlus, FaCog ,FaBox } from "react-icons/fa";
+import { FaBolt, FaImage, FaDollarSign, FaUserPlus, FaCog, FaBox } from "react-icons/fa";
 import { Menu } from "lucide-react";
+import { Link } from "react-router-dom";
 import logo from "../img/logo.png";
 import { useAuth } from "../context/authContext";
+import UserAvatar from "../components/UserAvatar";
 
 const MenuNavPerfil = ({ onSelect, isOpen, toggleSidebar, selectedItem }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -18,6 +20,7 @@ const MenuNavPerfil = ({ onSelect, isOpen, toggleSidebar, selectedItem }) => {
     { name: "Cadastros Realizados", icon: <FaUserPlus />, key: "cadastros" },
     { name: "Cadastros de Produtos", icon: <FaBox />, key: "produtos" },
     { name: "Configuração", icon: <FaCog />, key: "configuracao" },
+    { name: "Perfil", icon: <FaCog />, key: "perfil" },
   ];
 
   useEffect(() => {
@@ -40,7 +43,7 @@ const MenuNavPerfil = ({ onSelect, isOpen, toggleSidebar, selectedItem }) => {
 
   const computedMarginLeft = !isMobile ? (isOpen ? "16rem" : "5rem") : "0";
 
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
 
   return (
     <>
@@ -58,7 +61,10 @@ const MenuNavPerfil = ({ onSelect, isOpen, toggleSidebar, selectedItem }) => {
             >
               <Menu size={28} />
             </button>
-            <img src={logo} alt="Logo" className="h-20" />
+
+            <Link to="/">
+              <img src={logo} alt="Logo" className="h-20" />
+            </Link>
           </div>
 
           <ul className="space-y-4">
@@ -89,7 +95,9 @@ const MenuNavPerfil = ({ onSelect, isOpen, toggleSidebar, selectedItem }) => {
             className={`flex justify-center mb-6 transition-opacity duration-300 
             ${isOpen ? "opacity-100" : "opacity-0"}`}
           >
-            <img src={logo} alt="Logo" className="h-24 mx-auto" />
+            <Link to="/">
+              <img src={logo} alt="Logo" className="h-24 mx-auto" />
+            </Link>
           </div>
 
           <ul className="space-y-4">
@@ -124,12 +132,7 @@ const MenuNavPerfil = ({ onSelect, isOpen, toggleSidebar, selectedItem }) => {
         </button>
 
         <div className="relative">
-          <button
-            onClick={toggleMenu}
-            className="bg-gray-200 p-2 rounded-full text-[#c09b2d] font-semibold"
-          >
-            EM
-          </button>
+          <UserAvatar name={user?.nome} onClick={toggleMenu} />
 
           {isMenuOpen && (
             <div className="absolute right-0 mt-2 bg-white shadow-md rounded-md p-2 z-50">
