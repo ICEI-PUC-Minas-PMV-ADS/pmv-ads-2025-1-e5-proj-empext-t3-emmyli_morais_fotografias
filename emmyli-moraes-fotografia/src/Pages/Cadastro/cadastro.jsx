@@ -5,6 +5,7 @@ import MenuNav from "../../components/MenuNav";
 import logo from "../../img/logo.png";
 import { Link } from "react-router-dom";
 import InputPassword from "../../components/InputPassword";
+import { useEffect } from "react";
 
 const Cadastro = () => {
   const navigate = useNavigate();
