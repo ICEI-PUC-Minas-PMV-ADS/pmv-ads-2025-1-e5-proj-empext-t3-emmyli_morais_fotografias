@@ -17,6 +17,27 @@ const Cadastro = () => {
   });
 
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError(null);
+      }, 10000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        setSuccess(null);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [success]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -40,11 +61,14 @@ const Cadastro = () => {
       };
 
       await cadastrarUsuario(payload);
-      alert("Usuário cadastrado com sucesso!");
-      navigate("/login");
+      setError(null);
+      setSuccess("Usuário cadastrado com sucesso! Agora faça o login");
+      setTimeout(() => {
+        navigate("/login");
+      }, 3000);
     } catch (error) {
-      const msg = error.response?.data?.error || "Erro ao editar usuário.";
-      alert(msg);
+      const msg = error.response?.data?.error || "Erro ao cadastrar usuário.";
+      setError(msg);
     }
   };
 
@@ -59,6 +83,13 @@ const Cadastro = () => {
           {error && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md w-full mb-4">
               <strong className="font-bold">Erro:</strong> {error}
+            </div>
+          )}
+
+          {/* Mensagem de sucesso estilizada */}
+          {success && (
+            <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-md w-full mb-4">
+              <strong className="font-bold">Sucesso:</strong> {success}
             </div>
           )}
 
@@ -89,12 +120,12 @@ const Cadastro = () => {
             />
 
             {/* Campo de Senha */}
-            <InputPassword placeholder="senha" name="senha" value={formData.senha} onChange={handleChange}/>
-              
+            <InputPassword placeholder="senha" name="senha" value={formData.senha} onChange={handleChange} />
+
 
             {/* Campo Confirmar Senha */}
-            <InputPassword placeholder="Confirmar Senha" name="confirmarsenha" value={formData.confirmarsenha} onChange={handleChange}/>
-            
+            <InputPassword placeholder="Confirmar Senha" name="confirmarsenha" value={formData.confirmarsenha} onChange={handleChange} />
+
             <button
               type="submit"
               className="w-full bg-[#c09b2d] text-white p-4 sm:p-3 rounded-md hover:bg-[#a68523] transition-all text-lg"
