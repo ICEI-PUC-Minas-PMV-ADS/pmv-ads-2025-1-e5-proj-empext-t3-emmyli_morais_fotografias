@@ -14,6 +14,9 @@ const comentarioRoutes = require('./routes/comentario/comentariosRoutes');
 const eventoProdutoRoutes = require('./routes/evento_produto/evento_produtoRoutes');
 const carrinhoRoutes = require('./routes/carrinho/carrinhoRoutes')
 const vcRoutes = require('./routes/visualizacoesCurtidas/visualizacoesCurtidasRoutes');
+const pagamentoRoutes = require('./routes/pagamento/pagamentoRoutes');
+const webhookRoutes = require('./routes/webhook/WebhookRoutes');
+const comprasRoutes = require('./routes/compras/comprasRoutes')
 
 const setupSwagger = require('./swagger');
 
@@ -28,10 +31,30 @@ const cors = require('cors');
 const path = require('path');
 
 
-app.use(cors({
+/* app.use(cors({
   origin: 'http://localhost:5173', // Permite somente seu frontend
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
   allowedHeaders: ['Content-Type', 'Authorization'], // Cabeçalhos permitidos
+})); */
+
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://9e73-2804-540-d005-4f00-b826-b9f7-d508-dd0a.ngrok-free.app', // backend ngrok URL
+  'https://45a9-2804-540-d005-4f00-b826-b9f7-d508-dd0a.ngrok-free.app'  // frontend ngrok URL
+];
+
+app.use(cors({
+  origin: function(origin, callback) {
+    if (!origin) return callback(null, true); // permite Postman, curl etc
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`Origin ${origin} not allowed by CORS`));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
 
 app.use(express.json());
@@ -87,6 +110,15 @@ app.use('/api/EventoProduto', verifyToken, eventoProdutoRoutes);
 
 //Carrinho 
 app.use('/api/Carrinho', verifyToken, carrinhoRoutes);
+
+//Pagamento 
+app.use('/api/pagamento', verifyToken, pagamentoRoutes);
+
+//Compra
+app.use('/api/compras', comprasRoutes);
+
+//Webhook
+app.use('/api/webhook', webhookRoutes);
 
 app.listen(port, () => {
   console.log(`Servidor rodando em http://localhost:${port}`);

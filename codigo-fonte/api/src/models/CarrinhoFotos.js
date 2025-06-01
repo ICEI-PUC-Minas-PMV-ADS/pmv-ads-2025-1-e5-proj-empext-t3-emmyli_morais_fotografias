@@ -8,10 +8,18 @@ module.exports = (sequelize, DataTypes) => {
     id_foto: {
       type: DataTypes.INTEGER,
       allowNull: false,
-    }
-  }, {
+    },
+    dtinclusao: {
+      type: DataTypes.DATE,
+      defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
+    },
+    dtalteracao: {
+      type: DataTypes.DATE
+    },
+  },
+  {
     tableName: 'carrinho_fotos',
-    timestamps: true,
+    timestamps: false,
     underscored: true,
   });
 

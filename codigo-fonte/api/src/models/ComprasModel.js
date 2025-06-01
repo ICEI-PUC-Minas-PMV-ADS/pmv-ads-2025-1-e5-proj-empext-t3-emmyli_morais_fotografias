@@ -21,6 +21,13 @@ module.exports = (sequelize, DataTypes) => {
         as: 'itens',
         onDelete: 'CASCADE'
       });
+
+      Compras.belongsTo(models.Carrinho, {
+        foreignKey: 'carrinho_id',
+        as: 'carrinho',
+        onDelete: 'CASCADE'
+      });
+
     }
   }
 
@@ -37,6 +44,36 @@ module.exports = (sequelize, DataTypes) => {
     idevento: {
       type: DataTypes.INTEGER,
       allowNull: false
+    },
+    descricao: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    total: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+    },
+    status: {
+      type: DataTypes.ENUM(
+        'pending',
+        'approved',
+        'authorized',
+        'in_process',
+        'in_mediation',
+        'rejected',
+        'cancelled',
+        'refunded',
+        'charged_back'
+      ),
+      allowNull: false
+    },
+      pagamento_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+      carrinho_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     },
     dtinclusao: {
       type: DataTypes.DATE,

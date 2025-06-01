@@ -1,5 +1,5 @@
 const Api_Controller = require('../Api_Controller');
-const { Compras, ItensCompra, sequelize } = require('../../models');
+const { Compras } = require('../../models');
 
 class ComprasController extends Api_Controller {
   constructor() {
@@ -7,27 +7,36 @@ class ComprasController extends Api_Controller {
   }
 
   async create(req, res) {
-    const t = await sequelize.transaction();
     try {
-      const { itensCompra, ...dadosCompra } = req.body;
-     
-      const novaCompra = await Compras.create(dadosCompra, { transaction: t });
-      
-      if (Array.isArray(itensCompra) && itensCompra.length > 0) {
-        const itens = itensCompra.map(item => ({
-          ...item,
-          compraId: novaCompra.id
-        }));
+      const { usuario_id, idevento, descricao, total, status, pagamento_id, carrinho_id } = req.body;
 
-        await ItensCompra.bulkCreate(itens, { transaction: t });
+      let compra = await Compras.findOne({
+        where: { usuario_id, idevento }
+      });
+
+      if (compra) {
+        compra.descricao = descricao;
+        compra.total = total;
+        compra.status = status;
+        compra.pagamento_id = pagamento_id;
+        compra.carrinho_id = carrinho_id;
+        await compra.save();
+      } else {
+        compra = await Compras.create({
+          usuario_id,
+          idevento,
+          descricao,
+          total,
+          status,
+          pagamento_id,
+          carrinho_id
+        });
       }
 
-      await t.commit();
-      return res.status(201).json(novaCompra);
+      return res.status(200).json(compra);
     } catch (error) {
-      await t.rollback();
-      console.error('Erro ao criar compra com itens:', error);
-      return res.status(500).json({ error: 'Erro ao criar compra com itens' });
+      console.error('Erro ao criar/atualizar compra:', error);
+      return res.status(500).json({ error: 'Erro ao processar compra' });
     }
   }
 }
