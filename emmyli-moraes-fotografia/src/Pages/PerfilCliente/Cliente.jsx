@@ -5,6 +5,7 @@ import GaleriaCliente from "../../componentsCliente/GaleriaCliente";
 import CarrinhoCliente from "../../componentsCliente/CarrinhoCliente";
 import PerfilCliente from "../../Pages/PerfilCliente/PerfilCliente";
 import FeedbackCliente from "../../componentsCliente/FeedbackCliente";
+import ComprasCliente from "../../componentsCliente/ComprasCliente";
 
 const Cliente = () => {
   const [selectedItem, setSelectedItem] = useState("perfil");
@@ -14,6 +15,8 @@ const Cliente = () => {
     switch (selectedItem) {
       case "galeria":
         return <GaleriaCliente />;
+      case "compras":
+        return <ComprasCliente />;
       case "carrinho":
         return <CarrinhoCliente />;
       case "perfil":
