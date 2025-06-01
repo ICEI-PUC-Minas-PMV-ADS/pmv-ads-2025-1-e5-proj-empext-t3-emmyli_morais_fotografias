@@ -34,7 +34,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
     }
   }, [origem, abaAtiva]);
 
- // ** CORREÇÃO AQUI: não gerar nova URL em edição **
+ 
   useEffect(() => {
   
     if (dadosIniciais && dadosIniciais.id) {
@@ -42,6 +42,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
     }
 
     // 2) Se estivermos criando (sem dadosIniciais), então geramos normalmente
+    
     if (origem === "cliente") {
       const chaveUnica = crypto.randomUUID().slice(0, 8);
       setUrlAlbum(`http://localhost:5173/album/${chaveUnica}`);
@@ -177,7 +178,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
       );
       await Promise.all(vincularProdutos);
 
-      onSave?.(data);
+      onSave?.("Álbum criado com sucesso!"); 
       onClose();
     } catch (err) {
       handleErro("Erro ao criar ensaio! " + err);
@@ -207,10 +208,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
       )}
 
       <div
-        className="bg-[#f2eee6] w-full max-w-4xl rounded-2xl p-6 shadow-lg relative font-serif max-h-[90vh] overflow-auto
-                      sm:p-8
-                      md:max-w-3xl
-                      lg:max-w-4xl"
+        className="bg-[#f2eee6] w-full max-w-4xl rounded-2xl p-6 shadow-lg relative font-serif max-h-[90vh] overflow-auto sm:p-8 md:max-w-3xl lg:max-w-4xl"
       >
         <button
           onClick={onClose}
@@ -223,6 +221,9 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
         <div className="flex justify-center items-center border-b border-[#b1783d] pb-2 mb-6">
           <h1 className="text-3xl text-[#b1783d]">Eventos</h1>
         </div>
+
+       
+
 
         {/* Abas: Informações e (condicional) Configurações */}
 

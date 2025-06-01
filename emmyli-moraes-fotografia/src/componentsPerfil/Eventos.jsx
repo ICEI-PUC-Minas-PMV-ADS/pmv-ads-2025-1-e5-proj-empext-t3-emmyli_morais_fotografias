@@ -76,7 +76,7 @@ const Eventos = ({ albumId }) => {
       // Inclui "detalhes" para pegar as fotos em evento.detalhes
       const response = await api.get("/api/eventos?include=detalhes");
 
-      // Mapeia cada evento, mantendo a propriedade "publico" e filtrando somente exibirtrabalho !== true
+      
       const eventosFormatados = response.data
         .filter((ev) => ev.exibirtrabalho !== true)
         .map((evento) => ({
@@ -86,7 +86,7 @@ const Eventos = ({ albumId }) => {
           data_evento: evento.data_evento || "",
           hora_evento: evento.hora_evento || "",
           local: evento.local || "",
-          publico: evento.publico === true, // booleano
+          publico: evento.publico === true, 
           exibirtrabalho: evento.exibirtrabalho === true,
           idmarcadagua: evento.idmarcadagua || "",
           urlevento: evento.urlevento || "",
@@ -578,7 +578,7 @@ const Eventos = ({ albumId }) => {
       )}
 
       {/*  Modal de confirmação para excluir álbum  */}
-      
+
       {mostrarConfirmacaoAlbum && albumParaExcluir && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl px-6 py-5 w-full max-w-md shadow-xl font-serif">
