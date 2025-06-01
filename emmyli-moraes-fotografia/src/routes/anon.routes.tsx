@@ -4,6 +4,7 @@ import Login from "../Pages/Login/login";
 import Cadastro from "../Pages/Cadastro/cadastro";
 import EsqueciSenha from "../Pages/EsqueciSenha/esqueciSenha";
 import AcessandoEmail from "../Pages/EsqueciSenha/acessoEmail";
+import AreadoCliente from "../Pages/Area do cliente/areadocliente";
 
 export const AnonRoutes = () => {
     return (
@@ -12,6 +13,7 @@ export const AnonRoutes = () => {
             <Route path="/cadastro" element={<Cadastro />} />
             <Route path="/esqueciSenha" element={<EsqueciSenha />} />
             <Route path="/AcessandoEmail/:emailToken" element={<AcessandoEmail/>} />
+             <Route path="/areadocliente" element={<AreadoCliente/>} />
         </>
     );
 }

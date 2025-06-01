@@ -27,6 +27,10 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
   const [modalPacote, setModalPacote] = useState(false);
   const [produtosSelecionados, setProdutosSelecionados] = useState([]);
 
+
+  const [categorias, setCategorias] = useState([]);
+  const [categoriaSelecionada, setCategoriaSelecionada] = useState("");
+
   useEffect(() => {
     if (origem === "cliente") {
       const chaveUnica = crypto.randomUUID().slice(0, 8);
@@ -48,6 +52,18 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
     buscarMarcas();
   }, []);
 
+   useEffect(() => {
+    const buscaCategorias = async () => {
+      try {
+        const response = await api.get("/api/categorias");
+        setCategorias(response.data || []);
+      } catch (err) {
+        console.error("Erro ao buscar Categorias:", err);
+      }
+    };
+    buscaCategorias();
+  }, []);
+
   useEffect(() => {
     if (dadosIniciais) {
       setTitulo(dadosIniciais.nome || "");
@@ -57,6 +73,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
       setLocalEvento(dadosIniciais.local || "");
       setUrlAlbum(dadosIniciais.urlevento || "");
       setMarcaSelecionada(dadosIniciais.idmarcadagua || "");
+      setCategoriaSelecionada(dadosIniciais.categoria_id || "");
 
     }
   }, [dadosIniciais]);
@@ -97,7 +114,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
     try {
       setLoading(true);
 
-      //console.log(dadosIniciais);return;
+      
 
       const formData = new FormData();
       imagens.forEach((img, index) => {
@@ -112,10 +129,14 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
       formData.append("local", localEvento);
       formData.append("publico", origem === "publico");
       formData.append("exibirtrabalho", origem === "exibirtrabalho");
+      formData.append("categoria_id", categoriaSelecionada || 0);
       formData.append("idmarcadagua", marcaSelecionada || 0);
       formData.append("urlevento", urlAlbum);
 
+     
+
       let data = null;
+       console.log(dadosIniciais?.id);
       if (dadosIniciais?.id) {
         const response = await api.put(`/api/eventos/${dadosIniciais.id}`, formData, {
           headers: {
@@ -123,6 +144,8 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
           },
         });
         data = response.data;
+
+        
       } else {
         const response = await api.post("/api/eventos", formData, {
           headers: {
@@ -144,7 +167,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
       onSave?.(data);
       onClose();
     } catch (err) {
-      handleErro("Erro ao criar ensaio!" + err);
+      handleErro("Erro ao criar ensaio! " + (err?.response?.data?.message || err.message));
     } finally {
       setLoading(false);
     }
@@ -228,6 +251,24 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
                       className="w-full p-2 border border-gray-300 rounded"
                     />
                   </div>
+
+                  <div>
+                  <label className="block mb-1 text-[#996633]">
+                    Categoria:
+                  </label>
+                  <select
+                    className="w-full border rounded px-4 py-2"
+                    value={categoriaSelecionada}
+                    onChange={(e) => setCategoriaSelecionada(e.target.value)}
+                  >
+                    <option value="">Nenhuma</option>
+                    {categorias.map((categoria) => (
+                      <option key={categoria.id} value={categoria.id}>
+                        {categoria.nome}
+                      </option>
+                    ))}
+                  </select>
+                </div>
                   <div>
                     <label className="block font-medium mb-1">Descrição</label>
                     <textarea
@@ -379,8 +420,6 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
                       )}
                     </div>
                   )}
-
-
 
 
                   <div>

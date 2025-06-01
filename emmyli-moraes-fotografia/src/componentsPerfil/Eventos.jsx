@@ -81,6 +81,7 @@ const Eventos = ({ albumId }) => {
         publico: evento.publico || "",
         exibirtrabalho: evento.exibirtrabalho || "",
         idmarcadagua: evento.idmarcadagua || "",
+        categoria_id: evento.categoria_id || "",
         urlevento: evento.urlevento || "",
         fotos:
           evento.detalhes?.map((f) => ({
