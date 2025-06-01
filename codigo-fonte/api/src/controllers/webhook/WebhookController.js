@@ -89,6 +89,13 @@ const webhookHandler = async (req, res) => {
 
     console.log(`Álbum ${album.id} criado para o carrinho ${carrinho.id}.`);
 
+    //9. Por fim, deleta o carrinho após todo o processo
+    await Carrinho.destroy({
+      where: { id: carrinhoId }
+    });
+
+    console.log(`Carrinho ${carrinhoId} deletado com sucesso.`);
+
     return res.sendStatus(200);
   } catch (error) {
     console.error('Erro no webhook:', error.response?.data || error.message);
