@@ -1,4 +1,6 @@
 const nodemailer = require('nodemailer');
+const fs = require('fs')
+const path = require('path')
 
 const { host, port, user, pass, from } = require('../config/mail.json');
 
@@ -8,30 +10,71 @@ const transport = nodemailer.createTransport({
     auth: { user, pass }
 });
 
+function renderTemplate(templateName, variables) {
+    const templatePath = path.join(__dirname, '..', 'resources', 'emailTemplates', `${templateName}.html`);
+    let content = fs.readFileSync(templatePath, 'utf8');
+
+    // Substitui os {{chave}} pelos valores
+    for (const key in variables) {
+        const regex = new RegExp(`{{\\s*${key}\\s*}}`, 'g');
+        content = content.replace(regex, variables[key]);
+    }
+
+    return content;
+}
+
+
+// Função genérica para envio
+const sendEmail = ({ to, subject, html, attachments = [] }) => {
+    transport.sendMail(
+        {
+            from,
+            to,
+            subject,
+            html,
+            attachments,
+        },
+        (error, info) => {
+            if (error) console.error('Erro ao enviar e-mail:', error);
+            else console.log('E-mail enviado:', info.response);
+        }
+    );
+};
+
+// E-mails específicos
 const sendResetPasswordEmail = (token, nome, email) => {
-
-    transport.sendMail({
+    const html = renderTemplate('forgot_password', { nome, token });
+    sendEmail({
         to: email,
-        from,
-        html: `<p>Ola, ${nome}. Você esqueceu sua senha? Não tem problema, utilize esse token: <a href="http://localhost:5173/AcessandoEmail/${token}">clique aqui para acessar o sistema</a> </p>`,
-    }, (error) => {
-        if (error)
-            console.log(error)
-    })
+        subject: 'Redefinição de Senha',
+        html,
+        attachments: [
+            {
+                filename: 'logo.png',
+                path: path.join(__dirname, '..', 'resources', 'images', 'logo.png'),
+                cid: 'logo',
+                contentType: 'image/png'
+            },
+        ],
+    });
+};
 
-}
+const sendContatoEmail = (nome, email, telefone, mensagem) => {
+    const html = renderTemplate('contato', { nome, email, telefone, mensagem });
+    sendEmail({
+        to: 'EmmyliEmail@EmmyliDominio.com',
+        replyTo: email,
+        subject: 'Contato pelo Site',
+        html,
+        attachments: [
+            {
+                filename: 'logo.png',
+                path: path.join(__dirname, '..', 'resources', 'images', 'logo.png'),
+                cid: 'logo',
+                contentType: 'image/png'
+            },
+        ],
+    });
+};
 
-const sendCotnatoEmail = ( nome, email = 'rcassianoj@yahoo.com.br') => {
-
-    transport.sendMail({
-        to: email,
-        email,
-        html: `<p>Ola, ${nome}. teste contato site</p>`,
-    }, (error) => {
-        if (error)
-            console.log(error)
-    })
-
-}
-
-module.exports = { sendResetPasswordEmail, sendCotnatoEmail };
+module.exports = { sendResetPasswordEmail, sendContatoEmail };

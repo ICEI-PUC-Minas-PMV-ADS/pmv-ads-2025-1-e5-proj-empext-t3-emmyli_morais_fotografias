@@ -97,4 +97,6 @@ router.post('/token', authController.refreshToken);
 
 router.post('/forgot_password', authController.forgotPassword);
 
+router.post('/contatoEmail', authController.contatoEmail);
+
 module.exports = router;

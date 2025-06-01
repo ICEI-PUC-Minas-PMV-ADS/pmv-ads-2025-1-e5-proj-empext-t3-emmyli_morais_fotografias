@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Mensagem de Contato</title>
+  <style>
+    body {
+      background-color: #f9f9f9;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      color: #333;
+      padding: 0;
+      margin: 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background-color: #ffffff;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .header {
+      text-align: center;
+      padding-bottom: 20px;
+    }
+    .header img {
+      max-width: 150px;
+    }
+    .content {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #555;
+    }
+    .highlight {
+      color: #c09b2d;
+      font-weight: bold;
+    }
+    .footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 13px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="cid:logo" alt="Logo" style="max-width:200px; display:block; margin:0 auto;" />
+    </div>
+    <div class="content">
+      <p>Olá, <strong>{{nome}}</strong> entrou em contato através do site.</p>
+      <p><span class="highlight">E-mail:</span> {{email}}</p>
+      <p><span class="highlight">Telefone:</span> {{telefone}}</p>
+      <p><span class="highlight">Mensagem:</span></p>
+      <p>{{mensagem}}</p>
+    </div>
+    <div class="footer">
+      &copy; 2025 Emmyli Moraes Fotografia. Todos os direitos reservados.
+    </div>
+  </div>
+</body>
+</html>
