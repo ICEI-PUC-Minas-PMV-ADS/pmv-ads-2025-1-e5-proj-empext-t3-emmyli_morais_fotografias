@@ -73,11 +73,10 @@ const CarrinhoCliente = () => {
     descricao,
     qtd,
     preco_unitario,
-    carrinho_id,
+    carrinho_id
   ) => {
     try {
-
-      console.log('carrinho_id', carrinho_id)
+      console.log("carrinho_id", carrinho_id);
       // 1. Cria a compra no backend
       const data = {
         usuario_id,
@@ -101,8 +100,26 @@ const CarrinhoCliente = () => {
             unit_price: Number(preco_unitario),
           },
         ],
-        external_reference: JSON.stringify({ compra_id: compraId, carrinho_id: carrinhoId })
+        external_reference: JSON.stringify({
+          compra_id: compraId,
+          carrinho_id: carrinhoId,
+        }),
       });
+
+      console.log("pagamentoResponse", pagamentoResponse)
+
+      const dataUpdated = {
+        quantidade: pagamentoResponse.data.result.items[0].quantity,
+        preco_unitario: pagamentoResponse.data.result.items[0].unit_price,
+      };
+      const updateCompra = await api.put(
+        `/api/compras/${compraId}`,
+        dataUpdated
+      );
+
+      if (updateCompra.status === 200 || updateCompra.status === 201) {
+        console.log(`Compra ${compraId} atualizada`);
+      }
 
       setPreferenceId(pagamentoResponse.data.result.id);
     } catch (error) {
@@ -155,7 +172,7 @@ const CarrinhoCliente = () => {
                 <tr>
                   <th></th>
                   <th className="py-4 px-6 text-center">Produto</th>
-                  <th className="py-4 px-6 text-center">Preço</th>
+                  <th className="py-4 px-6 text-center">Preço unitário</th>
                   <th className="py-4 px-6 text-center">Quantidade</th>
                   <th className="py-4 px-6 text-center">Total</th>
                   <th className="py-4 px-6 text-center">Excluir</th>
@@ -267,7 +284,7 @@ const CarrinhoCliente = () => {
                     carrinhoSelecionado?.descricao,
                     carrinhoSelecionado?.quantidade,
                     carrinhoSelecionado?.preco_unitario,
-                    carrinhoSelecionado?.id,
+                    carrinhoSelecionado?.id
                   );
                   setIsModalPagamentoOpen(true);
                 }}
