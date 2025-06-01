@@ -7,104 +7,145 @@ const Contato = () => {
     nome: "",
     email: "",
     telefone: "",
-    mensagem: ""
+    mensagem: "",
   });
 
-  //const [status, setStatus] = useState < null | "success" | "error" > (null);
+  const [status, setStatus] = useState(null); // null | "success" | "error"
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setStatus(null);
 
     try {
       await ContatoEmail(form);
-      alert("Mensagem enviada com sucesso!");
       setForm({ nome: "", email: "", telefone: "", mensagem: "" });
+      setStatus("success");
     } catch (error) {
       console.error("Erro ao enviar mensagem:", error);
-      alert("Ocorreu um erro ao enviar sua mensagem. Tente novamente.");
+      setStatus("error");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="font-serif bg-[#0B3727] min-h-screen text-[#c09b2d] flex flex-col">
       <MenuNav />
-      <div className="flex flex-col md:flex-row items-center justify-center px-6 md:px-[15%] pt-28 pb-16 gap-12">
+
+      <div className="flex flex-col md:flex-row items-center justify-center px-6 md:px-[10%] pt-28 pb-16 gap-12">
 
         {/* Texto e Contatos */}
         <div className="w-full md:w-1/2 text-center md:text-left">
-          <h1 className="text-[#d9a766] text-3xl sm:text-4xl md:text-6xl font-bold mb-8">Fale Comigo!</h1>
-          <p className="text-white text-lg sm:text-xl md:text-2xl mb-8">
-            Se preferir, pode usar outros meios de contato:
+          <h1 className="text-[#d9a766] text-4xl sm:text-5xl font-bold mb-6">Fale Comigo!</h1>
+          <p className="text-white text-lg sm:text-xl mb-6">
+            Se preferir, entre em contato diretamente:
           </p>
 
-          <div className="flex flex-col items-center md:items-start gap-6 text-base sm:text-lg md:text-xl">
-            <a href="https://wa.me/5500000000000" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white hover:text-[#25D366] transition">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" className="w-6 h-6 sm:w-8 sm:h-8" />
+          <div className="flex flex-col items-center md:items-start gap-4 text-base sm:text-lg">
+            <a
+              href="https://wa.me/5500000000000"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-white hover:text-[#25D366] transition"
+            >
+              <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" className="w-6 h-6" />
               (00) 00000-0000
             </a>
-            <a href="https://www.instagram.com/seuusuario" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white hover:text-[#E4405F] transition">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram" className="w-6 h-6 sm:w-8 sm:h-8" />
-              Instagram
+            <a
+              href="https://www.instagram.com/seuusuario"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-white hover:text-[#E4405F] transition"
+            >
+              <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram" className="w-6 h-6" />
+              @seuusuario
             </a>
           </div>
         </div>
 
         {/* Formulário */}
-        <div className="w-full md:w-1/2">
+        <div className="w-full md:w-1/2 bg-white rounded-lg p-6 sm:p-8 shadow-lg">
+          <h2 className="text-xl font-bold text-[#0B3727] mb-4">Envie sua mensagem</h2>
+
           <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-sm sm:text-base">
-            <label className="text-white font-semibold text-sm sm:text-base">Seu Nome Completo:</label>
-            <input
-              type="text"
-              name="nome"
-              value={form.nome}
-              onChange={handleChange}
-              className="p-2 sm:p-3 bg-gray-200 text-black rounded-md outline-none text-sm sm:text-base"
-              placeholder="Digite seu nome"
-            />
 
-            <label className="text-white font-semibold text-sm sm:text-base">Seu Melhor E-Mail:</label>
-            <input
-              type="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              className="p-2 sm:p-3 bg-gray-200 text-black rounded-md outline-none text-sm sm:text-base"
-              placeholder="Digite seu e-mail"
-            />
+            <div>
+              <label htmlFor="nome" className="block text-gray-700 font-semibold mb-1">Nome completo</label>
+              <input
+                id="nome"
+                name="nome"
+                type="text"
+                value={form.nome}
+                onChange={handleChange}
+                required
+                className="w-full p-3 bg-gray-100 text-black rounded-md outline-none focus:ring-2 focus:ring-[#c09b2d]"
+                placeholder="Seu nome"
+              />
+            </div>
 
-            <label className="text-white font-semibold text-sm sm:text-base">Seu Telefone/WhatsApp:</label>
-            <input
-              type="tel"
-              name="telefone"
-              value={form.telefone}
-              onChange={handleChange}
-              className="p-2 sm:p-3 bg-gray-200 text-black rounded-md outline-none text-sm sm:text-base"
-              placeholder="Digite seu telefone"
-            />
+            <div>
+              <label htmlFor="email" className="block text-gray-700 font-semibold mb-1">Seu Melhor E-Mail</label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                value={form.email}
+                onChange={handleChange}
+                required
+                className="w-full p-3 bg-gray-100 text-black rounded-md outline-none focus:ring-2 focus:ring-[#c09b2d]"
+                placeholder="seu@email.com"
+              />
+            </div>
 
-            <label className="text-white font-semibold text-sm sm:text-base">Mensagem:</label>
-            <textarea
-              name="mensagem"
-              value={form.mensagem}
-              onChange={handleChange}
-              className="p-2 sm:p-3 bg-gray-200 text-black rounded-md outline-none text-sm sm:text-base"
-              placeholder="Digite sua mensagem"
-              rows="4"
-            ></textarea>
+            <div>
+              <label htmlFor="telefone" className="block text-gray-700 font-semibold mb-1">Telefone / WhatsApp</label>
+              <input
+                id="telefone"
+                name="telefone"
+                type="tel"
+                value={form.telefone}
+                onChange={handleChange}
+                className="w-full p-3 bg-gray-100 text-black rounded-md outline-none focus:ring-2 focus:ring-[#c09b2d]"
+                placeholder="(00) 00000-0000"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="mensagem" className="block text-gray-700 font-semibold mb-1">Mensagem</label>
+              <textarea
+                id="mensagem"
+                name="mensagem"
+                value={form.mensagem}
+                onChange={handleChange}
+                required
+                rows="5"
+                className="w-full p-3 bg-gray-100 text-black rounded-md outline-none focus:ring-2 focus:ring-[#c09b2d]"
+                placeholder="Digite sua mensagem..."
+              ></textarea>
+            </div>
 
             <button
               type="submit"
-              className="mt-4 bg-[#c09b2d] text-white font-bold py-2 sm:py-3 rounded-md hover:bg-[#d9a766] transition text-sm sm:text-base"
+              disabled={loading}
+              className="mt-2 bg-[#c09b2d] text-white font-bold py-3 rounded-md hover:bg-[#d9a766] transition disabled:opacity-60"
             >
-              Enviar
+              {loading ? "Enviando..." : "Enviar"}
             </button>
           </form>
 
+          {/* Status */}
+          {status === "success" && (
+            <p className="mt-4 text-green-600 font-medium">Mensagem enviada com sucesso!</p>
+          )}
+          {status === "error" && (
+            <p className="mt-4 text-red-600 font-medium">Ocorreu um erro ao enviar. Tente novamente.</p>
+          )}
         </div>
       </div>
     </div>
