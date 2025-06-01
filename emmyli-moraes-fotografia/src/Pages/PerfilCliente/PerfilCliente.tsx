@@ -1,4 +1,4 @@
-import React, { ChangeEvent, MouseEvent, useState } from "react";
+import React, { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import { editarMinhaConta } from "../../services/userService";
 import InputPassword from "../../components/InputPassword";
 import UserAvatar from "../../components/UserAvatar";
@@ -12,8 +12,32 @@ const PerfilCliente = () => {
     confirmarSenha: "",
   });
 
+
   const [nome, setNome] = useState(localStorage.getItem("nome")!)
   const [email, setEmail] = useState(localStorage.getItem("email")!)
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError(null);
+      }, 10000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        setSuccess(null);
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [success]);
+
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e!.target!.name]: e!.target.value });
@@ -23,12 +47,12 @@ const PerfilCliente = () => {
     e.preventDefault();
 
     if (!formData.nome.trim() || !formData.email.trim() || !formData.login.trim()) {
-      alert("Por favor, preencha todos os campos obrigatórios.");
+      setError("Por favor, preencha todos os campos obrigatórios.");
       return;
     }
 
     if (formData.senha !== formData.confirmarSenha) {
-      alert("As senhas não coincidem.");
+      setError("As senhas não coincidem.");
       return;
     }
 
@@ -41,7 +65,8 @@ const PerfilCliente = () => {
       };
 
       await editarMinhaConta(payload);
-      alert("Usuário alterado com sucesso!");
+      setError(null);
+      setSuccess("Usuário alterado com sucesso!");
 
       localStorage.setItem('nome', formData.nome);
       localStorage.setItem('login', formData.login);
@@ -52,12 +77,27 @@ const PerfilCliente = () => {
 
     } catch (error) {
       const msg = error.response?.data?.error || "Erro ao editar usuário.";
-      alert(msg);
+      setError(msg);
     }
   };
 
   return (
     <div className="font-serif bg-[#F9F9F9] mt-[20px] mb-[20px] min-h-screen py-10 px-4">
+
+      {/* Mensagem de erro estilizada */}
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md w-full mb-4">
+          <strong className="font-bold">Erro:</strong> {error}
+        </div>
+      )}
+
+      {/* Mensagem de sucesso estilizada */}
+      {success && (
+        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-md w-full mb-4">
+          <strong className="font-bold">Sucesso:</strong> {success}
+        </div>
+      )}
+
       <h1 className="text-2xl font-bold text-[#c09b2d] border-b-2 border-[#c09b2d] pb-2 mb-6">
         Perfil
       </h1>
@@ -113,7 +153,7 @@ const PerfilCliente = () => {
           {/* Campo de Senha */}
           <InputPassword placeholder="senha" name="senha" value={formData.senha} onChange={handleChange} />
         </div>
-        
+
         <div className="w-full md:w-1/3">
           <label className="block mb-1 font-medium text-gray-700">Confirme a senha:</label>
           {/* Campo Confirmar Senha */}
