@@ -587,7 +587,13 @@ const Evento = () => {
 
                     <button
                       className="w-10 h-10 bg-[#c09b2d] text-white rounded-full flex items-center justify-center hover:bg-[#a88724]"
-                      onClick={() => setShowModal(true)}
+                      onClick={() => {
+                        if (!user?.token?.informacao) {
+                          navigate("/cadastro");
+                          return;
+                        }
+                        setShowModal(true);
+                      }}
                     >
                       +
                     </button>
