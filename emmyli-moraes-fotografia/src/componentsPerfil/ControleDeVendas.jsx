@@ -1,25 +1,46 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FiSearch } from "react-icons/fi";
+import { api } from "../services/api";
 
 const ControleDeVendas = () => {
-
   const [loading, setLoading] = useState(false);
   const [busca, setBusca] = useState("");
-  const [vendasFiltradas, setVendasFiltradas] = useState([
-    {
-      id: 1,
-      idcliente: "Cliente 1",
-      idevento: "Evento 1",
-      qtd: 10,
-      qtd_vendidas: 5,
-      status: "Pendente", 
-      pagamento: "Cartão de Crédito",
-      data: "2023-10-01",
-      valor: 100.00,
-    }
-  ]);
- 
+  const [vendas, setVendas] = useState([]);
+
+  const statusLabels = {
+    pending: "Pendente",
+    approved: "Aprovado",
+    authorized: "Autorizado",
+    in_process: "Em processamento",
+    in_mediation: "Em mediação",
+    rejected: "Rejeitado",
+    cancelled: "Cancelado",
+    refunded: "Reembolsado",
+    charged_back: "Estornado",
+  };
+
+  const statusColors = {
+    pending: "bg-gray-200 text-gray-800",
+    authorized: "bg-gray-200 text-gray-800",
+    in_process: "bg-gray-200 text-gray-800",
+    in_mediation: "bg-gray-200 text-gray-800",
+    approved: "bg-green-200 text-green-800",
+    rejected: "bg-red-200 text-red-800",
+    cancelled: "bg-red-200 text-red-800",
+    refunded: "bg-red-200 text-red-800",
+    charged_back: "bg-red-200 text-red-800",
+  };
+
+  useEffect(() => {
+    fetchVendas();
+  }, []);
+
+  const fetchVendas = async () => {
+    const filter = `?include=usuario,evento`;
+    const response = await api.get("/api/compras" + filter);
+    setVendas(response.data);
+  };
+
   return (
     <div className="p-6 font-serif bg-[#F9F9F9] min-h-screen">
       <h1 className="text-2xl font-bold text-[#c09b2d] border-b-2 border-[#c09b2d] pb-4">
@@ -50,32 +71,56 @@ const ControleDeVendas = () => {
               <th className="py-4 px-6 text-center"># Pedido</th>
               <th className="py-4 px-6 text-center">Cliente</th>
               <th className="py-4 px-6 text-center">Nome do evento</th>
-              <th className="py-4 px-6 text-center">Fotos</th>
-              <th className="py-4 px-6 text-center">Vendidas</th>
+              <th className="py-4 px-6 text-center">Qtd. fotos</th>
+              <th className="py-4 px-6 text-center">Preço unitário</th>
               <th className="py-4 px-6 text-center">Status</th>
-              <th className="py-4 px-6 text-center">Pagamento</th>
               <th className="py-4 px-6 text-center">Data</th>
-              <th className="py-4 px-6 text-center">Valor</th>              
+              <th className="py-4 px-6 text-center">Valor</th>
             </tr>
           </thead>
           <tbody>
-            {vendasFiltradas.length > 0 ? (
-              vendasFiltradas.map((venda, index) => (
+            {vendas.length > 0 ? (
+              vendas.map((venda, index) => (
                 <tr
                   key={venda.id}
                   className={`border-b ${
                     index % 2 === 0 ? "bg-gray-50" : "bg-white"
                   } hover:bg-gray-200 transition-all`}
                 >
-                  <td className="py-4 px-6 text-center">{venda.id}</td>
-                  <td className="py-4 px-6 text-center">{venda.idcliente}</td>
-                  <td className="py-4 px-6 text-center">{venda.idevento}</td>
-                  <td className="py-4 px-6 text-center">{venda.qtd}</td>
-                  <td className="py-4 px-6 text-center">{venda.qtd_vendidas}</td>
-                  <td className="py-4 px-6 text-center">{venda.status}</td>
-                  <td className="py-4 px-6 text-center">{venda.pagamento}</td>
-                  <td className="py-4 px-6 text-center">{new Date(venda.data).toLocaleDateString('pt-BR')}</td>
-                  <td className="py-4 px-6 text-center">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(venda.valor)}</td>
+                  <td className="py-4 px-6 text-center">
+                    {venda.pagamento_id}
+                  </td>
+                  <td className="py-4 px-6 text-center">
+                    {venda.usuario.nome}
+                  </td>
+                  <td className="py-4 px-6 text-center">
+                    {venda.evento.descricao}
+                  </td>
+                  <td className="py-4 px-6 text-center">{venda.quantidade}</td>
+                  <td className="py-4 px-6 text-center">
+                    {new Intl.NumberFormat("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    }).format(venda.preco_unitario)}
+                  </td>
+                  <td className="py-4 px-6 text-center">
+                    <span
+                      className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                        statusColors[venda.status]
+                      }`}
+                    >
+                      {statusLabels[venda.status] || venda.status}
+                    </span>
+                  </td>
+                  <td className="py-4 px-6 text-center">
+                    {new Date(venda.dtinclusao).toLocaleDateString("pt-BR")}
+                  </td>
+                  <td className="py-4 px-6 text-center">
+                    {new Intl.NumberFormat("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    }).format(venda.total)}
+                  </td>
                 </tr>
               ))
             ) : (
@@ -91,40 +136,51 @@ const ControleDeVendas = () => {
         {/* Layout para telas pequenas */}
 
         <div className="sm:hidden">
-          {vendasFiltradas.length > 0 ? (
-            vendasFiltradas.map((venda) => (
+          {vendas.length > 0 ? (
+            vendas.map((venda) => (
               <div
                 key={venda.id}
                 className="bg-white p-4 rounded-lg shadow mb-4"
               >
                 <p>
-                  <strong># Pedido:</strong> {venda.id}
+                  <strong># Pedido:</strong> {venda.pagamento_id}
                 </p>
                 <p>
-                  <strong>Cliente:</strong> {venda.idcliente}
+                  <strong>Cliente:</strong> {venda.usuario.nome}
                 </p>
                 <p>
-                  <strong>Nome do evento:</strong> {venda.idevento}
+                  <strong>Nome do evento:</strong> {venda.evento.descricao}
                 </p>
                 <p>
-                  <strong>Fotos:</strong> {venda.qtd}
+                  <strong>Qtd. fotos:</strong> {venda.quantidade}
                 </p>
                 <p>
-                  <strong>Vendidas:</strong> {venda.qtd_vendidas}   
+                  <strong>Preço unitário:</strong>{" "}
+                  {new Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  }).format(venda.preco_unitario)}
                 </p>
                 <p>
-                  <strong>Status:</strong> {venda.status}
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                      statusColors[venda.status]
+                    }`}
+                  >
+                    {statusLabels[venda.status] || venda.status}
+                  </span>
                 </p>
                 <p>
-                  <strong>Pagamento:</strong> {venda.pagamento}
+                  <strong>Data:</strong>{" "}
+                  {new Date(venda.dtinclusao).toLocaleDateString("pt-BR")}
                 </p>
                 <p>
-                  <strong>Data:</strong> {new Date(venda.data).toLocaleDateString('pt-BR')}
+                  <strong>Valor:</strong>
+                  {new Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  }).format(venda.total)}
                 </p>
-                <p>
-                  <strong>Valor:</strong >{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(venda.valor)}
-                </p>
-                
               </div>
             ))
           ) : (
