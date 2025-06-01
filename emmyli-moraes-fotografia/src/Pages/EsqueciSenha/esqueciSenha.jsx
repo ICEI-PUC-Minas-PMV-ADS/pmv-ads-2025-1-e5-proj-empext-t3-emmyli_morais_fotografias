@@ -3,21 +3,42 @@ import MenuNav from "../../components/MenuNav";
 import logo from "../../img/logo.png";
 import { Link } from "react-router-dom";
 import { forgotPassword } from "../../services/authService";
+import { useEffect } from "react";
 
 const EsqueciSenha = () => {
   const [email, setEmail] = useState("");
-  const [mensagem, setMensagem] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError(null);
+      }, 10000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        setSuccess(null);
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [success]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setMensagem("");
-    setErrorMessage("");
+    setSuccess("");
+    setError("");
 
     if (!email.trim()) {
-      setErrorMessage("O e-mail é obrigatório.");
+      setError("O e-mail é obrigatório.");
       setLoading(false);
       return;
     }
@@ -25,10 +46,10 @@ const EsqueciSenha = () => {
     try {
       
       forgotPassword(email)
-
-      setMensagem("Se o e-mail estiver cadastrado, você receberá instruções para redefinir sua senha pelo email.");
+      setError(null);
+      setSuccess("Se o e-mail estiver cadastrado, você receberá instruções para redefinir sua senha pelo email.");
     } catch (error) {
-      setErrorMessage("Ocorreu um erro ao tentar enviar o e-mail. Tente novamente.");
+      setError("Ocorreu um erro ao tentar enviar o e-mail. Tente novamente.");
     }
 
     setLoading(false);
@@ -41,15 +62,15 @@ const EsqueciSenha = () => {
         <div className="bg-white shadow-2xl rounded-lg p-10 w-full max-w-lg text-center relative min-h-[60vh] flex flex-col justify-center items-center sm:max-w-md overflow-hidden">
           <img src={logo} alt="Logo" className="w-48 sm:w-40 mb-6" />
 
-          {errorMessage && (
+          {error && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md w-full mb-4">
-              <strong className="font-bold">Erro:</strong> {errorMessage}
+              <strong className="font-bold">Erro:</strong> {error}
             </div>
           )}
 
-          {mensagem && (
+          {success && (
             <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-md w-full mb-4">
-              <strong className="font-bold">Sucesso:</strong> {mensagem}
+              <strong className="font-bold">Sucesso:</strong> {success}
             </div>
           )}
 
