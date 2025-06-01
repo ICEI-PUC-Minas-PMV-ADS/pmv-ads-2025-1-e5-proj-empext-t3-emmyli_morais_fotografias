@@ -2123,3 +2123,119 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
   </tr>
 </table>
 
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-016 <br>Enviar um contato para o Administrador</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">O sistema não deve permitir que um novo cliente faça contato com ADM pelo site, em contatos</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável pela funcionalidade</strong></td>
+    <td>Adriel Agnes Costa Bosco </td>
+    <td><strong>Responsável pelo teste</strong></td>
+    <td> Rafael Cassiano </td>
+    <td><strong>Data do teste</strong></td>
+    <td>01/06/2025</td>
+  </tr>
+  <tr>
+    <td><strong>Comentário</strong></td>
+    <td colspan="5">Este caso de teste verifica se o envio de mail de contato esta sendo disparado corretamente</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><video src="#"/></td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-016 <br>Busca por eventos Públicos</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">O sistema deve apresentar os possíveis albuns após a busca por eventos públicos</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável pela funcionalidade</strong></td>
+    <td>Gleyston Guimaraes Silva e Rafael Cassiano  </td>
+    <td><strong>Responsável pelo teste</strong></td>
+    <td></td>
+    <td><strong>Data do teste</strong></td>
+    <td>01/06/2025</td>
+  </tr>
+  <tr>
+    <td><strong>Comentário</strong></td>
+    <td colspan="5">Este caso de teste deve retornar apenas os eventos públicos após a busca</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><video src="#"/></td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-016 <br>Teste da nova tela de cadastro de Eventos</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">O sistema deve permitir ao Adm cadastrar um evento, seja ele publico, privado ou exibição de trabalho</td>
+    <td colspan="5">Para os eventos privados deve ser criado um link para acesso do cliente ou visitantes</td>
+    <td colspan="5">Onde o Adm tbm consiga fazer a criação dos detahes do evento(fotos) e adiconar a marca d'agua que será utilizada no evento</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável pela funcionalidade</strong></td>
+    <td>Gleyston Guimaraes Silva e Rafael Cassiano  </td>
+    <td><strong>Responsável pelo teste</strong></td>
+    <td></td>
+    <td><strong>Data do teste</strong></td>
+    <td>01/06/2025</td>
+  </tr>
+  <tr>
+    <td><strong>Comentário</strong></td>
+    <td colspan="5">Este caso de teste deve permitir que o ADM cadastre eventos</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><video src="#"/></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-016 <br>Teste para edição de Eventos</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">O sistema deve permitir ao Adm faça alterações no evento cadastrado</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável pela funcionalidade</strong></td>
+    <td>Gleyston Guimaraes Silva e Rafael Cassiano  </td>
+    <td><strong>Responsável pelo teste</strong></td>
+    <td></td>
+    <td><strong>Data do teste</strong></td>
+    <td>01/06/2025</td>
+  </tr>
+  <tr>
+    <td><strong>Comentário</strong></td>
+    <td colspan="5">Este caso de teste deve permitir que o ADM Edite eventos</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><video src="#"/></td>
+  </tr>
+</table>
