@@ -202,13 +202,13 @@ const Evento = () => {
       setImagemClickada(fotos[novoIndice]);
     }
   };
-
-  //  Adicionar fotos selecionadas ao carrinho
-  const handleComprar = async () => {
+  
+    const handleComprar = async () => {
     if (imagemSelecionada.length === 0) {
       alert("Selecione pelo menos uma imagem para comprar.");
       return;
     }
+
     const preco = pacoteSelecionado.preco;
     const quantidade = imagemSelecionada.length;
     const total = preco * quantidade;
@@ -220,18 +220,34 @@ const Evento = () => {
       preco_unitario: preco,
       quantidade,
       total,
-      fotos: imagemSelecionada.map((f) => ({ id_foto: f.id })),
+      fotos: imagemSelecionada.map((id) => ({ id_foto: id })),
     };
-
+    console.log("fotos enviadas: ", payload.fotos);
     try {
-      const response = await api.post("/api/carrinho", payload);
-      if (!response.data) {
-        throw new Error("Erro ao adicionar ao carrinho.");
+      // Verifica se o carrinho já existe para o evento
+      const { data: carrinhosExistentes } = await api.get(
+        `/api/carrinho?usuario_id=${usuarioInfo.idusuario}`
+      );
+
+      const carrinhoExistente = carrinhosExistentes.find(
+        (c) => c.evento_id === evento.id
+      );
+
+      if (carrinhoExistente) {
+        // Atualiza carrinho
+        const response = await api.put(
+          `/api/carrinho/${carrinhoExistente.id}`,
+          payload
+        );
+        console.log("Carrinho atualizado:", response.data);
+      } else {
+        // Cria novo carrinho
+        const response = await api.post("/api/carrinho", payload);
+        console.log("Carrinho criado:", response.data);
       }
       navigate("/carrinho");
     } catch (error) {
-      console.error(error);
-      alert("Erro ao finalizar compra.");
+      console.error("Erro ao salvar carrinho:", error);
     }
   };
 
@@ -318,7 +334,7 @@ const Evento = () => {
           <div className="flex flex-col justify-center items-center border-b-2 border-[#c09b2d] mb-8">
             <p className="text-white mb-2 text-lg">Selecione o pacote:</p>
             <select
-              className="max-w-1/2 p-2 border border-gray-300 rounded-lg"
+              className="max-w-1/2 p-2 border border-gray-300 rounded-lg mb-8"
               value={pacoteSelecionado?.id || ""}
               onChange={(e) => {
                 const idSel = Number(e.target.value);
