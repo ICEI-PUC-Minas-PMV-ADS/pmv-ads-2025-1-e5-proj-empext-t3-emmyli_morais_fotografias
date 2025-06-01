@@ -4,10 +4,12 @@ import { api } from "../../services/api";
 import { FaCommentDots, FaTrash } from "react-icons/fa";
 import Modal from "../../components/Modal";
 import { parseJwt } from "../../utils/jwtUtils";
+import { useAuth } from "../../context/authContext";
 
 const Evento = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   //  Estados de dados
   const [loading, setLoading] = useState(true);
@@ -199,6 +201,11 @@ const Evento = () => {
   };
 
   const handleComprar = async () => {
+    if (!user?.token?.informacao) {
+      navigate("/cadastro");
+      return;
+    }
+
     let total;
     let preco_unitario;
     let quantidade;
