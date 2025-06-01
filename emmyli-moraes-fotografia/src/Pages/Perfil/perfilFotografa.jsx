@@ -6,6 +6,7 @@ import ControleDeVendas from "../../componentsPerfil/ControleDeVendas";
 import CadastrosRealizados from "../../componentsPerfil/CadastrosRealizados";
 import ProdutosEventos from "../../componentsPerfil/Produtos";
 import Configuracoes from "../../componentsPerfil/Configuracoes";
+import PerfilCliente from "../PerfilCliente/PerfilCliente";
 
 const PerfilFotografa = () => {
   const [currentPage, setCurrentPage] = useState("acessoRapido");
@@ -32,7 +33,8 @@ const PerfilFotografa = () => {
         return <ProdutosEventos />;
       case "configuracao":
         return <Configuracoes albumId={selectedAlbumId} />;
-
+      case "perfil": 
+        return <PerfilCliente />;
       default:
         return <AcessoRapido setPage={handleSelect} />;
     }
