@@ -43,6 +43,9 @@ const upload = require('../../middleware/UploadImage');
  *         idmarcadagua:
  *           type: integer
  *           description: identificação da marca dagua utlizada para fotos do envento
+ *         categoria_id:
+ *           type: integer
+ *           description: identificação da categoria 
  *         urlevento:
  *           type: string
  *           description: Url para acesso de um album, criado quando o evento é público

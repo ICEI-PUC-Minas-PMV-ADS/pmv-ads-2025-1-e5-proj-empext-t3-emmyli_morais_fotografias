@@ -18,12 +18,19 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'SET NULL'
       });
 
+      Eventos.belongsTo(models.Categoria, {
+        foreignKey: 'categoria_id',
+        as: 'categoria',
+        onDelete: 'SET NULL',
+      });
+
       Eventos.belongsToMany(models.Produto, {
         through: 'EventoProduto',
         foreignKey: 'eventoId',
         otherKey: 'produtoId',
         as: 'produtos',
       });
+
     }
   }
 
@@ -67,6 +74,14 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       references: {
         model: 'marca_dagua',
+        key: 'id'
+      }
+    },
+    categoria_id: {                
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'categorias',
         key: 'id'
       }
     },

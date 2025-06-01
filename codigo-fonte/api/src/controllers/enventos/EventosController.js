@@ -27,6 +27,7 @@ class EventosController extends Api_Controller {
           publico: data.publico,
           exibirtrabalho: data.exibirtrabalho,
           idmarcadagua: data.idmarcadagua,
+          categoria_id: data.idmarcadagua,
           urlevento: data.urlevento,
         },
         { transaction }
@@ -90,6 +91,7 @@ class EventosController extends Api_Controller {
           publico: data.publico,
           exibirtrabalho: data.exibirtrabalho,
           idmarcadagua: data.idmarcadagua,
+          categoria_id: data.idmarcadagua,
           urlevento: data.urlevento,
         },
         { transaction }
