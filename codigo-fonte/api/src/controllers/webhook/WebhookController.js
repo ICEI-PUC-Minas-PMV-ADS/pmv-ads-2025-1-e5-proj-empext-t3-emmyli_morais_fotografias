@@ -24,11 +24,11 @@ const webhookHandler = async (req, res) => {
       return res.sendStatus(200);
     }
 
-    // 3. Pega o ID da compra do external_reference
+    console.log("pagamento", pagamento)
+    // 3. Pega o ID da compra, ID do carrinho do external_reference
     const referencia = JSON.parse(pagamento.external_reference);
     const compraId = referencia.compra_id;
     const carrinhoId = referencia.carrinho_id;
-
     // 4. Buscar a compra
     const compra = await Compras.findByPk(compraId);
 
@@ -56,10 +56,11 @@ const webhookHandler = async (req, res) => {
       return res.sendStatus(200);
     }
 
+    console.log("Atualizando a compra com o pagamento_id:", paymentId)
     // 6. Atualiza o carrinho com payment_id e status
     await compra.update({
-      payment_id: paymentId,
-      status: 'approved'
+      pagamento_id: paymentId,
+      status: 'approved',
     });
 
     console.log("Informações qee serão inseridas no album:",
