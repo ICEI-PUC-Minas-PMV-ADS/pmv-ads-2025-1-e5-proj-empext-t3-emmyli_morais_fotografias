@@ -7,6 +7,7 @@ import CadastrosRealizados from "../../componentsPerfil/CadastrosRealizados";
 import ProdutosEventos from "../../componentsPerfil/Produtos";
 import Configuracoes from "../../componentsPerfil/Configuracoes";
 import PerfilCliente from "../PerfilCliente/PerfilCliente";
+import Albuns from "../../componentsPerfil/Albuns";
 
 const PerfilFotografa = () => {
   const [currentPage, setCurrentPage] = useState("acessoRapido");
@@ -18,13 +19,14 @@ const PerfilFotografa = () => {
     setSelectedItem(item);
     setCurrentPage(item);
     setSelectedAlbumId(albumId);
-
   };
 
   const renderPage = () => {
     switch (currentPage) {
       case "eventos":
         return <Eventos albumId={selectedAlbumId} />;
+      case "albuns":
+        return <Albuns />;
       case "controleVendas":
         return <ControleDeVendas />;
       case "cadastros":
@@ -33,7 +35,7 @@ const PerfilFotografa = () => {
         return <ProdutosEventos />;
       case "configuracao":
         return <Configuracoes albumId={selectedAlbumId} />;
-      case "perfil": 
+      case "perfil":
         return <PerfilCliente />;
       default:
         return <AcessoRapido setPage={handleSelect} />;
@@ -42,7 +44,6 @@ const PerfilFotografa = () => {
 
   return (
     <div className="h-screen bg-gray-100 overflow-x-hidden flex flex-col sm:flex-row">
-     
       <MenuNavPerfil
         onSelect={handleSelect}
         isOpen={isSidebarOpen}
@@ -51,7 +52,7 @@ const PerfilFotografa = () => {
       />
 
       {/* Conteúdo principal */}
-      
+
       <div
         className={`pt-16 px-4 transition-all duration-300 w-full max-w-full ${
           isSidebarOpen ? "sm:ml-64" : "sm:ml-20"

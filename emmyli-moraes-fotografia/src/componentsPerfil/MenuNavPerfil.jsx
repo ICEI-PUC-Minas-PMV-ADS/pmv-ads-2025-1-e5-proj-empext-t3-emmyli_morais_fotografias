@@ -16,6 +16,7 @@ const MenuNavPerfil = ({ onSelect, isOpen, toggleSidebar, selectedItem }) => {
   const menuItems = [
     { name: "Acesso Rápido", icon: <FaBolt />, key: "acessoRapido" },
     { name: "Eventos", icon: <FaImage />, key: "eventos" },
+    { name: "Albuns", icon: <FaImage />, key: "albuns" },
     { name: "Controle de Vendas", icon: <FaDollarSign />, key: "controleVendas" },
     { name: "Cadastros Realizados", icon: <FaUserPlus />, key: "cadastros" },
     { name: "Cadastros de Produtos", icon: <FaBox />, key: "produtos" },
