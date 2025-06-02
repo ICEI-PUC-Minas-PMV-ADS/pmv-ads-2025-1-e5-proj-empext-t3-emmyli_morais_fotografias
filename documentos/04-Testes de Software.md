@@ -1612,10 +1612,37 @@ Cada funcionalidade desenvolvida deve ser testada utilizando os casos de testes 
     <td colspan="6" align="center"><strong>Evidência</strong></td>
   </tr>
   <tr>
-      <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/45bdc2e0-2364-43aa-b74a-1fe194b724c4"/></td>
+      <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/45bdc2e0-2364-43aa-b74a-1fe194b724c4"></td>
   </tr>
 </table>
 
+### Comentários em fotos
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-18<br>Permitir comentários em fotos</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">O sistema deve permitir que usuários comentem fotos do evento</td>
+  </tr>
+    <tr>
+    <td><strong>Responsável pelo Teste</strong></td>
+    <td width="430"> Gleyston Guimaraes Silva </td>
+     <td width="100"><strong>Data do Teste</strong></td>
+    <td width="150"> 30/05/2025 </td>
+  </tr>
+    <tr>
+    <td width="170"><strong>Comentário</strong></td>
+    <td colspan="5">O sistema deve permitir que usuários comentem fotos do evento.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+      <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/ca491033-8f92-437a-9be5-62a4ca5355c6"></td>
+  </tr>
+</table>
 
 ## Parte 2 - Testes por pares
 A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade deve ser testada por um colega e os testes devem ser evidenciados. O colega "Tester" deve utilizar o caso de teste criado pelo desenvolvedor responsável pela funcionalidade (desenvolveu a funcionalidade e criou o caso de testes descrito no plano de testes).
@@ -2292,6 +2319,34 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
     <td colspan="6" align="center"><strong>Evidência</strong></td>
   </tr>
   <tr>
-    <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/9ae18c6d-09a3-4005-bef1-a567f7c4c431"/></td>
+    <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/9ae18c6d-09a3-4005-bef1-a567f7c4c431"></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th colspan="6" width="1000">CT-018 <br>Teste para comentário em foto</th>
+  </tr>
+  <tr>
+    <td width="170"><strong>Critérios de êxito</strong></td>
+    <td colspan="5">O sistema deve permitir que usuários comentem fotos do evento</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável pela funcionalidade</strong></td>
+    <td> Gleyston Guimaraes Silva</td>
+    <td><strong>Responsável pelo teste</strong></td>
+    <td>Bárbara Fernandes Sena</td>
+    <td><strong>Data do teste</strong></td>
+    <td>31/05/2025</td>
+  </tr>
+  <tr>
+    <td><strong>Comentário</strong></td>
+    <td colspan="5">Este caso de teste deve permitir comentário em fotos</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><video src="https://github.com/user-attachments/assets/cf4ce3a4-18a3-4036-a33a-df764e3da438"></td>
   </tr>
 </table>
