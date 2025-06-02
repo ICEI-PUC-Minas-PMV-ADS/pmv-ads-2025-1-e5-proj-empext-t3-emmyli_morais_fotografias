@@ -4,6 +4,7 @@ const albunsController = require('../../controllers/album/AlbumController');
 const verifyToken = require('../../middleware/AuthMiddlewareToken');
 
 const upload = require('../../middleware/UploadImage');
+const factoryMiddlewareNotification = require('../../middleware/geradorMiddlewaresNotificacao');
 
 // Agora aplicamos o middleware "upload.array('fotos')" no POST
 
@@ -137,7 +138,17 @@ router.get('/:id', albunsController.getById);
  *       500:
  *         description: Erro ao criar categoria
  */
-router.post('/', verifyToken, upload.array('fotos'), albunsController.create);
+const notificarNovoAlbum = factoryMiddlewareNotification(
+    (req) => {
+        return {
+            topico: "Album",
+            acao: `Novo album criado para ${req.nome}`, // TODO: trocar idusuario por nome que vem do token
+            local_acao: "Albuns"
+        }
+    }
+)
+
+router.post('/', [verifyToken, notificarNovoAlbum], upload.array('fotos'), albunsController.create);
 
 /**
  * @swagger

@@ -4,6 +4,7 @@ const Api_Controller = require('../../controllers/Api_Controller');
 const feedbackController = new Api_Controller('Feedbacks');
 const checkFotografo = require('../../middleware/checkFotografo');
 const verifyToken = require('../../middleware/AuthMiddlewareToken');
+const factoryMiddlewareNotification = require('../../middleware/geradorMiddlewaresNotificacao');
 /**
  * @swagger
  * components:
@@ -203,9 +204,24 @@ const verifyToken = require('../../middleware/AuthMiddlewareToken');
  */
 
 router.get('/', feedbackController.getAll);
+
 router.get('/:id', verifyToken, feedbackController.getById);
-router.post('/', verifyToken, feedbackController.create);
+
+
+const notificarNovoFeedback = factoryMiddlewareNotification(
+    (req) => {
+        return {
+            topico: "feedback",
+            acao: `Novo feedback comentado por ${req.nome}`, // TODO: trocar idusuario por nome que vem do token
+            local_acao: "feedback"
+        }
+    }
+)
+router.post('/', [verifyToken, notificarNovoFeedback], feedbackController.create);
+
 router.put('/:id', checkFotografo, feedbackController.update); //rota disponível apenas para fotógrafos
+
 router.delete('/:id', checkFotografo, feedbackController.delete);  //rota disponível apenas para fotógrafos
+
 
 module.exports = router;

@@ -23,7 +23,11 @@ const verifyToken = (req, res, next) => {
       }
 
       // Adiciona os dados do token ao request para uso posterior
-      req.userId = decoded.idusuario;      
+      req.userId = decoded.idusuario;
+      req.nome = decoded.nome;
+      req.login = decoded.login;
+      req.email = decoded.email;
+      req.perfil = decoded.perfil;
       next();
     });
 

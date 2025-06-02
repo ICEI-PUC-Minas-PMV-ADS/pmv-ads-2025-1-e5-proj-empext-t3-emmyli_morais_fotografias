@@ -16,7 +16,8 @@ const carrinhoRoutes = require('./routes/carrinho/carrinhoRoutes')
 const vcRoutes = require('./routes/visualizacoesCurtidas/visualizacoesCurtidasRoutes');
 const pagamentoRoutes = require('./routes/pagamento/pagamentoRoutes');
 const webhookRoutes = require('./routes/webhook/WebhookRoutes');
-const comprasRoutes = require('./routes/compras/comprasRoutes')
+const comprasRoutes = require('./routes/compras/comprasRoutes');
+const notificacaoRoutes = require('./routes/notificacao/notificacaoRoutes');
 
 const setupSwagger = require('./swagger');
 
@@ -119,6 +120,9 @@ app.use('/api/compras', comprasRoutes);
 
 //Webhook
 app.use('/api/webhook', webhookRoutes);
+
+//Notificações
+app.use('/api/notificacao', notificacaoRoutes);
 
 app.listen(port, () => {
   console.log(`Servidor rodando em http://localhost:${port}`);
