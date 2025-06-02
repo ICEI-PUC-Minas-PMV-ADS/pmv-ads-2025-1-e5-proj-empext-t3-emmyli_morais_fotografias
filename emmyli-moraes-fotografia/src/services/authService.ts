@@ -63,8 +63,8 @@ export const forgotPassword = async (email: string) => {
 export const ContatoEmail = async (formData) => {
   return await anonApi.post("api/auth/contatoEmail", formData);
 };
-// Metodo para logout
 
+// Metodo para logout
 export const cleanUserInfos = () => {
   api.defaults.headers.Authorization = "";
   localStorage.clear();

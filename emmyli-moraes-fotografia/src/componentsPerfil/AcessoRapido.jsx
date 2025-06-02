@@ -1,40 +1,46 @@
 import React, { useState, useEffect } from "react";
 import { FaImages, FaHeart, FaShoppingCart } from "react-icons/fa";
 import { api } from "../services/api";
+import CaixaDeNotificacoes from "./CaixaDeNotificacoes";
+import  {buscarNotificacao}  from "../services/notificacaoService"
 
 const AcessoRapido = ({ setPage }) => {
   const [colecoes, setColecoes] = useState([]);
+  const [notificacao, setNotificacao] = useState([]);
 
   useEffect(() => {
-    const fetchRecentes = async () => {
-      try {
-        const { data } = await api.get("/api/eventos/?include=detalhes");
-        const todas = data.filter(
-          (a) => (a.exibirtrabalho === true || a.publico === true) && a.detalhes.length > 0
-        );
-        // ordena por data (desc) e pega top 3
-        todas.sort((a, b) => new Date(b.dtinclusao) - new Date(a.dtinclusao));
-        const top3 = todas.slice(0, 3);
 
-        // mapeia para a shape do card
-        const mapeadas = top3.map((a) => ({
-          id: a.id,
-          nome: a.nome,
-          data: new Date(a.dtinclusao).toLocaleDateString("pt-BR"),
-          status:  a.publico === true ? "Público" : "Privado",
-          imagens: a.detalhes?.length || 0,
-          favoritos: a.curtidasAlbuns || 0, // suposição: já veio via include no getAll
-          imagem: a.detalhes?.[0]?.foto || "", 
-        }));
-
-        setColecoes(mapeadas);
-      } catch (err) {
-        console.error("Erro ao buscar galerias recentes:", err);
-      }
-    };
-
+      buscarNotificacao()
+        .then((buscaDeNotificacoes) => setNotificacao(buscaDeNotificacoes));
+    
     fetchRecentes();
   }, []);
+  const fetchRecentes = async () => {
+    try {
+      const { data } = await api.get("/api/eventos/?include=detalhes");
+      const todas = data.filter(
+        (a) => (a.exibirtrabalho === true || a.publico === true) && a.detalhes.length > 0
+      );
+      // ordena por data (desc) e pega top 3
+      todas.sort((a, b) => new Date(b.dtinclusao) - new Date(a.dtinclusao));
+      const top3 = todas.slice(0, 3);
+
+      // mapeia para a shape do card
+      const mapeadas = top3.map((a) => ({
+        id: a.id,
+        nome: a.nome,
+        data: new Date(a.dtinclusao).toLocaleDateString("pt-BR"),
+        status: a.publico === true ? "Público" : "Privado",
+        imagens: a.detalhes?.length || 0,
+        favoritos: a.curtidasAlbuns || 0, // suposição: já veio via include no getAll
+        imagem: a.detalhes?.[0]?.foto || "",
+      }));
+
+      setColecoes(mapeadas);
+    } catch (err) {
+      console.error("Erro ao buscar galerias recentes:", err);
+    }
+  };
 
   return (
     <div className="p-6 font-serif bg-[#F9F9F9] min-h-screen">
@@ -91,27 +97,7 @@ const AcessoRapido = ({ setPage }) => {
           </div>
         </div>
 
-
-        
-        {/* NOTIFICAÇÕES */}
-        <div className="bg-white rounded-lg p-5 shadow-md">
-          <h1 className="text-lg font-semibold mb-4">🔔 Notificações</h1>
-          <ul className="space-y-4 text-sm text-gray-700">
-            <li className="border-b pb-2">
-              <p>🖤 Nova lista de favoritos criada para <span className="font-bold">Gleyston</span></p>
-              <p className="text-xs text-gray-500 mt-1">Galeria de Clientes · 3 dias atrás</p>
-            </li>
-            <li className="border-b pb-2">
-              <p>🖤 Nova lista de favoritos criada para <span className="font-bold">Gleyston</span></p>
-              <p className="text-xs text-gray-500 mt-1">Galeria de Clientes · 2 dias atrás</p>
-            </li>
-            <li>
-              <p>📥 Nova lista de favoritos criada para <span className="font-bold">Gleyston</span></p>
-              <p className="text-xs text-gray-500 mt-1">Galeria de Clientes · 1 dia atrás</p>
-            </li>
-          </ul>
-        </div>
-
+        <CaixaDeNotificacoes notificacoes={notificacao} />
 
         {/* CONTROLE DE VENDAS */}
         <div className="bg-white rounded-lg p-5 shadow-md">
