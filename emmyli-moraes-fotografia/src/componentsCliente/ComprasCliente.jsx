@@ -1,11 +1,13 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
+import { parseJwt } from "../utils/jwtUtils";
 import { api } from "../services/api";
 
-const ControleDeVendas = () => {
+const ComprasCliente = () => {
   const [loading, setLoading] = useState(false);
   const [busca, setBusca] = useState("");
-  const [vendas, setVendas] = useState([]);
+  const [compras, setCompras] = useState([]);
+  const [usuarioInfo, setUsuarioInfo] = useState(null);
 
   const statusLabels = {
     pending: "Pendente",
@@ -32,19 +34,29 @@ const ControleDeVendas = () => {
   };
 
   useEffect(() => {
-    fetchVendas();
+    const fetchUsuarioInfo = () => {
+      const token = localStorage.getItem("informacaoToken");
+      const payload = parseJwt(token);
+      setUsuarioInfo(payload);
+    };
+    fetchUsuarioInfo();
   }, []);
 
-  const fetchVendas = async () => {
-    const filter = `?include=usuario,evento`;
+  useEffect(() => {
+    if (!usuarioInfo) return;
+    fetchCompras();
+  }, [usuarioInfo]);
+
+  const fetchCompras = async () => {
+    const filter = `?usuarioId=${usuarioInfo?.idusuario}&include=usuario,evento`;
     const response = await api.get("/api/compras" + filter);
-    setVendas(response.data);
+    setCompras(response.data);
   };
 
   return (
     <div className="p-6 font-serif bg-[#F9F9F9] min-h-screen">
       <h1 className="text-2xl font-bold text-[#c09b2d] border-b-2 border-[#c09b2d] pb-4">
-        Controle de vendas
+        Minhas compras
       </h1>
 
       <div className="flex items-center gap-2 mt-4 mb-4">
@@ -65,127 +77,128 @@ const ControleDeVendas = () => {
       )}
 
       <div className="overflow-x-auto">
-        <table className="w-full bg-white shadow-lg rounded-lg overflow-hidden hidden sm:table">
-          <thead className="bg-[#c09b2d] text-white">
-            <tr>
-              <th className="py-4 px-6 text-center"># Pedido</th>
-              <th className="py-4 px-6 text-center">Cliente</th>
-              <th className="py-4 px-6 text-center">Nome do evento</th>
-              <th className="py-4 px-6 text-center">Qtd. fotos</th>
-              <th className="py-4 px-6 text-center">Preço unitário</th>
-              <th className="py-4 px-6 text-center">Status</th>
-              <th className="py-4 px-6 text-center">Data</th>
-              <th className="py-4 px-6 text-center">Valor</th>
-            </tr>
-          </thead>
-          <tbody>
-            {vendas.length > 0 ? (
-              vendas.map((venda, index) => (
+        {compras.length > 0 ? (
+          <table className="w-full bg-white shadow-lg rounded-lg overflow-hidden hidden sm:table">
+            <thead className="bg-[#c09b2d] text-white">
+              <tr>
+                <th className="py-4 px-6 text-center"># Pedido</th>
+                <th className="py-4 px-6 text-center">Cliente</th>
+                <th className="py-4 px-6 text-center">Nome do evento</th>
+                <th className="py-4 px-6 text-center">Fotos</th>
+                <th className="py-4 px-6 text-center">Preço unitário</th>
+                <th className="py-4 px-6 text-center">Status</th>
+                <th className="py-4 px-6 text-center">Data</th>
+                <th className="py-4 px-6 text-center">Valor</th>
+              </tr>
+            </thead>
+            <tbody>
+              {compras.map((compra, index) => (
                 <tr
-                  key={venda.id}
+                  key={compra.id}
                   className={`border-b ${
                     index % 2 === 0 ? "bg-gray-50" : "bg-white"
                   } hover:bg-gray-200 transition-all`}
                 >
                   <td className="py-4 px-6 text-center">
-                    {venda.pagamento_id}
+                    {compra.pagamento_id}
                   </td>
                   <td className="py-4 px-6 text-center">
-                    {venda.usuario.nome}
+                    {compra.usuario.nome}
                   </td>
                   <td className="py-4 px-6 text-center">
-                    {venda.evento.descricao}
+                    {compra.evento.descricao}
                   </td>
-                  <td className="py-4 px-6 text-center">{venda.quantidade}</td>
+                  <td className="py-4 px-6 text-center">{compra.quantidade}</td>
                   <td className="py-4 px-6 text-center">
+                    {" "}
                     {new Intl.NumberFormat("pt-BR", {
                       style: "currency",
                       currency: "BRL",
-                    }).format(venda.preco_unitario)}
+                    }).format(compra.preco_unitario)}
                   </td>
                   <td className="py-4 px-6 text-center">
                     <span
                       className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                        statusColors[venda.status]
+                        statusColors[compra.status]
                       }`}
                     >
-                      {statusLabels[venda.status] || venda.status}
+                      {statusLabels[compra.status] || compra.status}
                     </span>
                   </td>
                   <td className="py-4 px-6 text-center">
-                    {new Date(venda.dtinclusao).toLocaleDateString("pt-BR")}
+                    {new Date(compra.dtinclusao).toLocaleDateString("pt-BR")}
                   </td>
                   <td className="py-4 px-6 text-center">
                     {new Intl.NumberFormat("pt-BR", {
                       style: "currency",
                       currency: "BRL",
-                    }).format(venda.total)}
+                    }).format(compra.total)}
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="4" className="py-6 px-4 text-center text-gray-500">
-                  Nenhum cliente encontrado.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <tr className="flex justify-center items-center">
+            <td colSpan="4" className="py-6 px-4 text-center text-gray-500">
+              Nenhuma compra encontrada.
+            </td>
+          </tr>
+        )}
         {/* Layout para telas pequenas */}
 
         <div className="sm:hidden">
-          {vendas.length > 0 ? (
-            vendas.map((venda) => (
+          {compras.length > 0 ? (
+            compras.map((compra) => (
               <div
-                key={venda.id}
+                key={compra.id}
                 className="bg-white p-4 rounded-lg shadow mb-4"
               >
                 <p>
-                  <strong># Pedido:</strong> {venda.pagamento_id}
+                  <strong># Pedido:</strong> {compra.pagament_id}
                 </p>
                 <p>
-                  <strong>Cliente:</strong> {venda.usuario.nome}
+                  <strong>Cliente:</strong> {compra.usuario.nome}
                 </p>
                 <p>
-                  <strong>Nome do evento:</strong> {venda.evento.descricao}
+                  <strong>Nome do evento:</strong> {compra.evento.descricao}
                 </p>
                 <p>
-                  <strong>Qtd. fotos:</strong> {venda.quantidade}
+                  <strong>Fotos:</strong> {compra.quantidade}
                 </p>
                 <p>
                   <strong>Preço unitário:</strong>{" "}
                   {new Intl.NumberFormat("pt-BR", {
                     style: "currency",
                     currency: "BRL",
-                  }).format(venda.preco_unitario)}
+                  }).format(compra.preco_unitario)}
                 </p>
                 <p>
+                  <strong>Status:</strong>{" "}
                   <span
                     className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                      statusColors[venda.status]
+                      statusColors[compra.status]
                     }`}
                   >
-                    {statusLabels[venda.status] || venda.status}
+                    {statusLabels[compra.status] || compra.status}
                   </span>
                 </p>
                 <p>
                   <strong>Data:</strong>{" "}
-                  {new Date(venda.dtinclusao).toLocaleDateString("pt-BR")}
+                  {new Date(compra.dtinclusao).toLocaleDateString("pt-BR")}
                 </p>
                 <p>
                   <strong>Valor:</strong>
                   {new Intl.NumberFormat("pt-BR", {
                     style: "currency",
                     currency: "BRL",
-                  }).format(venda.total)}
+                  }).format(compra.valor)}
                 </p>
               </div>
             ))
           ) : (
             <p className="text-center text-gray-500">
-              Nenhum cliente encontrado.
+              Nenhuma compra encontrada.
             </p>
           )}
         </div>
@@ -194,4 +207,4 @@ const ControleDeVendas = () => {
   );
 };
 
-export default ControleDeVendas;
+export default ComprasCliente;

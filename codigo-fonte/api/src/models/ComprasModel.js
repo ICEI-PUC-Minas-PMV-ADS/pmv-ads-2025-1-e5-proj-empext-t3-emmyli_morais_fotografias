@@ -49,6 +49,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
+    quantidade: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true,
+    },
+    preco_unitario: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true,
+    },
     total: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
@@ -68,7 +76,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
       pagamento_id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: true
     },
       carrinho_id: {

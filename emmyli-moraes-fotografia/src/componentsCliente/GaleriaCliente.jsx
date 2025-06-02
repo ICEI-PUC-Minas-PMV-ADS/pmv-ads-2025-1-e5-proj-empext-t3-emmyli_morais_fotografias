@@ -31,7 +31,6 @@ const GaleriaCliente = () => {
     fetchAlbuns();
   }, [usuarioInfo]);
 
-
   const fetchAlbuns = async () => {
     try {
       const filter = `?usuarioId=${usuarioInfo?.idusuario}`;
@@ -51,7 +50,6 @@ const GaleriaCliente = () => {
       }));
 
       setAlbunsComprados(albunsFormatados);
-
     } catch (error) {
       console.error(
         "Erro ao buscar eventos:",
@@ -82,7 +80,7 @@ const GaleriaCliente = () => {
 
         const a = document.createElement("a");
         a.href = url;
-        a.download = `foto_${i + 1}.jpg`; 
+        a.download = `foto_${i + 1}.jpg`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -122,41 +120,46 @@ const GaleriaCliente = () => {
       {/* Fotos compradas em cards menores */}
       {abaAtiva === "fotos_compradas" && !albumAberto && (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {albunsComprados.map((g) => (
-            <div
-              key={g.id}
-              className="relative bg-white rounded-2xl shadow-md overflow-hidden transform transition hover:scale-105 cursor-pointer"
-            >
-              {/* Clicar na imagem ou título abre o álbum */}
-
-              <div onClick={() => abrirAlbum(g)}>
-                <div className="w-full h-60 bg-gray-100 overflow-hidden">
-                  {console.log("album g fotos:", g.fotos[0].url)}
-                  {g.fotos[0].url ? (
-                    <img
-                      src={g.fotos[0].url}
-                      className="w-full h-full object-cover rounded-t-2xl"
-                    />
-                  ) : (
-                    <div className="text-center text-gray-400 p-8">
-                      Sem capa
+          {albunsComprados.length > 0 ? (
+            <>
+              {albunsComprados.map((g) => (
+                <div
+                  key={g.id}
+                  className="relative bg-white rounded-2xl shadow-md overflow-hidden transform transition hover:scale-105 cursor-pointer"
+                >
+                  <div onClick={() => abrirAlbum(g)}>
+                    <div className="w-full h-60 bg-gray-100 overflow-hidden">
+                      {g.fotos[0]?.url ? (
+                        <img
+                          src={g.fotos[0].url}
+                          className="w-full h-full object-cover rounded-t-2xl"
+                        />
+                      ) : (
+                        <div className="text-center text-gray-400 p-8">
+                          Sem capa
+                        </div>
+                      )}
                     </div>
-                  )}
+                    <div className="p-4 text-center">
+                      <h3 className="text-xl font-semibold text-[#252525]">
+                        {g.nome}
+                      </h3>
+                      {g.descricao && (
+                        <p className="text-gray-500 italic">{g.descricao}</p>
+                      )}
+                      <p className="text-sm text-[#c09b2d] mt-2">
+                        {g.fotos.length} fotos | {g.data}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div className="p-4 text-center">
-                  <h3 className="text-xl font-semibold text-[#252525]">
-                    {g.nome}
-                  </h3>
-                  {g.descricao && (
-                    <p className="text-gray-500 italic">{g.descricao}</p>
-                  )}
-                  <p className="text-sm text-[#c09b2d] mt-2">
-                    {g.fotos.length} fotos | {g.data}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ))}
+              ))}
+            </>
+          ) : (
+            <p className="py-6 px-4 text-center text-gray-500 col-span-4">
+              Nenhuma compra encontrada.
+            </p>
+          )}
         </div>
       )}
 

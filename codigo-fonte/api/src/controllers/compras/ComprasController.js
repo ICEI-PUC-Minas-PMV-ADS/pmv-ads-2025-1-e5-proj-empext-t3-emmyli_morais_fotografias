@@ -8,7 +8,7 @@ class ComprasController extends Api_Controller {
 
   async create(req, res) {
     try {
-      const { usuario_id, idevento, descricao, total, status, pagamento_id, carrinho_id } = req.body;
+      const { usuario_id, idevento, descricao, quantidade, preco_unitario, total, status, pagamento_id, carrinho_id } = req.body;
 
       let compra = await Compras.findOne({
         where: { usuario_id, idevento }
@@ -16,6 +16,8 @@ class ComprasController extends Api_Controller {
 
       if (compra) {
         compra.descricao = descricao;
+        compra.quantidade = quantidade;
+        compra.preco_unitario = preco_unitario;
         compra.total = total;
         compra.status = status;
         compra.pagamento_id = pagamento_id;
@@ -26,6 +28,8 @@ class ComprasController extends Api_Controller {
           usuario_id,
           idevento,
           descricao,
+          quantidade,
+          preco_unitario,
           total,
           status,
           pagamento_id,

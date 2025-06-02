@@ -4,12 +4,14 @@ import { api } from "../../services/api";
 import { FaCommentDots, FaTrash } from "react-icons/fa";
 import Modal from "../../components/Modal";
 import { parseJwt } from "../../utils/jwtUtils";
+import { useAuth } from "../../context/authContext";
 
 const Evento = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
-  //  Estados de dados 
+  //  Estados de dados
   const [loading, setLoading] = useState(true);
   const [usuarioInfo, setUsuarioInfo] = useState(null);
   const [evento, setEvento] = useState(null);
@@ -17,7 +19,7 @@ const Evento = () => {
   const [produtos, setProdutos] = useState([]);
   const [pacoteSelecionado, setPacoteSelecionado] = useState(null);
 
-  //  Estados de seleção de imagens 
+  //  Estados de seleção de imagens
   const [imagemSelecionada, setImagemSelecionada] = useState([]);
   const [imagemClickada, setImagemClickada] = useState(null);
   const [indiceImagemAtual, setIndiceImagemAtual] = useState(null);
@@ -41,9 +43,7 @@ const Evento = () => {
       const payload = parseJwt(token);
       setUsuarioInfo(payload);
     } catch {
-
       // se token inválido ou expirado, não setamos nada
-
     }
   }, []);
 
@@ -109,9 +109,7 @@ const Evento = () => {
     carregarComentarios();
   }, [indiceImagemAtual, comentario]);
 
-
-  //  BLOQUEIO “PrintScreen” e “Ctrl+P / ⌘+P” (bloqueio de impressão) 
-
+  //  BLOQUEIO “PrintScreen” e “Ctrl+P / ⌘+P” (bloqueio de impressão)
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -184,7 +182,6 @@ const Evento = () => {
   const handleContextMenu = (e) => {
     e.preventDefault();
     setIsSnipping(true);
-    
   };
 
   //  Funções para navegar entre as imagens no modo “zoom”
@@ -202,22 +199,43 @@ const Evento = () => {
       setImagemClickada(fotos[novoIndice]);
     }
   };
-  
-    const handleComprar = async () => {
+
+  const handleComprar = async () => {
+    if (!user?.token?.informacao) {
+      navigate("/cadastro");
+      return;
+    }
+
+    let total;
+    let preco_unitario;
+    let quantidade;
+
     if (imagemSelecionada.length === 0) {
       alert("Selecione pelo menos uma imagem para comprar.");
       return;
     }
 
-    const preco = pacoteSelecionado.preco;
-    const quantidade = imagemSelecionada.length;
-    const total = preco * quantidade;
+    if (pacoteSelecionado.quantidade_fotos == 1) {
+      // se o pacote for por foto individual
+      total = imagemSelecionada.length * pacoteSelecionado.preco;
+      preco_unitario = pacoteSelecionado.preco;
+      quantidade = imagemSelecionada.length;
+    } else {
+      if (imagemSelecionada.length < pacoteSelecionado.quantidade_fotos) {
+        alert(`Selecione as ${pacoteSelecionado.quantidade_fotos} fotos`);
+        return;
+      }
+      total = pacoteSelecionado.preco;
+      preco_unitario =
+        pacoteSelecionado.preco / pacoteSelecionado.quantidade_fotos;
+      quantidade = pacoteSelecionado.quantidade_fotos;
+    }
 
     const payload = {
       usuario_id: usuarioInfo.idusuario,
       evento_id: evento.id,
       descricao: evento.descricao,
-      preco_unitario: preco,
+      preco_unitario: preco_unitario,
       quantidade,
       total,
       fotos: imagemSelecionada.map((id) => ({ id_foto: id })),
@@ -296,7 +314,6 @@ const Evento = () => {
   return (
     <div className="relative font-serif bg-[#0B3727] min-h-screen pb-8">
       <div onContextMenu={handleContextMenu}>
-
         {/* BANNER E BOTÃO “VER GALERIA” */}
 
         <div className="relative mb-8 border-b-2 border-[#c09b2d]">
@@ -357,7 +374,6 @@ const Evento = () => {
         )}
 
         <section className={`protectable-imgs ${isSnipping ? "blurred" : ""}`}>
-
           {/* GALERIA DE MINIATURAS */}
 
           <div
@@ -446,7 +462,6 @@ const Evento = () => {
                 className="relative inline-block"
                 onClick={(e) => e.stopPropagation()}
               >
-
                 <img
                   src={imagemClickada.foto}
                   alt="Zoom"
@@ -572,7 +587,13 @@ const Evento = () => {
 
                     <button
                       className="w-10 h-10 bg-[#c09b2d] text-white rounded-full flex items-center justify-center hover:bg-[#a88724]"
-                      onClick={() => setShowModal(true)}
+                      onClick={() => {
+                        if (!user?.token?.informacao) {
+                          navigate("/cadastro");
+                          return;
+                        }
+                        setShowModal(true);
+                      }}
                     >
                       +
                     </button>
