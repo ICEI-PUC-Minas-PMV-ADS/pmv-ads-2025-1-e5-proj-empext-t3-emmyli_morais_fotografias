@@ -18,85 +18,56 @@ const webhookHandler = async (req, res) => {
       }
     );
 
-    // 2. Verifica se o pagamento está aprovado
-    if (pagamento.status !== 'approved') {
-      console.log(`Pagamento ${paymentId} ainda não aprovado (status: ${pagamento.status})`);
-      return res.sendStatus(200);
-    }
-
-    console.log("pagamento", pagamento)
-    // 3. Pega o ID da compra, ID do carrinho do external_reference
     const referencia = JSON.parse(pagamento.external_reference);
     const compraId = referencia.compra_id;
     const carrinhoId = referencia.carrinho_id;
-    // 4. Buscar a compra
+
+    // Busca a compra
     const compra = await Compras.findByPk(compraId);
+    if (!compra) return res.sendStatus(404);
 
-    if (!compra) {
-      console.error('Compra não encontrado:', compraId);
-      return res.sendStatus(404);
-    }
-
-    // 5. Buscar o carrinho com as fotos (incluindo associação correta)
-    const carrinho = await Carrinho.findByPk(carrinhoId, {
-      include: [{
-        model: CarrinhoFotos,
-        as: 'fotos' // Verifique se no model Carrinho a associação tem esse alias 'fotos'
-      }]
-    });
-
-    if (!carrinho) {
-      console.error('Carrinho não encontrado:', carrinhoId);
-      return res.sendStatus(404);
-    }
-
-    // 5. Evita duplicação se o pagamento já foi processado
-    if (compra.payment_id) {
-      console.log('Pagamento já registrado para esta compra.');
+    // Verifica se o pagamento já foi registrado
+    if (compra.payment_id && compra.status === pagamento.status) {
+      console.log('Pagamento já processado.');
       return res.sendStatus(200);
     }
 
-    console.log("Atualizando a compra com o pagamento_id:", paymentId)
-    // 6. Atualiza o carrinho com payment_id e status
+    // Atualiza o status da compra com qualquer status vindo do Mercado Pago
     await compra.update({
       pagamento_id: paymentId,
-      status: 'approved',
+      status: pagamento.status,
     });
 
-    console.log("Informações qee serão inseridas no album:",
-      {
-      'usuarioId': carrinho.usuario_id,
-      'descricao e nome': carrinho.descricao,
-      }
-    )
+    // Só cria álbum, etc., se aprovado
+    if (pagamento.status === 'approved') {
+      const carrinho = await Carrinho.findByPk(carrinhoId, {
+        include: [{ model: CarrinhoFotos, as: 'fotos' }]
+      });
 
-    // 7. Cria o álbum
-    const album = await Albuns.create({
-      usuario_id: carrinho.usuario_id,
-      nome: carrinho.descricao,
-      descricao: carrinho.descricao,
-      origem: 'cliente',
-      downloadFoto: true
-    });
+      if (!carrinho) return res.sendStatus(404);
 
-    // 8. Cria os registros em AlbumFotos
-    const fotosParaAlbum = carrinho.fotos.map((item) => ({
-      album_id: album.id,
-      id_foto: item.id_foto
-    }));
+      const album = await Albuns.create({
+        usuario_id: carrinho.usuario_id,
+        nome: carrinho.descricao,
+        descricao: carrinho.descricao,
+        origem: 'cliente',
+        downloadFoto: true
+      });
 
-    await AlbumFotos.bulkCreate(fotosParaAlbum);
+      const fotosParaAlbum = carrinho.fotos.map((item) => ({
+        album_id: album.id,
+        id_foto: item.id_foto
+      }));
 
-    console.log(`Álbum ${album.id} criado para o carrinho ${carrinho.id}.`);
+      await AlbumFotos.bulkCreate(fotosParaAlbum);
+      await Carrinho.destroy({ where: { id: carrinhoId } });
 
-    //9. Por fim, deleta o carrinho após todo o processo
-    await Carrinho.destroy({
-      where: { id: carrinhoId }
-    });
-
-    console.log(`Carrinho ${carrinhoId} deletado com sucesso.`);
+      console.log(`Carrinho ${carrinhoId} processado e deletado.`);
+    }
 
     return res.sendStatus(200);
+
+
   } catch (error) {
     console.error('Erro no webhook:', error.response?.data || error.message);
     return res.sendStatus(500);
