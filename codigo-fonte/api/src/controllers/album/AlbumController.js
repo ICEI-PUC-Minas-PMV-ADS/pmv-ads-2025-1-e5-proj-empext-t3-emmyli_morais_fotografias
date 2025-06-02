@@ -5,81 +5,92 @@ const {
   VisualizacaoAlbum,
   CurtidaAlbum,
   CurtidaFoto,
-  Feedbacks
+  Feedbacks,
+  Usuarios,
+  EventosModel,
+  Comentarios,
 } = require('../../models');
 const { deleteFotoBunnyStorage, uploadFotoBunnyStorage } = require('../../service/uploadService');
 const { fn, col } = require('sequelize');
 
 
 const getAll = async (req, res) => {
-
   const { usuario_id, sem_feedback } = req.query;
 
   const whereClause = {};
   if (usuario_id) {
     whereClause.usuario_id = usuario_id;
   }
+
   try {
-        const albuns = await Albuns.findAll({
-          where: whereClause,
+    const albuns = await Albuns.findAll({
+      where: whereClause,
+      include: [
+        { model: VisualizacaoAlbum, as: 'visualizacoesAlbuns' },
+        { model: CurtidaAlbum, as: 'curtidasAlbuns' },
+        {
+          model: Feedbacks,
+          as: 'feedbacks',
+          required: false
+        },
+        {
+          model: AlbumFotos,
+          as: 'fotos',
           include: [
-            { model: VisualizacaoAlbum, as: 'visualizacoesAlbuns' },
-            { model: CurtidaAlbum, as: 'curtidasAlbuns' },
             {
-              model: Feedbacks,
-              as: 'feedbacks',
-              required: false
-            },
-            {
-              model: AlbumFotos,
-              as: 'fotos',
+              model: DetalheEvento,
+              as: 'foto',
               include: [
                 {
-                  model: DetalheEvento,
-                  as: 'foto',
-                  include: [
-                    { model: CurtidaFoto, as: 'curtidasFotos' }
-                  ]
+                  model: Comentarios,
+                  as: 'comentarios'
                 }
               ]
             }
           ]
-        });
+        },
+        {
+          model: Usuarios,
+          as: 'usuario'
+        }
+      ]
+    });
 
-        // 🔍 Filtro após a consulta
-        const filtrados = sem_feedback === 'true'
-          ? albuns.filter(album => (album.feedbacks || []).length === 0)
-          : albuns;
+    const filtrados = sem_feedback === 'true'
+      ? albuns.filter(album => (album.feedbacks || []).length === 0)
+      : albuns;
 
-        const resultado = filtrados.map(album => {
-          const curtidasDoAlbum = album.curtidasAlbuns?.length || 0;
-          const curtidasDasFotos = album.fotos.reduce((acc, af) => {
-            return acc + (af.foto?.curtidasFotos?.length || 0);
-          }, 0);
+    const resultado = filtrados.map(album => {
+      const curtidasDoAlbum = album.curtidasAlbuns?.length || 0;
+      const curtidasDasFotos = album.fotos.reduce((acc, af) => {
+        return acc + (af.foto?.curtidasFotos?.length || 0);
+      }, 0);
 
-          const visualizacoes = album.visualizacoesAlbuns?.length || 0;
+      const visualizacoes = album.visualizacoesAlbuns?.length || 0;
 
-          return {
-            id: album.id,
-            nome: album.nome,
-            descricao: album.descricao,
-            origem: album.origem,
-            dtinclusao: album.dtinclusao,
-            fotos: album.fotos,
-            visualizacoes,
-            curtidasAlbum: curtidasDoAlbum,
-            curtidasFotos: curtidasDasFotos,
-            totalCurtidas: curtidasDoAlbum + curtidasDasFotos
-          };
-        });
+      return {
+        id: album.id,
+        nome: album.nome,
+        descricao: album.descricao,
+        origem: album.origem,
+        dtinclusao: album.dtinclusao,
+        usuario: album.usuario,
+        fotos: album.fotos,
+        visualizacoes,
+        curtidasAlbum: curtidasDoAlbum,
+        curtidasFotos: curtidasDasFotos,
+        totalCurtidas: curtidasDoAlbum + curtidasDasFotos
+      };
+    });
 
-  res.json(resultado);
+    res.json(resultado);
 
   } catch (err) {
     console.error('Erro ao buscar álbuns:', err);
     res.status(500).json({ error: 'Erro ao buscar álbuns' });
   }
 };
+
 
 
 const getById = async (req, res) => {
