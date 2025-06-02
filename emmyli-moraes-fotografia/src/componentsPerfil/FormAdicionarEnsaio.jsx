@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { api } from "../services/api";
-import { Plus } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import ModalPacote from "../componentsPerfil/ModalPacote";
 
 const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
+
   const [abaAtiva, setAbaAtiva] = useState("informacoes");
   const [titulo, setTitulo] = useState("");
   const [imagens, setImagens] = useState([]);
@@ -12,7 +13,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
   const [tipoMensagem, setTipoMensagem] = useState("");
   const [origem, setOrigem] = useState("cliente");
 
-  const [descricao, setDescricao] = useState("");
+  /*const [descricao, setDescricao] = useState("");*/
   const [dataEvento, setDataEvento] = useState("");
   const [horaEvento, setHoraEvento] = useState("");
   const [localEvento, setLocalEvento] = useState("");
@@ -28,38 +29,29 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
   const [produtosSelecionados, setProdutosSelecionados] = useState([]);
 
 
-  const [categorias, setCategorias] = useState([]);
+  const [categorias, setCategorias] = useState([]); 
+  const [categoriasPersonalizadas, setCategoriasPersonalizadas] = useState([]); 
   const [categoriaSelecionada, setCategoriaSelecionada] = useState("");
 
-  // Se origem for "exibirtrabalho", força abaInformacoes
+  const [mostrarModalCategoria, setMostrarModalCategoria] = useState(false);
+  const [novaCategoria, setNovaCategoria] = useState("");
+
   useEffect(() => {
     if (origem === "exibirtrabalho" && abaAtiva === "configuracoes") {
       setAbaAtiva("informacoes");
     }
   }, [origem, abaAtiva]);
 
- 
+
   useEffect(() => {
-  
     if (dadosIniciais && dadosIniciais.id) {
       return;
     }
+    const chaveUnica = crypto.randomUUID().slice(0, 8);
+    setUrlAlbum(`http://localhost:5173/album/${chaveUnica}`);
+  }, [dadosIniciais]);
 
-    // 2) Se estivermos criando (sem dadosIniciais), então geramos normalmente
-    
-    if (origem === "cliente") {
-      const chaveUnica = crypto.randomUUID().slice(0, 8);
-      setUrlAlbum(`http://localhost:5173/album/${chaveUnica}`);
-    } else if (origem === "publico") {
-      const chaveUnica = crypto.randomUUID().slice(0, 8);
-      setUrlAlbum(`http://localhost:5173/album/${chaveUnica}`);
-    } else {
-      // origem === "exibirtrabalho"
-      setUrlAlbum("");
-    }
-  }, [origem, dadosIniciais]);
 
-  // Buscar marcas d'água para o select
   useEffect(() => {
     const buscarMarcas = async () => {
       try {
@@ -72,29 +64,37 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
     buscarMarcas();
   }, []);
 
-   useEffect(() => {
+
+  useEffect(() => {
     const buscaCategorias = async () => {
       try {
         const response = await api.get("/api/categorias");
+
         setCategorias(response.data || []);
+        setCategoriasPersonalizadas(response.data || []);
       } catch (err) {
-        console.error("Erro ao buscar Categorias:", err);
+        console.error("Erro ao buscar categorias:", err);
       }
     };
     buscaCategorias();
   }, []);
 
-  // Preencher campos se houver dadosIniciais (edição)
+
   useEffect(() => {
     if (dadosIniciais) {
       setTitulo(dadosIniciais.nome || "");
-      setDescricao(dadosIniciais.descricao || "");
+      /*setDescricao(dadosIniciais.descricao || "");*/
       setDataEvento(dadosIniciais.data_evento || "");
       setHoraEvento(dadosIniciais.hora_evento || "");
       setLocalEvento(dadosIniciais.local || "");
       setUrlAlbum(dadosIniciais.urlevento || "");
       setMarcaSelecionada(dadosIniciais.idmarcadagua || "");
-      setCategoriaSelecionada(dadosIniciais.categoria_id || "");
+
+      setCategoriaSelecionada(
+        dadosIniciais.categoria_id
+          ? dadosIniciais.categoria_id.toString()
+          : ""
+      );
 
       setOrigem(
         dadosIniciais.publico
@@ -106,12 +106,13 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
     }
   }, [dadosIniciais]);
 
+
   const handleErro = (msg) => {
     setTipoMensagem("erro");
     setMensagem(msg);
   };
 
-  // Limpar mensagem após 5 segundos
+
   useEffect(() => {
     if (mensagem) {
       const timer = setTimeout(() => {
@@ -123,57 +124,52 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
   }, [mensagem]);
 
 
-  // Funções para gerenciamento de imagens no preview
- 
   const handleImageChange = (e) => {
     setImagens(Array.from(e.target.files));
   };
-
   const removerImagem = (index) => {
     const nov = [...imagens];
     nov.splice(index, 1);
     setImagens(nov);
   };
 
-
   const handleSubmit = (e) => e.preventDefault();
+
 
   const handleAvancar = async () => {
     try {
       setLoading(true);
 
+      // Montagem de FormData:
       const formData = new FormData();
+
       imagens.forEach((img) => {
         formData.append("imagens[]", img);
       });
 
       formData.append("nome", titulo);
-      formData.append("descricao", descricao);
       formData.append("data_evento", dataEvento);
       formData.append("hora_evento", horaEvento);
       formData.append("local", localEvento);
       formData.append("publico", origem === "publico");
       formData.append("exibirtrabalho", origem === "exibirtrabalho");
-      formData.append("categoria_id", categoriaSelecionada || 0);
 
-      // ► Somente envie idmarcadagua se não for "exibirtrabalho" e houver uma marca selecionada
+
+      if (categoriaSelecionada && Number(categoriaSelecionada) > 0) {
+        formData.append("categoria_id", Number(categoriaSelecionada));
+      }
 
       if (origem !== "exibirtrabalho" && marcaSelecionada) {
-        formData.append("idmarcadagua", marcaSelecionada);
+        formData.append("idmarcadagua", Number(marcaSelecionada));
       }
-   
-      // ► Somente envie urlevento se não for "exibirtrabalho"
+
       if (origem !== "exibirtrabalho") {
         formData.append("urlevento", urlAlbum);
       }
 
-      // Se origem === "exibirtrabalho", também NÃO adicionamos "urlevento"
-
-     
-
       let data = null;
-       console.log(dadosIniciais?.id);
       if (dadosIniciais?.id) {
+
         const response = await api.put(
           `/api/eventos/${dadosIniciais.id}`,
           formData,
@@ -182,16 +178,14 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
           }
         );
         data = response.data;
-
-        
       } else {
+
         const response = await api.post("/api/eventos", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         data = response.data;
       }
 
-      // Vincular produtos selecionados (se houver)
 
       const eventoId = data.id;
       const vincularProdutos = produtosSelecionados.map((produtoId) =>
@@ -202,38 +196,80 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
       );
       await Promise.all(vincularProdutos);
 
-      onSave?.("Álbum criado com sucesso!"); 
+
+      onSave?.("Evento criado com sucesso!");
       onClose();
     } catch (err) {
-      handleErro("Erro ao criar ensaio! " + (err?.response?.data?.message || err.message));
+      handleErro(
+        "Erro ao criar ensaio! " +
+          (err?.response?.data?.error ||
+            err?.response?.data?.message ||
+            err.message)
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  // Buscar lista de produtos quando abrir o modal de pacote
-
   useEffect(() => {
     const fetchProdutos = async () => {
-      const response = await api.get("/api/produtos");
-      setProdutos(response.data);
+      try {
+        const response = await api.get("/api/produtos");
+        setProdutos(response.data);
+      } catch (err) {
+        console.error("Erro ao buscar produtos:", err);
+      }
     };
     fetchProdutos();
   }, [modalPacote]);
 
+
+  const handleAddCategoria = async () => {
+    const nome = novaCategoria.trim();
+    if (!nome) return;
+    try {
+      const res = await api.post("/api/categorias", { nome });
+
+      setCategoriasPersonalizadas((prev) => [...prev, res.data]);
+      setCategorias((prev) => [...prev, res.data]); 
+
+      setCategoriaSelecionada(res.data.id.toString());
+      setNovaCategoria("");
+      setMostrarModalCategoria(false);
+    } catch (error) {
+      handleErro("Erro ao criar categoria.");
+    }
+  };
+
+
+  const handleDeleteCategoria = async (id) => {
+    try {
+      await api.delete(`/api/categorias/${id}`);
+      setCategoriasPersonalizadas((prev) =>
+        prev.filter((c) => c.id !== id)
+      );
+      setCategorias((prev) =>
+        prev.filter((c) => c.id !== id)
+      );
+
+      if (categoriaSelecionada === id.toString()) {
+        setCategoriaSelecionada("");
+      }
+    } catch {
+      handleErro("Erro ao remover categoria.");
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
 
-      {/* Overlay de loading */}
       {loading && (
         <div className="fixed inset-0 bg-white bg-opacity-50 z-50 flex items-center justify-center">
           <div className="animate-spin h-12 w-12 border-4 border-[#c09b2d] border-t-transparent rounded-full"></div>
         </div>
       )}
 
-      <div
-        className="bg-[#f2eee6] w-full max-w-4xl rounded-2xl p-6 shadow-lg relative font-serif max-h-[90vh] overflow-auto sm:p-8 md:max-w-3xl lg:max-w-4xl"
-      >
+      <div className="bg-[#f2eee6] w-full max-w-4xl rounded-2xl p-6 shadow-lg relative font-serif max-h-[90vh] overflow-auto sm:p-8 md:max-w-3xl lg:max-w-4xl">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl font-bold"
@@ -246,10 +282,6 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
           <h1 className="text-3xl text-[#b1783d]">Eventos</h1>
         </div>
 
-       
-
-
-        {/* Abas: Informações e (condicional) Configurações */}
 
         <div className="flex border-b mb-6 flex-wrap gap-2">
           <button
@@ -262,8 +294,6 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
           >
             Informações
           </button>
-
-          {/* Só exibe a aba "configuracoes" se não for exibirtrabalho */}
 
           {origem !== "exibirtrabalho" && (
             <button
@@ -279,7 +309,6 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
           )}
         </div>
 
-        {/* Mensagem de erro */}
 
         {mensagem && tipoMensagem === "erro" && (
           <div className="border px-4 py-3 rounded-md w-full mb-4 bg-red-100 border-red-400 text-red-700">
@@ -287,13 +316,12 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
           </div>
         )}
 
-        {/* === Aba: Informações === */}
 
         {abaAtiva === "informacoes" && (
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:space-x-4">
-              
               <div className="flex-1 space-y-6">
+
                 <div>
                   <label className="block font-medium mb-1">Título do Evento</label>
                   <input
@@ -304,7 +332,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
                   />
                 </div>
 
-                <div>
+                {/*<div>
                   <label className="block font-medium mb-1">Descrição</label>
                   <textarea
                     value={descricao}
@@ -312,76 +340,75 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
                     className="w-full p-2 border border-gray-300 rounded"
                     rows={3}
                   />
+                </div>*/}
+
+
+                <div>
+                  <label className="block font-medium mb-1">
+                    Imagens do Ensaio
+                  </label>
+                  <input
+                    type="file"
+                    multiple
+                    onChange={handleImageChange}
+                    className="w-full p-2 border border-gray-300 rounded"
+                  />
+                  {imagens.length > 0 && (
+                    <div className="mt-2 bg-white p-4 border border-gray-300 rounded w-full">
+                      <h3 className="text-lg font-medium mb-2">Pré‐visualização:</h3>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 max-h-80 overflow-auto">
+                        {imagens.map((img, idx) => (
+                          <div key={idx} className="relative">
+                            <img
+                              src={URL.createObjectURL(img)}
+                              alt={`preview-${idx}`}
+                              className="h-24 sm:h-32 object-cover rounded"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => removerImagem(idx)}
+                              className="absolute top-1 right-1 text-white bg-[#c09b2d] p-1 rounded-full hover:bg-[#a88724]"
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
-                {/* Campo de Imagens do Ensaio */}
 
-                {/*!dadosIniciais?.id && (
-                  <div>
-                    <label className="block font-medium mb-1">Imagens do Ensaio</label>
-                    <input
-                      type="text"
-                      value={titulo}
-                      onChange={(e) => setTitulo(e.target.value)}
-                      className="w-full p-2 border border-gray-300 rounded"
-                    />
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block font-medium">Categoria</label>
+                    <button
+                      type="button"
+                      onClick={() => setMostrarModalCategoria(true)}
+                      className="rounded-full w-8 h-8 flex items-center justify-center p-2 border-2 border-[#c09b2d] text-[#c09b2d] hover:bg-[#c09b2d] hover:text-white transition"
+                      title="Adicionar nova categoria"
+                    >
+                      <Plus size={15} />
+                    </button>
                   </div>
-
-                  <div>
-                  <label className="block mb-1 text-[#996633]">
-                    Categoria:
-                  </label>
                   <select
-                    className="w-full border rounded px-4 py-2"
                     value={categoriaSelecionada}
                     onChange={(e) => setCategoriaSelecionada(e.target.value)}
+                    className="w-full p-2 border rounded"
+                    required
                   >
-                    <option value="">Nenhuma</option>
-                    {categorias.map((categoria) => (
-                      <option key={categoria.id} value={categoria.id}>
-                        {categoria.nome}
+                    <option value="">Selecione</option>
+                    {categoriasPersonalizadas.map((cat) => (
+                      <option key={cat.id} value={cat.id.toString()}>
+                        {cat.nome}
                       </option>
                     ))}
                   </select>
                 </div>
-                  <div>
-                    <label className="block font-medium mb-1">Descrição</label>
-                    <textarea
-                      value={descricao}
-                      onChange={(e) => setDescricao(e.target.value)}
-                      className="w-full p-2 border border-gray-300 rounded"
-                      rows={3}
-                    />
-                    {imagens.length > 0 && (
-                      <div className="mt-2 bg-white p-4 border border-gray-300 rounded w-full">
-                        <h3 className="text-lg font-medium mb-2">Fotos Selecionadas:</h3>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 max-h-80 overflow-auto">
-                          {imagens.map((img, idx) => (
-                            <div key={idx} className="relative">
-                              <img
-                                src={URL.createObjectURL(img)}
-                                alt={`preview-${idx}`}
-                                className="h-24 sm:h-32 object-cover rounded"
-                              />
-                              <button
-                                type="button"
-                                onClick={() => removerImagem(idx)}
-                                className="absolute top-1 right-1 text-white bg-[#c09b2d] p-1 rounded-full hover:bg-[#a88724]"
-                              >
-                                ×
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )*/}
 
-                {/* Só se não for exibirtrabalho */}
 
                 {origem !== "exibirtrabalho" && (
-                  <div>
+                  <>
                     <div className="flex gap-4 justify-between items-center">
                       <p className="mb-2 text-lg">Selecione o pacote:</p>
                       <button
@@ -424,7 +451,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
                         ))}
                       </div>
                     </div>
-                  </div>
+                  </>
                 )}
 
                 {modalPacote && (
@@ -437,6 +464,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
                     onClose={() => setModalPacote(false)}
                   />
                 )}
+
 
                 <div className="flex flex-col sm:flex-row sm:space-x-4">
                   <div className="flex-1">
@@ -460,6 +488,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
                   </div>
                 </div>
 
+
                 <div>
                   <label className="block font-medium mb-1">Local do Evento</label>
                   <input
@@ -469,6 +498,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
                     className="w-full p-2 border border-gray-300 rounded"
                   />
                 </div>
+
 
                 <div>
                   <p className="mb-2 font-medium">Visibilidade:</p>
@@ -508,6 +538,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
               </div>
             </div>
 
+
             <div className="flex justify-end">
               <button
                 type="button"
@@ -515,13 +546,12 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
                 disabled={loading}
                 className="bg-[#c09b2d] text-white px-6 py-2 rounded hover:bg-[#a88724]"
               >
-                {loading ? "Enviando..." : "Criar"}
+                {loading ? "Enviando..." : dadosIniciais?.id ? "Atualizar" : "Criar"}
               </button>
             </div>
           </form>
         )}
 
-        {/* === Aba: Configurações === */}
 
         {abaAtiva === "configuracoes" && origem !== "exibirtrabalho" && (
           <div className="space-y-6 mt-6">
@@ -543,7 +573,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
             </div>
 
             <div>
-              <p className="mb-2">Ativar marca d'água:</p>
+              <p className="mb-2">Ativar marca d’água:</p>
               <div className="flex flex-wrap gap-4">
                 <label className="flex items-center space-x-1">
                   <input
@@ -591,12 +621,64 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
                 disabled={loading}
                 className="bg-[#c09b2d] text-white px-6 py-2 rounded hover:bg-[#a88724]"
               >
-                {loading ? "Enviando..." : "Criar"}
+                {loading ? "Enviando..." : dadosIniciais?.id ? "Atualizar" : "Criar"}
               </button>
             </div>
           </div>
         )}
       </div>
+
+
+      {mostrarModalCategoria && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-[#f2eee6] rounded-xl shadow-lg p-8 w-full max-w-md relative">
+            <div className="flex justify-center items-center border-b border-[#b1783d] mb-4">
+              <h2 className="text-3xl text-[#b1783d]">Categorias</h2>
+            </div>
+            <div className="flex gap-2 mb-4">
+              <input
+                type="text"
+                placeholder="Nova categoria"
+                value={novaCategoria}
+                onChange={(e) => setNovaCategoria(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              />
+              <button
+                onClick={handleAddCategoria}
+                className="bg-[#d4a531] hover:bg-[#c9a029] text-white font-bold px-4 py-2 rounded-md"
+                title="Salvar nova categoria"
+              >
+                <Plus size={16} />
+              </button>
+            </div>
+            <ul className="space-y-2 max-h-48 overflow-auto">
+              {categoriasPersonalizadas.map((cat) => (
+                <li
+                  key={cat.id}
+                  className="flex justify-between items-center border p-2 rounded"
+                >
+                  <span>{cat.nome}</span>
+                  <button
+                    onClick={() => handleDeleteCategoria(cat.id)}
+                    className="text-red-600 "
+                    title="Remover categoria"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <div className="flex justify-end mt-4">
+              <button
+                onClick={() => setMostrarModalCategoria(false)}
+                className="bg-[#d4a531] hover:bg-[#c9a029] text-white font-bold px-6 py-2 rounded-md"
+              >
+                Fechar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

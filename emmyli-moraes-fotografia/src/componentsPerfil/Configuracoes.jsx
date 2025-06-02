@@ -16,43 +16,46 @@ import FormAdicionarEnsaio from "../componentsPerfil/FormAdicionarEnsaio";
 
 const Configuracoes = ({ albumId }) => {
 
-  //  Estados principais 
-  
   const [abaAtiva, setAbaAtiva] = useState(albumId ? "trabalhos" : "marca_dagua");
   const [mensagem, setMensagem] = useState("");
   const [tipoMensagem, setTipoMensagem] = useState("");
-  const [galerias, setGalerias] = useState([]); // “Trabalhos” (eventos com exibirtrabalho === true)
+
+
+  const [galerias, setGalerias] = useState([]);
   const [albumAberto, setAlbumAberto] = useState(null);
   const [fotosVisuais, setFotosVisuais] = useState([]);
   const [loadingUpload, setLoadingUpload] = useState(false);
   const [menuAberto, setMenuAberto] = useState(null);
 
-  // Feedbacks
+
   const [feedbacks, setFeedbacks] = useState([]);
   const [showModalDeletarFeedback, setShowModalDeletarFeedback] = useState(false);
   const [feedbackIdSelecionado, setFeedbackIdSelecionado] = useState(null);
 
-  //  Confirmações 
+
   const [mostrarConfirmacaoFoto, setMostrarConfirmacaoFoto] = useState(false);
   const [fotoParaExcluir, setFotoParaExcluir] = useState({ id_foto: null, idx: null });
   const [mostrarConfirmacaoAlbum, setMostrarConfirmacaoAlbum] = useState(false);
   const [albumParaExcluir, setAlbumParaExcluir] = useState(null);
 
-  //  Zoom de imagem 
+
   const [imagemSelecionada, setImagemSelecionada] = useState(null);
   const [indiceSelecionado, setIndiceSelecionado] = useState(0);
 
   const inputRef = useRef();
 
- 
+
   const [modalEditarAberto, setModalEditarAberto] = useState(false);
   const [albumSelecionado, setAlbumSelecionado] = useState(null);
 
-  // Funções de sucesso e erro
+
+  const [categorias, setCategorias] = useState([]);
+
 
   const handleSucesso = (msg) => {
     setTipoMensagem("sucesso");
     setMensagem(msg);
+
     fetchEventos();
     fetchFeedbacks();
   };
@@ -61,27 +64,28 @@ const Configuracoes = ({ albumId }) => {
     setMensagem(msg);
   };
 
-  
-  // 1) Busca “Trabalhos” → GET /api/eventos?include=detalhes
-  
+
   const fetchEventos = useCallback(async () => {
     try {
       const { data } = await api.get("/api/eventos?include=detalhes");
+
 
       const trabalhos = data
         .filter((evento) => evento.exibirtrabalho === true)
         .map((evento) => ({
           id: evento.id,
           nome: evento.nome,
-          descricao: evento.descricao || "",
           exibirtrabalho: evento.exibirtrabalho || false,
+          categoria_id: evento.categoria_id || null,
           fotos:
             evento.detalhes?.map((f) => ({
               url: f.foto,
               id_foto: f.id,
             })) || [],
           imagem: evento.detalhes?.[0]?.foto || "",
-          data: new Date(evento.dtinclusao).toLocaleDateString("pt-BR"),
+          data: evento.dtinclusao
+            ? new Date(evento.dtinclusao).toLocaleDateString("pt-BR")
+            : "",
         }));
 
       setGalerias(trabalhos);
@@ -91,9 +95,7 @@ const Configuracoes = ({ albumId }) => {
     }
   }, []);
 
-  
-  // 2) Busca Feedbacks (sem alterações aqui)
-  
+
   const fetchFeedbacks = useCallback(async () => {
     try {
       const filter = "?orderBy=dtinclusao&order=DESC&include=usuario,album";
@@ -104,14 +106,25 @@ const Configuracoes = ({ albumId }) => {
     }
   }, []);
 
-  // Chamada inicial ao mudar de aba
+
+  useEffect(() => {
+    const fetchCategorias = async () => {
+      try {
+        const response = await api.get("/api/categorias");
+        setCategorias(response.data || []);
+      } catch (err) {
+        console.error("Erro ao buscar categorias:", err);
+      }
+    };
+    fetchCategorias();
+  }, []);
+
 
   useEffect(() => {
     if (abaAtiva === "trabalhos") fetchEventos();
     if (abaAtiva === "feedbacks") fetchFeedbacks();
   }, [abaAtiva, fetchEventos, fetchFeedbacks]);
 
-  // Se houve albumId (via rota), abre automaticamente
 
   useEffect(() => {
     if (albumId && galerias.length > 0 && !albumAberto) {
@@ -120,7 +133,7 @@ const Configuracoes = ({ albumId }) => {
     }
   }, [albumId, galerias]);
 
-  
+
   useEffect(() => {
     if (!mensagem) return;
     const id = setTimeout(() => {
@@ -130,13 +143,16 @@ const Configuracoes = ({ albumId }) => {
     return () => clearTimeout(id);
   }, [mensagem]);
 
+
   const toggleMenu = (key) => setMenuAberto((prev) => (prev === key ? null : key));
+
 
   const abrirAlbum = (gal) => {
     setAlbumAberto(gal);
     setFotosVisuais(gal.fotos);
     setMenuAberto(null);
   };
+
 
   const voltar = () => {
     setAlbumAberto(null);
@@ -146,9 +162,7 @@ const Configuracoes = ({ albumId }) => {
     setTipoMensagem("");
   };
 
-  
-  //  Upload de fotos para um “evento” (trabalho)
-  
+
   const handleAdicionarFotos = async (e) => {
     const files = Array.from(e.target.files);
     if (!files.length) return;
@@ -165,6 +179,7 @@ const Configuracoes = ({ albumId }) => {
       const fotosAtualizadas = [...fotosVisuais, ...novasFotos];
       setFotosVisuais(fotosAtualizadas);
 
+  
       setAlbumAberto((prev) => ({
         ...prev,
         fotos: fotosAtualizadas,
@@ -183,14 +198,13 @@ const Configuracoes = ({ albumId }) => {
     }
   };
 
-  
-  //  Exclusão de foto dentro do álbum
-  
+
   const solicitarExcluirFoto = (id_foto, idx) => {
     setFotoParaExcluir({ id_foto, idx });
     setMostrarConfirmacaoFoto(true);
     setMenuAberto(null);
   };
+
 
   const confirmarExcluirFoto = async () => {
     const { id_foto, idx } = fotoParaExcluir;
@@ -207,15 +221,14 @@ const Configuracoes = ({ albumId }) => {
     }
   };
 
-  
-  //  Exclusão de álbum (evento) em si
-  
+
   const solicitarExcluirAlbum = (gal) => {
     setAlbumParaExcluir(gal);
     setMostrarConfirmacaoAlbum(true);
     setMenuAberto(null);
   };
 
+  
   const confirmarExcluirAlbum = async () => {
     setMostrarConfirmacaoAlbum(false);
     try {
@@ -231,42 +244,19 @@ const Configuracoes = ({ albumId }) => {
     }
   };
 
- 
-  // 6) Edição de álbum - abrir modal
-  
+
   const handleAbrirEdicao = (album) => {
     setAlbumSelecionado(album);
     setModalEditarAberto(true);
   };
 
-  // Fechar modal edição
 
   const handleFecharModal = () => {
     setModalEditarAberto(false);
     setAlbumSelecionado(null);
   };
 
-  // Salvar edição (PUT na API)
 
-  const handleSalvarEdicao = async (dadosAtualizados) => {
-    try {
-      setLoadingUpload(true);
-      await api.put(`/api/eventos/${dadosAtualizados.id}`, dadosAtualizados);
-      handleSucesso("Álbum atualizado com sucesso!");
-      setModalEditarAberto(false);
-      setAlbumSelecionado(null);
-      fetchEventos();
-    } catch (error) {
-      console.error("Erro ao atualizar álbum:", error);
-      handleErro("Erro ao atualizar álbum.");
-    } finally {
-      setLoadingUpload(false);
-    }
-  };
-
-  
-  //  Edição de “exibirfeedback” (feedbacks)
-  
   const confirmaEditarFeedack = (id, value) => {
     api
       .put(`/api/feedbacks/${id}`, { exibirfeedback: value === "true" })
@@ -283,9 +273,7 @@ const Configuracoes = ({ albumId }) => {
       });
   };
 
- 
-  //  Exclusão de feedback por ID
-  
+
   const excluirFeedbackPorId = (id) => {
     api
       .delete(`/api/feedbacks/${id}`)
@@ -304,7 +292,6 @@ const Configuracoes = ({ albumId }) => {
         Configuração
       </h1>
 
-      
       <div className="flex border-b mb-6">
         {["marca_dagua", "trabalhos", "feedbacks"].map((aba) => (
           <button
@@ -325,7 +312,6 @@ const Configuracoes = ({ albumId }) => {
         ))}
       </div>
 
-      
       {mensagem && (
         <div
           className={`border px-4 py-3 rounded-md mb-6 ${
@@ -338,78 +324,83 @@ const Configuracoes = ({ albumId }) => {
         </div>
       )}
 
-      {/*  Aba: Marca d'água */}
+
       {abaAtiva === "marca_dagua" && (
         <ImageUploader onSucesso={handleSucesso} onErro={handleErro} />
       )}
 
-      {/*  Aba: Trabalhos  */}
+
       {abaAtiva === "trabalhos" && !albumAberto && (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {galerias.map((g) => (
-            <div
-              key={g.id}
-              className="relative bg-white rounded-2xl shadow-md overflow-hidden transform transition hover:scale-105 cursor-pointer"
-            >
-              
-              <div className="absolute top-2 right-2 z-10">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleMenu(`album-${g.id}`);
-                  }}
-                  className="text-white bg-black bg-opacity-50 p-1 rounded-full hover:bg-opacity-70"
-                >
-                  <MoreVertical size={18} />
-                </button>
-                {menuAberto === `album-${g.id}` && (
-                  <div className="absolute right-0 mt-2 bg-white border border-gray-300 rounded shadow-md z-20">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        solicitarExcluirAlbum(g);
-                      }}
-                      className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-100 whitespace-nowrap"
-                    >
-                      <Trash size={16} /> Excluir
-                    </button>
+          {galerias.map((g) => {
+
+            const categoriaNome =
+              categorias.find((cat) => cat.id === g.categoria_id)?.nome || "–";
+
+            return (
+              <div
+                key={g.id}
+                className="relative bg-white rounded-2xl shadow-md overflow-hidden transform transition hover:scale-105 cursor-pointer"
+              >
+                <div className="absolute top-2 right-2 z-10">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleMenu(`album-${g.id}`);
+                    }}
+                    className="text-white bg-black bg-opacity-50 p-1 rounded-full hover:bg-opacity-70"
+                  >
+                    <MoreVertical size={18} />
+                  </button>
+                  {menuAberto === `album-${g.id}` && (
+                    <div className="absolute right-0 mt-2 bg-white border border-gray-300 rounded shadow-md z-20">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          solicitarExcluirAlbum(g);
+                        }}
+                        className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-100 whitespace-nowrap"
+                      >
+                        <Trash size={16} /> Excluir
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                <div onClick={() => abrirAlbum(g)}>
+                  <div className="w-full h-60 bg-gray-100 overflow-hidden">
+                    {g.imagem ? (
+                      <img
+                        src={g.imagem}
+                        alt={g.nome}
+                        className="w-full h-full object-cover rounded-t-2xl"
+                      />
+                    ) : (
+                      <div className="text-center text-gray-400 p-8">Sem capa</div>
+                    )}
                   </div>
-                )}
-              </div>
-
-              {/* Clicar na imagem ou título abre o álbum */}
-
-              <div onClick={() => abrirAlbum(g)}>
-                <div className="w-full h-60 bg-gray-100 overflow-hidden">
-                  {g.imagem ? (
-                    <img
-                      src={g.imagem}
-                      alt={g.nome}
-                      className="w-full h-full object-cover rounded-t-2xl"
-                    />
-                  ) : (
-                    <div className="text-center text-gray-400 p-8">Sem capa</div>
-                  )}
-                </div>
-                <div className="p-4 text-center">
-                  <h3 className="text-xl font-semibold text-[#252525]">{g.nome}</h3>
-                  {g.descricao && (
-                    <p className="text-gray-500 italic">{g.descricao}</p>
-                  )}
-                  <p className="text-sm text-[#c09b2d] mt-2">
-                    {g.fotos.length} fotos | {g.data}
-                  </p>
+                  <div className="p-4 text-center">
+                    <h3 className="text-xl font-semibold text-[#252525]">
+                      {g.nome}
+                    </h3>
+                    {/* Exibe o nome da categoria */}
+                    <p className="text-sm text-gray-500 italic mt-1">
+                      {categoriaNome}
+                    </p>
+                    <p className="text-sm text-[#c09b2d] mt-2">
+                      {g.fotos.length} fotos | {g.data}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
-      {/* Detalhe do álbum (trabalho)  */}
+
       {abaAtiva === "trabalhos" && albumAberto && (
         <>
-          
           <div className="flex justify-between items-center mb-4">
             <button
               onClick={voltar}
@@ -417,12 +408,9 @@ const Configuracoes = ({ albumId }) => {
             >
               <ArrowLeft size={18} /> Voltar
             </button>
-            
           </div>
 
           <div className="flex flex-col lg:flex-row gap-8">
-            
-            {/* Sidebar do álbum */}
 
             <div className="bg-white p-4 rounded-2xl shadow-lg max-w-sm w-full lg:min-h-[80vh]">
               <p className="text-[#c09b2d] text-xl font-bold text-center mb-2">
@@ -449,7 +437,7 @@ const Configuracoes = ({ albumId }) => {
               </div>
             </div>
 
-            {/* Grid de fotos do álbum */}
+            {/* Grid de fotos */}
             <div className="flex-1">
               <div className="flex justify-between items-center mb-8 border-b-2 border-[#c09b2d] pb-2">
                 <h2 className="text-2xl text-[#b1783d] font-bold">Fotos</h2>
@@ -515,7 +503,7 @@ const Configuracoes = ({ albumId }) => {
         </>
       )}
 
-      {/*  Aba: Feedbacks  */}
+
       {abaAtiva === "feedbacks" && (
         <div className="overflow-x-auto">
           <table className="min-w-full border border-gray-200 shadow-md rounded-lg overflow-hidden">
@@ -578,7 +566,7 @@ const Configuracoes = ({ albumId }) => {
                       onClick={() => {
                         setFeedbackIdSelecionado(feedback.id);
                         setShowModalDeletarFeedback(true);
-                      }}  
+                      }}
                     />
                   </td>
                 </tr>
@@ -595,7 +583,7 @@ const Configuracoes = ({ albumId }) => {
         </div>
       )}
 
-      {/*  Modal de exclusão de feedback  */}
+
       <Modal
         isOpen={showModalDeletarFeedback}
         onClose={() => setShowModalDeletarFeedback(false)}
@@ -625,7 +613,7 @@ const Configuracoes = ({ albumId }) => {
         </div>
       </Modal>
 
-      {/* Modal de confirmação de foto  */}
+
       {mostrarConfirmacaoFoto && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl px-6 py-5 w-full max-w-md shadow-xl font-serif">
@@ -653,7 +641,7 @@ const Configuracoes = ({ albumId }) => {
         </div>
       )}
 
-      {/*  Modal de confirmação de álbum  */}
+
       {mostrarConfirmacaoAlbum && albumParaExcluir && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl px-6 py-5 w-full max-w-md shadow-xl font-serif">
@@ -682,14 +670,14 @@ const Configuracoes = ({ albumId }) => {
         </div>
       )}
 
-      {/*  Overlay de loading geral  */}
+
       {loadingUpload && (
         <div className="fixed inset-0 bg-white bg-opacity-80 flex items-center justify-center z-50">
           <img src="/loading.gif" alt="Carregando..." className="w-32 h-20" />
         </div>
       )}
 
-      {/*  Modal de Zoom de Imagem  */}
+
       {imagemSelecionada && (
         <div
           className="fixed inset-0 bg-black bg-opacity-90 flex justify-center items-center z-50"
@@ -747,12 +735,17 @@ const Configuracoes = ({ albumId }) => {
         </div>
       )}
 
-      
+
       {modalEditarAberto && (
         <FormAdicionarEnsaio
           dadosIniciais={albumSelecionado}
           onClose={handleFecharModal}
-          onSave={handleSalvarEdicao}
+          onSave={() => {
+            handleSucesso("Álbum atualizado com sucesso!");
+            setModalEditarAberto(false);
+            setAlbumSelecionado(null);
+            fetchEventos();
+          }}
         />
       )}
     </div>

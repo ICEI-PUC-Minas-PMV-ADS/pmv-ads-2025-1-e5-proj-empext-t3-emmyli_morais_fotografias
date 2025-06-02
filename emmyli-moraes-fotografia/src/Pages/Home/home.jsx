@@ -192,10 +192,10 @@ const Home = () => {
                   </span>
                 </div>
                 <div className="bg-[#E8E6E0] flex justify-center items-center gap-4 py-2">
-                  <span className="text-[#252525] text-sm flex items-center gap-1">
+                  <span className="text-[#252525] text-ml flex items-center gap-1">
                     👁 {album.visualizacoes}
                   </span>
-                  <span className="text-[#252525] text-sm flex items-center gap-1">
+                  <span className="text-[#252525] text-ml flex items-center gap-1">
                     <img
                       src="/icons/coracao-vermelho.svg"
                       alt="Curtidas"
