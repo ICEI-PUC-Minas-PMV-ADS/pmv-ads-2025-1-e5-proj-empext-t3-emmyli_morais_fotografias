@@ -40,8 +40,8 @@ const path = require('path');
 
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://9e73-2804-540-d005-4f00-b826-b9f7-d508-dd0a.ngrok-free.app', // backend ngrok URL
-  'https://45a9-2804-540-d005-4f00-b826-b9f7-d508-dd0a.ngrok-free.app'  // frontend ngrok URL
+  //'https://9e73-2804-540-d005-4f00-b826-b9f7-d508-dd0a.ngrok-free.app', // backend ngrok URL
+  //'https://45a9-2804-540-d005-4f00-b826-b9f7-d508-dd0a.ngrok-free.app'  // frontend ngrok URL
 ];
 
 app.use(cors({
