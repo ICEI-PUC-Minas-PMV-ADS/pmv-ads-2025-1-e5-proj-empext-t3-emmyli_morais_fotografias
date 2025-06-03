@@ -33,8 +33,11 @@ const GaleriaCliente = () => {
 
   const fetchAlbuns = async () => {
     try {
-      const filter = `?usuarioId=${usuarioInfo?.idusuario}`;
-      const response = await api.get("/api/albuns" + filter);
+      const response = await api.get("/api/albuns", {
+        params: {
+            usuario_id: `${usuarioInfo?.idusuario}`,
+        },
+      });
 
       const albunsFormatados = response.data.map((album) => ({
         id: album.id,
