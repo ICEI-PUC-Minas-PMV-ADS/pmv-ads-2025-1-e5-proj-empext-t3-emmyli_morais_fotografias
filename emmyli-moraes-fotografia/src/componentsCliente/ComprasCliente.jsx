@@ -48,8 +48,14 @@ const ComprasCliente = () => {
   }, [usuarioInfo]);
 
   const fetchCompras = async () => {
-    const filter = `?usuarioId=${usuarioInfo?.idusuario}&include=usuario,evento`;
-    const response = await api.get("/api/compras" + filter);
+    const response = await api.get("/api/compras", {
+      params: {
+        filters: {
+          usuario_id: usuarioInfo?.idusuario,
+        },
+        include: "usuario,evento",
+      },
+    });
     setCompras(response.data);
   };
 
