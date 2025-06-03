@@ -53,8 +53,15 @@ const Evento = () => {
     const buscarEvento = async () => {
       try {
         const baseUrl = "http://localhost:3000/api/eventos";
-        const filter = `?filters%5Burlevento%5D=http%3A%2F%2Flocalhost%3A5173%2Falbum%2F${id}&include=detalhes,marcaDagua`;
-        const response = await api.get(baseUrl + filter);
+        const response = await api.get(baseUrl, {
+          params: {
+            filters: {
+              urlevento: `http://localhost:5173/album/${id}`,
+            },
+            include: "detalhes,marcaDagua",
+          },
+        });
+
         if (Array.isArray(response.data) && response.data.length > 0) {
           const ev = response.data[0];
           setEvento(ev);
