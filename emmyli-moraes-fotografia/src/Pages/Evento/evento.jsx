@@ -401,13 +401,7 @@ const Evento = () => {
 
         <Modal isOpen={isModalopen} onClose={() => setIsModalopen(false)}>
           {mensagem && (
-            <div
-              className={`flex justify-center border px-4 py-3 rounded-md mb-6 ${
-                tipoMensagem === "sucesso"
-                  ? "bg-green-100 border-green-400 text-green-700"
-                  : "bg-red-100 border-red-400 text-red-700"
-              }`}
-            >
+            <div className="flex justify-center px-4 py-3 rounded-md mb-6  text-red-700 text-lg">
               {mensagem}
             </div>
           )}
