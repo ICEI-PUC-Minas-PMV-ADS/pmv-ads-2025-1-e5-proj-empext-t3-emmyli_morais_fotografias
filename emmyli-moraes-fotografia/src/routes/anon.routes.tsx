@@ -13,7 +13,7 @@ export const AnonRoutes = () => {
             <Route path="/cadastro" element={<Cadastro />} />
             <Route path="/esqueciSenha" element={<EsqueciSenha />} />
             <Route path="/AcessandoEmail/:emailToken" element={<AcessandoEmail/>} />
-             <Route path="/areadocliente" element={<AreadoCliente/>} />
+            <Route path="/areadocliente" element={<AreadoCliente/>} />
         </>
     );
 }

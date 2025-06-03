@@ -32,8 +32,12 @@ const FeedbackCliente = () => {
     if (!usuarioInfo?.idusuario) return;
     setLoading(true);
     try {
-      const filter = `?usuarioId=${usuarioInfo?.idusuario}&sem_feedback=true`;
-      const response = await api.get("/api/albuns" + filter);
+      const response = await api.get("/api/albuns", {
+        params: {
+          usuario_id: `${usuarioInfo?.idusuario}`,
+          sem_feedback: true,
+        },
+      });
       setAlbuns(response.data);
       const albunsCliente = response.data.filter(
         (album) => album.origem === "cliente"
