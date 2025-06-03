@@ -14,9 +14,9 @@ const criarPreferencia = async (req, res) => {
         items,
         external_reference: req.body.external_reference,
         "back_urls": {
-          "success": "https://45a9-2804-540-d005-4f00-b826-b9f7-d508-dd0a.ngrok-free.app/perfilCliente",
-          "failure": "https://45a9-2804-540-d005-4f00-b826-b9f7-d508-dd0a.ngrok-free.app/carrinho",
-          "pending": "https://45a9-2804-540-d005-4f00-b826-b9f7-d508-dd0a.ngrok-free.app/carrinho",
+          "success": "https://emmylifotografias.com.br/pagamento-aprovado",
+          "failure": "https://emmylifotografias.com.br/pagamento-recusado",
+          "pending": "https://emmylifotografias.com.br/pagamento-pendente",
         },
         "auto_return": "approved",
       },
