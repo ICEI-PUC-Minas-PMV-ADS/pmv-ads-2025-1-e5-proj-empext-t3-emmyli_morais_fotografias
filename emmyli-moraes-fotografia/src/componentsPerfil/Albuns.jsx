@@ -98,7 +98,7 @@ const Albuns = () => {
   return (
     <div className="p-6 font-serif min-h-screen bg-gray-100">
       <h1 className="text-2xl font-bold text-[#c09b2d] border-b-2 border-[#c09b2d] pb-4 mb-12">
-        Galeria
+        Albuns
       </h1>
 
       {/* Fotos compradas em cards menores */}
