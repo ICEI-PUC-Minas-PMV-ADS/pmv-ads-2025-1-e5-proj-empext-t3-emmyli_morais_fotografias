@@ -31,6 +31,9 @@ const Evento = () => {
   const [mostrarIconComentario, setMostrarIconComentario] = useState(true);
   const [showModal, setShowModal] = useState(false);
 
+  const [mensagem, setMensagem] = useState("");
+  const [tipoMensagem, setTipoMensagem] = useState("");
+  const [isModalopen, setIsModalopen] = useState(false);
   // Flag para embaçar imagens quando:
 
   const [isSnipping, setIsSnipping] = useState(false);
@@ -46,6 +49,16 @@ const Evento = () => {
       // se token inválido ou expirado, não setamos nada
     }
   }, []);
+
+  useEffect(() => {
+    if (!mensagem) return;
+    const id = setTimeout(() => {
+      setMensagem("");
+      setTipoMensagem("");
+      setIsModalopen(false);
+    }, 7000);
+    return () => clearTimeout(id);
+  }, [mensagem]);
 
   //  Buscar detalhes do evento (fotos + marcaDagua)
 
@@ -97,6 +110,12 @@ const Evento = () => {
       setPacoteSelecionado(produtos[0]);
     }
   }, [produtos]);
+
+  const handleErro = (msg) => {
+    setTipoMensagem("erro");
+    setIsModalopen(true);
+    setMensagem(msg);
+  };
 
   //  Carregar comentários sempre que a imagem ampliada mudar
 
@@ -218,7 +237,7 @@ const Evento = () => {
     let quantidade;
 
     if (imagemSelecionada.length === 0) {
-      alert("Selecione pelo menos uma imagem para comprar.");
+      handleErro("Selecione pelo menos uma imagem para comprar.");
       return;
     }
 
@@ -229,7 +248,7 @@ const Evento = () => {
       quantidade = imagemSelecionada.length;
     } else {
       if (imagemSelecionada.length < pacoteSelecionado.quantidade_fotos) {
-        alert(`Selecione as ${pacoteSelecionado.quantidade_fotos} fotos`);
+        handleErro(`Selecione as ${pacoteSelecionado.quantidade_fotos} fotos`);
         return;
       }
       total = pacoteSelecionado.preco;
@@ -379,6 +398,20 @@ const Evento = () => {
             </select>
           </div>
         )}
+
+        <Modal isOpen={isModalopen} onClose={() => setIsModalopen(false)}>
+          {mensagem && (
+            <div
+              className={`flex justify-center border px-4 py-3 rounded-md mb-6 ${
+                tipoMensagem === "sucesso"
+                  ? "bg-green-100 border-green-400 text-green-700"
+                  : "bg-red-100 border-red-400 text-red-700"
+              }`}
+            >
+              {mensagem}
+            </div>
+          )}
+        </Modal>
 
         <section className={`protectable-imgs ${isSnipping ? "blurred" : ""}`}>
           {/* GALERIA DE MINIATURAS */}
