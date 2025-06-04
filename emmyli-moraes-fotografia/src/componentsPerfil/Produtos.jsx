@@ -24,6 +24,35 @@ const Produtos = () => {
     evento_id: "",
   });
 
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+
+  useEffect(() => {
+  if (error) {
+    const timer = setTimeout(() => {
+      setError(null);
+    }, 7000);
+
+    return () => {
+      setSuccess(null);
+      clearTimeout(timer);
+    };
+  }
+}, [error]);
+
+useEffect(() => {
+  if (success) {
+    const timer = setTimeout(() => {
+      setSuccess(null);
+    }, 5000);
+
+    return () => {
+      setError(null);
+      clearTimeout(timer);
+    };
+  }
+}, [success]);
+
   const buscarProdutos = () => {
     api
       .get("/api/produtos?")
@@ -40,16 +69,16 @@ const Produtos = () => {
       });
   };
 
- /* const buscarEventos = () => {
-    api
-      .get("/api/eventos")
-      .then((res) => {
-        setEventos(res.data || []);
-      })
-      .catch((err) => {
-        console.error("Erro ao buscar eventos:", err);
-      });
-  };*/
+  /* const buscarEventos = () => {
+     api
+       .get("/api/eventos")
+       .then((res) => {
+         setEventos(res.data || []);
+       })
+       .catch((err) => {
+         console.error("Erro ao buscar eventos:", err);
+       });
+   };*/
 
   useEffect(() => {
     buscarProdutos();
@@ -81,13 +110,13 @@ const Produtos = () => {
     api
       .put(`/api/produtos/${editandoProduto.id}`, dadosEditados)
       .then(() => {
-        alert("Produto atualizado com sucesso!");
+        setSuccess("Produto atualizado com sucesso!");
         buscarProdutos();
         fecharModal();
       })
       .catch((error) => {
         console.error("Erro ao atualizar produto:", error);
-        alert("Erro ao salvar alterações.");
+        setError("Erro ao salvar alterações.");
       });
   };
 
@@ -97,12 +126,12 @@ const Produtos = () => {
     api
       .delete(`/api/produtos/${id}`)
       .then(() => {
-        alert("Produto removido com sucesso!");
+        setSuccess("Produto removido com sucesso!");
         setProdutos((prev) => prev.filter((p) => p.id !== id));
       })
       .catch((error) => {
         console.error("Erro ao excluir produto:", error);
-        alert("Erro ao excluir produto.");
+        setError("Erro ao excluir produto.");
       });
   };
 
@@ -110,7 +139,7 @@ const Produtos = () => {
     api
       .post("/api/produtos", dadosNovoProduto)
       .then(() => {
-        alert("Produto cadastrado com sucesso!");
+        setSuccess("Produto cadastrado com sucesso!");
         buscarProdutos();
         setModalCadastroAberto(false);
         setDadosNovoProduto({
@@ -123,12 +152,27 @@ const Produtos = () => {
       })
       .catch((error) => {
         console.error("Erro ao cadastrar produto:", error);
-        alert("Erro ao cadastrar produto.");
+        setError("Erro ao cadastrar produto.");
       });
   };
 
   return (
     <div className="p-6 font-serif bg-[#F9F9F9] min-h-screen">
+
+      {/* Mensagem de erro estilizada */}
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md w-full mb-4">
+          <strong className="font-bold">Erro:</strong> {error}
+        </div>
+      )}
+
+      {/* Mensagem de sucesso estilizada */}
+      {success && (
+        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-md w-full mb-4">
+          <strong className="font-bold">Sucesso:</strong> {success}
+        </div>
+      )}
+
       <h1 className="text-2xl font-bold text-[#c09b2d] border-b-2 border-[#c09b2d] pb-4">
         Lista de Produtos
       </h1>
@@ -215,7 +259,7 @@ const Produtos = () => {
             <div key={produto.id} className="bg-white rounded-lg shadow p-4">
               <p><strong>Descrição:</strong> {produto.descricao}</p>
               <p><strong>Qtd. Fotos:</strong> {produto.quantidade_fotos}</p>
-              <p><strong>Preço:</strong> R$ {parseFloat(produto.preco).toFixed(2)}</p>              
+              <p><strong>Preço:</strong> R$ {parseFloat(produto.preco).toFixed(2)}</p>
               <p><strong>Observações:</strong> {produto.observacoes}</p>
               <div className="flex justify-end mt-2 space-x-4">
                 <button
@@ -314,7 +358,7 @@ const Produtos = () => {
                   }
                   className="w-full border p-2 rounded"
                 />
-              </div>              
+              </div>
 
               <div className="flex justify-between mt-4">
                 <button
@@ -412,7 +456,7 @@ const Produtos = () => {
                   }
                   className="w-full border p-2 rounded"
                 />
-              </div>             
+              </div>
 
               <div className="flex justify-between mt-4">
                 <button
