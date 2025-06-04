@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { FiEdit, FiTrash2, FiSearch } from "react-icons/fi";
 import { api } from "../services/api";
+import Modal from "../components/Modal";
 
 const Produtos = () => {
 
@@ -28,30 +29,30 @@ const Produtos = () => {
   const [success, setSuccess] = useState(null);
 
   useEffect(() => {
-  if (error) {
-    const timer = setTimeout(() => {
-      setError(null);
-    }, 7000);
+    if (error) {
+      const timer = setTimeout(() => {
+        setError(null);
+      }, 7000);
 
-    return () => {
-      setSuccess(null);
-      clearTimeout(timer);
-    };
-  }
-}, [error]);
+      return () => {
+        setSuccess(null);
+        clearTimeout(timer);
+      };
+    }
+  }, [error]);
 
-useEffect(() => {
-  if (success) {
-    const timer = setTimeout(() => {
-      setSuccess(null);
-    }, 5000);
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        setSuccess(null);
+      }, 5000);
 
-    return () => {
-      setError(null);
-      clearTimeout(timer);
-    };
-  }
-}, [success]);
+      return () => {
+        setError(null);
+        clearTimeout(timer);
+      };
+    }
+  }, [success]);
 
   const buscarProdutos = () => {
     api
@@ -120,19 +121,27 @@ useEffect(() => {
       });
   };
 
-  const removerProduto = (id) => {
-    if (!window.confirm("Tem certeza que deseja excluir este produto?")) return;
+  const [modalOpen, setModalOpen] = useState(false);
+  const [produtoIdParaRemover, setProdutoIdParaRemover] = useState(null);
+  const [mensagem, setMensagem] = useState("");
+  const [tipoMensagem, setTipoMensagem] = useState(""); // 'sucesso' ou 'erro'
+  const [loading, setLoading] = useState(false);
 
-    api
-      .delete(`/api/produtos/${id}`)
-      .then(() => {
-        setSuccess("Produto removido com sucesso!");
-        setProdutos((prev) => prev.filter((p) => p.id !== id));
-      })
-      .catch((error) => {
-        console.error("Erro ao excluir produto:", error);
-        setError("Erro ao excluir produto.");
-      });
+  const removerProduto = async (id) => {
+    try {
+      setLoading(true);
+      await api.delete(`/api/produtos/${id}`);
+      setModalOpen(false);
+      setProdutos((prev) => prev.filter((p) => p.id !== id));
+      setTipoMensagem("sucesso");
+      setMensagem("Produto removido com sucesso!");
+    } catch (error) {
+      console.error("Erro ao excluir produto:", error);
+      setTipoMensagem("erro");
+      setMensagem("Erro ao excluir produto.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const salvarNovoProduto = () => {
@@ -232,7 +241,10 @@ useEffect(() => {
                       <FiEdit />
                     </button>
                     <button
-                      onClick={() => removerProduto(produto.id)}
+                      onClick={() => {
+                        setProdutoIdParaRemover(produto.id);
+                        setModalOpen(true);
+                      }}
                       className="text-red-500 hover:text-red-700 text-xl"
                       aria-label="Excluir produto"
                     >
@@ -270,9 +282,12 @@ useEffect(() => {
                   <FiEdit />
                 </button>
                 <button
-                  onClick={() => removerProduto(produto.id)}
+                  onClick={() => {
+                    setProdutoIdParaRemover(produto.id);
+                    setModalOpen(true);
+                  }}
                   className="text-red-500 hover:text-red-700 text-xl"
-                  aria-label="Excluir"
+                  aria-label="Excluir produto"
                 >
                   <FiTrash2 />
                 </button>
@@ -477,6 +492,28 @@ useEffect(() => {
           </div>
         </div>
       )}
+
+      <Modal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title={"Confirmar exclusão"}
+        content={"Tem certeza que deseja excluir o produto?"}
+      >
+        <div className="mt-4 flex justify-end gap-2">
+          <button
+            onClick={() => setModalOpen(false)}
+            className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
+          >
+            Cancelar
+          </button>
+          <button
+            onClick={() => removerProduto(produtoIdParaRemover)}
+            className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700"
+          >
+            Excluir
+          </button>
+        </div>
+      </Modal>
 
     </div>
   );
