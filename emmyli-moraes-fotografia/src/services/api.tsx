@@ -1,8 +1,8 @@
 import axios from "axios";
 import { cleanUserInfos, refreshToken } from "./authService";
 
-const url = 'http://localhost:3000'
-//const url = 'https://emmylifotografias.com.br/api'
+//const url = 'http://localhost:3000'
+const url = 'https://emmylifotografias.com.br/api'
 const api = axios.create({ baseURL: url })
 
 api.interceptors.request.use(async (config) => {
