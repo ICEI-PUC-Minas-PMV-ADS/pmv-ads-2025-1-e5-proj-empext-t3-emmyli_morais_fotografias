@@ -65,11 +65,10 @@ const Evento = () => {
   useEffect(() => {
     const buscarEvento = async () => {
       try {
-        const baseUrl = "http://localhost:3000/api/eventos";
-        const response = await api.get(baseUrl, {
+        const response = await api.get("/api/eventos", {
           params: {
             filters: {
-              urlevento: `http://localhost:5173/album/${id}`,
+              urlevento: `https://emmylifotografias.com.br/album/${id}`,
             },
             include: "detalhes,marcaDagua",
           },
