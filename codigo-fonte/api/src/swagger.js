@@ -21,9 +21,14 @@ const options = {
     },
     servers: [
       {
+        url: 'https://emmylifotografias.com.br/api',
+        description: 'Servidor de produção',
+      },
+      {
         url: 'http://localhost:3000',
         description: 'Servidor de desenvolvimento',
       },
+
     ],
     components: {
       securitySchemes: {
