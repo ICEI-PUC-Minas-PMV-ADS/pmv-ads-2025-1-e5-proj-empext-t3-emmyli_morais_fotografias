@@ -15,7 +15,8 @@ const CadastrosRealizados = () => {
   const [dadosEditados, setDadosEditados] = useState({
     nome: "",
     email: "",
-    senha_hash: "",
+    login: "",
+    senha: "",
     telefone: "",
   });
   const [usuarioIdParaRemover, setUsuarioIdParaRemover] = useState(null);
@@ -23,7 +24,9 @@ const CadastrosRealizados = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [tipoMensagem, setTipoMensagem] = useState("");
   const [mensagem, setMensagem] = useState("");
-
+ useEffect(() => {
+  console.log("dadosEditados", dadosEditados)
+  }, [dadosEditados]);
 
   useEffect(() => {
     fetchAllUsuarios();
@@ -56,7 +59,8 @@ const CadastrosRealizados = () => {
       id: usuario.id,
       nome: usuario.nome,
       email: usuario.email,
-      senha_hash: "",
+      login: usuario.login,
+      senha: "",
       telefone: usuario.telefone || "",
     });
   };
@@ -276,6 +280,23 @@ const CadastrosRealizados = () => {
 
               <div>
                 <label className="block mb-1 text-sm font-semibold text-gray-700">
+                  Login
+                </label>
+                <input
+                  type="login"
+                  value={dadosEditados.login}
+                  onChange={(e) =>
+                    setDadosEditados({
+                      ...dadosEditados,
+                      login: e.target.value,
+                    })
+                  }
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c09b2d]"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1 text-sm font-semibold text-gray-700">
                   Telefone
                 </label>
                 <input
@@ -297,11 +318,11 @@ const CadastrosRealizados = () => {
                 </label>
                 <input
                   type="password"
-                  value={dadosEditados.senha_hash}
+                  value={dadosEditados.senha}
                   onChange={(e) =>
                     setDadosEditados({
                       ...dadosEditados,
-                      senha_hash: e.target.value,
+                      senha: e.target.value,
                     })
                   }
                   className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c09b2d]"
