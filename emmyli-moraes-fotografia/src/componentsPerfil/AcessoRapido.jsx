@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaImages, FaHeart, FaShoppingCart } from "react-icons/fa";
 import { api } from "../services/api";
 import CaixaDeNotificacoes from "./CaixaDeNotificacoes";
+import CaixaDeNotificacoesVendas from "./CaixaDeNotificacoesVendas";
 import  {buscarNotificacao}  from "../services/notificacaoService"
 
 const AcessoRapido = ({ setPage }) => {
@@ -99,25 +100,7 @@ const AcessoRapido = ({ setPage }) => {
 
         <CaixaDeNotificacoes notificacoes={notificacao} />
 
-        {/* CONTROLE DE VENDAS */}
-        <div className="bg-white rounded-lg p-5 shadow-md">
-          <h1 className="text-lg font-semibold mb-4">🛒 Controle de Vendas</h1>
-          <div className="flex flex-col gap-3">
-            <div className="bg-gray-200 p-3 rounded flex items-center gap-3 text-sm">
-              <FaShoppingCart className="text-gray-600" />
-              <p>3 Novas Compras</p>
-            </div>
-            <div className="bg-gray-200 p-3 rounded flex items-center gap-3 text-sm">
-              <FaHeart className="text-gray-600" />
-              <p>10 Fotos Favoritadas</p>
-            </div>
-            <div className="bg-gray-200 p-3 rounded flex items-center gap-3 text-sm">
-              <FaImages className="text-gray-600" />
-              <p>5 Coleções Atualizadas</p>
-            </div>
-          </div>
-        </div>
-
+        <CaixaDeNotificacoesVendas notificacoes={notificacao} />
       </div>
     </div>
   );

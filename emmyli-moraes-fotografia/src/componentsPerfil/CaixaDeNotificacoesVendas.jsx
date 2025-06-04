@@ -12,24 +12,23 @@ function tempoDesde(data) {
   return 'agora mesmo';
 }
 
-export default function CaixaDeNotificacoes({ notificacoes }) {
+export default function CaixaDeNotificacoesVendas({ notificacoes }) {
   // Ordena as notificações por data, mais recentes primeiro
   const ordenadas = [...notificacoes].sort((a, b) => new Date(b.data_criacao) - new Date(a.data_criacao));
 
   const EmotesPorAcao = {
-    Album: "🧺",
-    feedback: "🗨️",
+    Compra: "🧺"
   }
 
 
   return (
     <div className="bg-white rounded-lg p-5 shadow-md">
-      <h1 className="text-lg font-semibold mb-4">🔔 Notificações</h1>
+      <h1 className="text-lg font-semibold mb-4">🛒 Controle de vendas</h1>
       <ul className="space-y-4 text-sm text-gray-700">
-        {ordenadas.filter((n) => n.topico !== 'Compra').length === 0 ? (
+        {ordenadas.filter((n) => n.topico === 'Compra').length === 0 ? (
           <p className="text-gray-500 italic">Nenhuma notificação.</p>
         ) : (
-          ordenadas.filter((n) => n.topico !== 'Compra').map((n, index) => (
+          ordenadas.filter((n) => n.topico === 'Compra').map((n, index) => (
             <li key={index} className={`border-b pb-2 last:border-b-0 ${n.foiVisualizado ? 'opacity-50' : ''}`}>
               <p>
                 <span className="text-2xl inline-block mr-1">

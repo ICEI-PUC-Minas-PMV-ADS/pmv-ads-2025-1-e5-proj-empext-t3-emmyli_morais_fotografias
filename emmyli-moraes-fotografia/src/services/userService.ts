@@ -44,7 +44,7 @@ export const removeUsuario = async (id : Number) => {
   }
 }
 
-export const editaUsuario = async (dados: { id: number, nome: string; email: string; senha_hash: string; }) => {
+export const editaUsuario = async (dados: { id: number, nome: string; email: string; login:string; senha: string; }) => {
   try {
     console.log("dados enviados para alteração:", dados)
     const response = await api.put(`/api/usuarios/${dados.id}`, dados);
