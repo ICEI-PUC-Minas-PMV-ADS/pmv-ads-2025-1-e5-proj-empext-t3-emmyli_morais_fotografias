@@ -117,8 +117,9 @@ const verifyToken = require('../../middleware/AuthMiddlewareToken');
  *               items:
  *                 $ref: '#/components/schemas/Produto'
  */
-/* router.get('/', produtosController.getAll);
- */
+
+router.get('/', produtosController.getAll);
+
 router.get('/evento/:eventoId', produtosController.getByEvento);
 
 /**
