@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import {
-  Image as ImageIcon,
   Settings,
   Edit2,
   Plus,
@@ -49,8 +48,6 @@ const Configuracoes = ({ albumId }) => {
   const [albumSelecionado, setAlbumSelecionado] = useState(null);
 
 
-  const [categorias, setCategorias] = useState([]);
-
 
   const handleSucesso = (msg) => {
     setTipoMensagem("sucesso");
@@ -69,14 +66,15 @@ const Configuracoes = ({ albumId }) => {
     try {
       const { data } = await api.get("/api/eventos?include=detalhes");
 
-
+      
       const trabalhos = data
         .filter((evento) => evento.exibirtrabalho === true)
         .map((evento) => ({
           id: evento.id,
           nome: evento.nome,
+          
+          descricao: evento.descricao || "",
           exibirtrabalho: evento.exibirtrabalho || false,
-          categoria_id: evento.categoria_id || null,
           fotos:
             evento.detalhes?.map((f) => ({
               url: f.foto,
@@ -104,19 +102,6 @@ const Configuracoes = ({ albumId }) => {
     } catch (error) {
       console.error("Erro ao buscar feedbacks:", error);
     }
-  }, []);
-
-
-  useEffect(() => {
-    const fetchCategorias = async () => {
-      try {
-        const response = await api.get("/api/categorias");
-        setCategorias(response.data || []);
-      } catch (err) {
-        console.error("Erro ao buscar categorias:", err);
-      }
-    };
-    fetchCategorias();
   }, []);
 
 
@@ -332,69 +317,62 @@ const Configuracoes = ({ albumId }) => {
 
       {abaAtiva === "trabalhos" && !albumAberto && (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {galerias.map((g) => {
+          {galerias.map((g) => (
+            <div
+              key={g.id}
+              className="relative bg-white rounded-2xl shadow-md overflow-hidden transform transition hover:scale-105 cursor-pointer"
+              onClick={() => abrirAlbum(g)}
+            >
+              <div className="absolute top-2 right-2 z-10">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleMenu(`album-${g.id}`);
+                  }}
+                  className="text-white bg-black bg-opacity-50 p-1 rounded-full hover:bg-opacity-70"
+                >
+                  <MoreVertical size={18} />
+                </button>
+                {menuAberto === `album-${g.id}` && (
+                  <div className="absolute right-0 mt-2 bg-white border border-gray-300 rounded shadow-md z-20">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        solicitarExcluirAlbum(g);
+                      }}
+                      className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-100 whitespace-nowrap"
+                    >
+                      <Trash size={16} /> Excluir
+                    </button>
+                  </div>
+                )}
+              </div>
 
-            const categoriaNome =
-              categorias.find((cat) => cat.id === g.categoria_id)?.nome || "–";
-
-            return (
-              <div
-                key={g.id}
-                className="relative bg-white rounded-2xl shadow-md overflow-hidden transform transition hover:scale-105 cursor-pointer"
-              >
-                <div className="absolute top-2 right-2 z-10">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleMenu(`album-${g.id}`);
-                    }}
-                    className="text-white bg-black bg-opacity-50 p-1 rounded-full hover:bg-opacity-70"
-                  >
-                    <MoreVertical size={18} />
-                  </button>
-                  {menuAberto === `album-${g.id}` && (
-                    <div className="absolute right-0 mt-2 bg-white border border-gray-300 rounded shadow-md z-20">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          solicitarExcluirAlbum(g);
-                        }}
-                        className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-100 whitespace-nowrap"
-                      >
-                        <Trash size={16} /> Excluir
-                      </button>
-                    </div>
+              <div>
+                <div className="w-full h-60 bg-gray-100 overflow-hidden">
+                  {g.imagem ? (
+                    <img
+                      src={g.imagem}
+                      alt={g.nome}
+                      className="w-full h-full object-cover rounded-t-2xl"
+                    />
+                  ) : (
+                    <div className="text-center text-gray-400 p-8">Sem capa</div>
                   )}
                 </div>
+                <div className="p-4 text-center">
+                  <h3 className="text-xl font-semibold text-[#252525]">{g.nome}</h3>
 
-                <div onClick={() => abrirAlbum(g)}>
-                  <div className="w-full h-60 bg-gray-100 overflow-hidden">
-                    {g.imagem ? (
-                      <img
-                        src={g.imagem}
-                        alt={g.nome}
-                        className="w-full h-full object-cover rounded-t-2xl"
-                      />
-                    ) : (
-                      <div className="text-center text-gray-400 p-8">Sem capa</div>
-                    )}
-                  </div>
-                  <div className="p-4 text-center">
-                    <h3 className="text-xl font-semibold text-[#252525]">
-                      {g.nome}
-                    </h3>
-                    {/* Exibe o nome da categoria */}
-                    <p className="text-sm text-gray-500 italic mt-1">
-                      {categoriaNome}
-                    </p>
-                    <p className="text-sm text-[#c09b2d] mt-2">
-                      {g.fotos.length} fotos | {g.data}
-                    </p>
-                  </div>
+                 
+                  <p className="text-sm text-gray-500 italic mt-1">{g.descricao}</p>
+
+                  <p className="text-sm text-[#c09b2d] mt-2">
+                    {g.fotos.length} fotos | {g.data}
+                  </p>
                 </div>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       )}
 
@@ -428,7 +406,6 @@ const Configuracoes = ({ albumId }) => {
                 )}
               </div>
               <div className="flex justify-around text-[#b1783d] text-2xl">
-                <ImageIcon className="cursor-pointer hover:text-[#a76a2b]" />
                 <Settings
                   className="cursor-pointer hover:text-[#a76a2b]"
                   onClick={() => handleAbrirEdicao(albumAberto)}

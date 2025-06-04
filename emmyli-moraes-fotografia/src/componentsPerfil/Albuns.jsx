@@ -38,7 +38,7 @@ const Albuns = () => {
       const albunsFormatados = response.data.map((album) => ({
         id: album.id,
         nome: album.nome,
-        descricao: album.descricao || "",
+        descricao: album.nome || "",
         usuario: album.usuario.nome,
         fotos:
           album.fotos?.map((f) => ({

@@ -260,7 +260,7 @@ const Evento = () => {
     const payload = {
       usuario_id: usuarioInfo.idusuario,
       evento_id: evento.id,
-      descricao: evento.descricao,
+      descricao: evento.nome,
       preco_unitario: preco_unitario,
       quantidade,
       total,
