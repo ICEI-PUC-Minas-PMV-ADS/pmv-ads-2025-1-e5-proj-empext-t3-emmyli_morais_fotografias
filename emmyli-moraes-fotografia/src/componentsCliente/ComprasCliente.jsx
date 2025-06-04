@@ -112,7 +112,7 @@ const ComprasCliente = () => {
                     {compra.usuario.nome}
                   </td>
                   <td className="py-4 px-6 text-center">
-                    {compra.evento.descricao}
+                    {compra.evento.nome}
                   </td>
                   <td className="py-4 px-6 text-center">{compra.quantidade}</td>
                   <td className="py-4 px-6 text-center">
@@ -167,7 +167,7 @@ const ComprasCliente = () => {
                   <strong>Cliente:</strong> {compra.usuario.nome}
                 </p>
                 <p>
-                  <strong>Nome do evento:</strong> {compra.evento.descricao}
+                  <strong>Nome do evento:</strong> {compra.evento.nome}
                 </p>
                 <p>
                   <strong>Fotos:</strong> {compra.quantidade}

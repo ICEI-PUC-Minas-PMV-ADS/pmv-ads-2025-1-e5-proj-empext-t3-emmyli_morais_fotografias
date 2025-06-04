@@ -94,7 +94,7 @@ const ControleDeVendas = () => {
                     {venda.usuario.nome}
                   </td>
                   <td className="py-4 px-6 text-center">
-                    {venda.evento.descricao}
+                    {venda.evento.nome}
                   </td>
                   <td className="py-4 px-6 text-center">{venda.quantidade}</td>
                   <td className="py-4 px-6 text-center">
@@ -149,7 +149,7 @@ const ControleDeVendas = () => {
                   <strong>Cliente:</strong> {venda.usuario.nome}
                 </p>
                 <p>
-                  <strong>Nome do evento:</strong> {venda.evento.descricao}
+                  <strong>Nome do evento:</strong> {venda.evento.nome}
                 </p>
                 <p>
                   <strong>Qtd. fotos:</strong> {venda.quantidade}

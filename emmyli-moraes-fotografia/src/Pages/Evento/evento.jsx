@@ -65,11 +65,10 @@ const Evento = () => {
   useEffect(() => {
     const buscarEvento = async () => {
       try {
-        const baseUrl = "http://localhost:3000/api/eventos";
-        const response = await api.get(baseUrl, {
+        const response = await api.get("/api/eventos", {
           params: {
             filters: {
-              urlevento: `http://localhost:5173/album/${id}`,
+              urlevento: `https://emmylifotografias.com.br/album/${id}`,
             },
             include: "detalhes,marcaDagua",
           },
@@ -94,14 +93,14 @@ const Evento = () => {
   useEffect(() => {
     const fetchProdutos = async () => {
       try {
-        const response = await api.get("/api/produtos");
+        const response = await api.get(`/api/produtos/evento/${evento.id}`);
         setProdutos(response.data);
       } catch (error) {
         console.error("Erro ao buscar produtos:", error.message);
       }
     };
     fetchProdutos();
-  }, []);
+  }, [evento?.id]);
 
   //  Selecionar automaticamente o primeiro pacote, quando produtos chegam
 
@@ -260,7 +259,7 @@ const Evento = () => {
     const payload = {
       usuario_id: usuarioInfo.idusuario,
       evento_id: evento.id,
-      descricao: evento.descricao,
+      descricao: evento.nome,
       preco_unitario: preco_unitario,
       quantidade,
       total,
