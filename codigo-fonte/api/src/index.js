@@ -32,13 +32,14 @@ const cors = require('cors');
 const path = require('path');
 
 
-/* app.use(cors({
+ app.use(cors({
   origin: 'http://localhost:5173', // Permite somente seu frontend
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
   allowedHeaders: ['Content-Type', 'Authorization'], // Cabeçalhos permitidos
-})); */
+})); 
 
 const allowedOrigins = [
+  
   'https://emmylifotografias.com.br',
   //'https://9e73-2804-540-d005-4f00-b826-b9f7-d508-dd0a.ngrok-free.app', // backend ngrok URL
   //'https://45a9-2804-540-d005-4f00-b826-b9f7-d508-dd0a.ngrok-free.app'  // frontend ngrok URL

@@ -17,17 +17,22 @@ const Galeria = ({ ensaio, setImagemAtual, setIndiceImagem, fecharGaleria }) => 
     carregarCurtidas();
   }, []);
 
-  const curtirFoto = async (url, idx) => {
-    const fotoId = ensaio.fotos[idx].id;
+  const curtirFoto = async (fotoId, idx) => {
     if (curtidasLocais[fotoId]) return;
 
     try {
       await api.post(`/api/visualizacoesCurtidas/like/foto/${fotoId}`);
-      setCurtidasLocais(prev => ({ ...prev, [fotoId]: true }));
+      setCurtidasLocais((prev) => ({ ...prev, [fotoId]: true }));
+
+      // incrementa localmente a contagem de curtidas daquela foto no array
+      ensaio.fotos[idx].curtidas = (ensaio.fotos[idx].curtidas || 0) + 1;
+      // força um re-render – aqui apenas mudamos o índice para mesmo valor
+      setIndiceImagem((i) => i);
     } catch (err) {
       console.error("Erro ao curtir foto:", err);
     }
   };
+
 
   return (
     <div className="p-10 max-w-7xl mx-auto">
@@ -38,23 +43,34 @@ const Galeria = ({ ensaio, setImagemAtual, setIndiceImagem, fecharGaleria }) => 
             <img
               src={f.url}
               alt={`Foto ${idx + 1}`}
-              className="w-full h-96 object-cover rounded-xl shadow-lg cursor-pointer hover:scale-105 transition"
+              onError={(e) => (e.currentTarget.src = "/fallback.jpg")}
+              className="
+                w-full h-60 sm:h-72 md:h-80 lg:h-96 object-cover rounded-xl shadow-lg cursor-pointer hover:scale-105 transition
+              "
               onClick={() => {
                 setImagemAtual({ id: f.id, url: f.url });
                 setIndiceImagem(idx);
               }}
-              onError={(e) => (e.currentTarget.src = "/fallback.jpg")}
+              
             />
-            <img
-              src={
-                curtidasLocais[f.id]
-                  ? "icons/coracao-vermelho.svg"
-                  : "icons/coracao-branco.svg"
-              }
-              alt="Curtir"
-              className="w-7 h-7 absolute top-2 right-2 cursor-pointer hover:scale-110 transition"
-              onClick={(e) => { e.stopPropagation(); curtirFoto(f.url, idx); }}
-            />
+            <div className="absolute top-2 right-2 flex items-center gap-1">
+              <img
+                src={
+                  curtidasLocais[f.id]
+                    ? "/icons/coracao-vermelho.svg"
+                    : "/icons/coracao-branco.svg"
+                }
+                alt="Curtir"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  curtirFoto(f.id, idx);
+                }}
+                className="w-7 h-7 cursor-pointer hover:scale-110 transition"
+              />
+              <span className="text-white font-semibold">
+                {f.curtidas ?? 0}
+              </span>
+            </div>
           </div>
         ))}
       </div>

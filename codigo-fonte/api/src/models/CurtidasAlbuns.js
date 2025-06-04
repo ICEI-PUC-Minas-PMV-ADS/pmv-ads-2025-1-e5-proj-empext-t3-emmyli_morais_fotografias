@@ -6,10 +6,13 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true
     },
-    album_id: {
+
+    evento_id: {              // antes era album_id
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      field: 'evento_id'
     },
+
     ip_usuario: {
       type: DataTypes.STRING(100),
       allowNull: false,
@@ -27,9 +30,9 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   CurtidaAlbum.associate = (models) => {
-    CurtidaAlbum.belongsTo(models.Albuns, {
-      foreignKey: 'album_id',
-      as: 'album'
+    CurtidaAlbum.belongsTo(models.Eventos, {
+      foreignKey: 'evento_id',
+      as: 'evento'
     });
   };
 

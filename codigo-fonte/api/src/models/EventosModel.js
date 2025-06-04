@@ -4,6 +4,7 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Eventos extends Model {
     static associate(models) {
+
       // Associação com DetalheEvento (1:N)
       Eventos.hasMany(models.DetalheEvento, {
         foreignKey: 'evento_id',
@@ -24,12 +25,28 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'SET NULL',
       });
 
+      // N:N para Produto via EventoProduto
       Eventos.belongsToMany(models.Produto, {
         through: 'EventoProduto',
         foreignKey: 'eventoId',
         otherKey: 'produtoId',
         as: 'produtos',
       });
+
+      // 1:N para CurtidaAlbum (ligações de curtidas de álbum ao evento)
+      Eventos.hasMany(models.CurtidaAlbum, {
+        foreignKey: 'evento_id',
+        as: 'curtidasAlbuns',
+        onDelete: 'CASCADE'
+      });
+
+      // 1:N para VisualizacaoAlbum (ligações de visualizações de álbum ao evento)
+      Eventos.hasMany(models.VisualizacaoAlbum, {
+        foreignKey: 'evento_id',
+        as: 'visualizacoesAlbuns',
+        onDelete: 'CASCADE'
+      });
+
 
     }
   }

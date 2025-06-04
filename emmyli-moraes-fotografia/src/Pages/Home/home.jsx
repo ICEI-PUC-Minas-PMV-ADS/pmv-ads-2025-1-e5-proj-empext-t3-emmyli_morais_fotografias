@@ -33,6 +33,7 @@ const Home = () => {
             id: a.id,
             nome: a.nome,
             imagem: a.detalhes[0].foto,
+            categoria: a.descricao || "",
             visualizacoes: a.visualizacoes || 0,
             curtidas: a.totalCurtidas || 0,
           }));

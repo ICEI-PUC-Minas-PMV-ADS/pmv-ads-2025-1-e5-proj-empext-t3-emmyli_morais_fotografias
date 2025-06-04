@@ -18,11 +18,11 @@ const obterIp = (req) => {
 module.exports = {
   // ✅ Registra visualização ao abrir o álbum
   registrarVisualizacaoAlbum: async (req, res) => {
-    const { album_id } = req.params;
+    const { evento_id } = req.params;
     const ip = obterIp(req);
 
     try {
-      await VisualizacaoAlbum.create({ album_id, ip });
+      await VisualizacaoAlbum.create({ evento_id, ip_usuario: ip });
       return res.status(200).json({ message: 'Visualização registrada com sucesso.' });
     } catch (err) {
       console.error('Erro ao registrar visualização:', err);
@@ -32,16 +32,16 @@ module.exports = {
 
   // ✅ Curtir álbum 1x por IP
   curtirAlbum: async (req, res) => {
-    const { album_id } = req.params;
+    const { evento_id } = req.params;
     const ip = obterIp(req);
 
     try {
-      const jaCurtiu = await CurtidaAlbum.findOne({ where: { album_id, ip } });
+      const jaCurtiu = await CurtidaAlbum.findOne({ where: { evento_id, ip_usuario: ip } });
       if (jaCurtiu) {
         return res.status(400).json({ error: 'Você já curtiu este álbum.' });
       }
 
-      await CurtidaAlbum.create({ album_id, ip });
+      await CurtidaAlbum.create({ evento_id, ip_usuario: ip });
       return res.status(201).json({ message: 'Curtida registrada com sucesso.' });
     } catch (err) {
       console.error('Erro ao curtir álbum:', err);
@@ -55,12 +55,12 @@ module.exports = {
     const ip = obterIp(req);
 
     try {
-      const jaCurtiu = await CurtidaFoto.findOne({ where: { id_foto: foto_id, ip } });
+      const jaCurtiu = await CurtidaFoto.findOne({ where: { id_foto: foto_id, ip_usuario: ip } });
       if (jaCurtiu) {
         return res.status(400).json({ error: 'Você já curtiu esta foto.' });
       }
 
-      await CurtidaFoto.create({ id_foto: foto_id, ip });
+      await CurtidaFoto.create({ id_foto: foto_id, ip_usuario: ip  });
       return res.status(201).json({ message: 'Curtida registrada com sucesso.' });
     } catch (err) {
       console.error('Erro ao curtir foto:', err);
@@ -73,9 +73,9 @@ module.exports = {
     const ip = obterIp(req);
 
     try {
-      const curtidas = await CurtidaAlbum.findAll({ where: { ip } });
-      const albuns = curtidas.map(c => c.album_id);
-      res.json({ albuns });
+      const curtidas = await CurtidaAlbum.findAll({ where: { ip_usuario: ip } });
+      const eventos = curtidas.map(c => c.evento_id);
+      res.json({ albuns: eventos });
     } catch (err) {
       console.error('Erro ao buscar curtidas de álbuns:', err);
       res.status(500).json({ error: 'Erro ao buscar curtidas de álbuns' });
@@ -87,7 +87,7 @@ module.exports = {
     const ip = obterIp(req);
 
     try {
-      const curtidas = await CurtidaFoto.findAll({ where: { ip } });
+      const curtidas = await CurtidaFoto.findAll({ where: { ip_usuario: ip } });
       const fotos = curtidas.map(c => c.id_foto);
       res.json({ fotos });
     } catch (err) {

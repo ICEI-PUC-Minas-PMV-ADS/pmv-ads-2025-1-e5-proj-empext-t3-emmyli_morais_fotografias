@@ -13,8 +13,12 @@ const ModalImagem = ({
   useEffect(() => {
     const carregar = async () => {
       try {
+        // buscar IDs de fotos curtidas pelo IP
         const res = await api.get("/api/visualizacoesCurtidas/curtidas/foto");
-        const map = res.data.fotos.reduce((acc, id) => ({ ...acc, [id]: true }), {});
+        const map = res.data.fotos.reduce(
+          (acc, id) => ({ ...acc, [id]: true }),
+          {}
+        );
         setCurtidasLocais(map);
       } catch (err) {
         console.error("Erro ao carregar curtidas no modal:", err);
@@ -23,17 +27,19 @@ const ModalImagem = ({
     carregar();
   }, []);
 
-  
   useEffect(() => {
-  if (fotos[indiceImagem]) {
-    setImagemAtual({
-      id: fotos[indiceImagem].id,
-      url: fotos[indiceImagem].url
-    });
-  }
-}, [indiceImagem, fotos, setImagemAtual]);
+    if (fotos[indiceImagem]) {
+      setImagemAtual({
+        id: fotos[indiceImagem].id,
+        url: fotos[indiceImagem].url
+      });
+    }
+  }, [indiceImagem, fotos, setImagemAtual]);
 
   if (!imagemAtual) return null;
+
+  // encontra o objeto da foto atual para ler/atualizar contagem
+  const fotoObj = fotos.find((f) => f.id === imagemAtual.id) || {};
 
   const curtirFoto = async () => {
     const id = imagemAtual.id;
@@ -41,7 +47,10 @@ const ModalImagem = ({
 
     try {
       await api.post(`/api/visualizacoesCurtidas/like/foto/${id}`);
-      setCurtidasLocais(prev => ({ ...prev, [id]: true }));
+      setCurtidasLocais((prev) => ({ ...prev, [id]: true }));
+      fotoObj.curtidas = (fotoObj.curtidas || 0) + 1;
+      // força re-render atualizando o contador no modal
+      setIndiceImagem((i) => i);
     } catch (err) {
       console.error("Erro ao curtir foto no modal:", err);
     }
@@ -55,7 +64,7 @@ const ModalImagem = ({
           src={imagemAtual.url}
           alt="Imagem ampliada"
           className="max-w-[90vw] max-h-[90vh] object-contain rounded-lg"
-          onError={(e) => (e.currentTarget.src = '/fallback.jpg')}
+          onError={(e) => (e.currentTarget.src = "/fallback.jpg")}
         />
 
         {/* Botão Fechar ✖ */}
@@ -69,7 +78,9 @@ const ModalImagem = ({
         {/* Botão Voltar ◀ */}
         <button
           onClick={() =>
-            setIndiceImagem(prev => (prev > 0 ? prev - 1 : fotos.length - 1))
+            setIndiceImagem((prev) =>
+              prev > 0 ? prev - 1 : fotos.length - 1
+            )
           }
           className="absolute left-2 top-1/2 transform -translate-y-1/2 text-white text-xl bg-black bg-opacity-30 px-3 py-1 rounded-full hover:bg-opacity-70 transition"
         >
@@ -79,24 +90,31 @@ const ModalImagem = ({
         {/* Botão Avançar ▶ */}
         <button
           onClick={() =>
-            setIndiceImagem(prev => (prev < fotos.length - 1 ? prev + 1 : 0))
+            setIndiceImagem((prev) =>
+              prev < fotos.length - 1 ? prev + 1 : 0
+            )
           }
           className="absolute right-2 top-1/2 transform -translate-y-1/2 text-white text-xl bg-black bg-opacity-30 px-3 py-1 rounded-full hover:bg-opacity-70 transition"
         >
           ▶
         </button>
 
-        {/* Botão Curtir ❤️ */}
-        <img
-          src={
-            curtidasLocais[imagemAtual.id]
-              ? "/icons/coracao-vermelho.svg"
-              : "/icons/coracao-branco.svg"
-          }
-          alt="Curtir"
-          onClick={curtirFoto}
-          className="absolute bottom-4 right-4 w-8 h-8 cursor-pointer hover:scale-110 transition"
-        />
+        {/* Botão Curtir ❤️ + contador */}
+        <div className="absolute bottom-4 right-4 flex items-center gap-2">
+          <img
+            src={
+              curtidasLocais[imagemAtual.id]
+                ? "/icons/coracao-vermelho.svg"
+                : "/icons/coracao-branco.svg"
+            }
+            alt="Curtir"
+            onClick={curtirFoto}
+            className="w-8 h-8 cursor-pointer hover:scale-110 transition"
+          />
+          <span className="text-white text-xl font-semibold">
+            {fotoObj.curtidas ?? 0}
+          </span>
+        </div>
       </div>
     </div>
   );

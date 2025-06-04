@@ -21,7 +21,7 @@ const Ensaios = ({ ensaiosFiltrados, abrirGaleria, curtidas, setCurtidas }) => {
     if (curtidosAlbuns[albumId]) return;
 
     try {
-      await api.post(`/api/visualizacoesCurtidas/like/album/${albumId}`);
+      await api.post(`/api/visualizacoesCurtidas/like/evento/${albumId}`);
       setCurtidosAlbuns(prev => ({ ...prev, [albumId]: true }));
       setCurtidas(prev => ({ ...prev, [albumId]: (prev[albumId] || 0) + 1 }));
     } catch (err) {
@@ -41,7 +41,7 @@ const Ensaios = ({ ensaiosFiltrados, abrirGaleria, curtidas, setCurtidas }) => {
             src={ensaio.capa}
             alt={ensaio.titulo}
             onError={(e) => (e.currentTarget.src = "/fallback.jpg")}
-            className="w-full h-80 object-cover rounded-t-2xl"
+            className="w-full h-48 sm:h-56 md:h-64 lg:h-72 object-cover rounded-t-2xl"
           />
 
           <div className="p-2 text-center">

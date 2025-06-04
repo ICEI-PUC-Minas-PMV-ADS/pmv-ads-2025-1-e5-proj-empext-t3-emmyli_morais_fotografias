@@ -8,15 +8,11 @@ import ModalImagem from "../../components/ModalImagem";
 import { api } from "../../services/api";
 
 const Trabalhos = () => {
-  // captura o albumId vindo da Home (via navigate state)
+  // “albumId” que veio da Home (via navigate state)
   const location = useLocation();
   const albumIdDaHome = location.state?.albumId ?? null;
 
-  // ref para garantir que só abrimos o álbum vindo da Home uma única vez
-  
-
-  const [categoriaSelecionada, setCategoriaSelecionada] =
-    useState("Todos");
+  const [categoriaSelecionada, setCategoriaSelecionada] = useState("Todos");
   const [categorias, setCategorias] = useState(["Todos"]);
   const [ensaios, setEnsaios] = useState([]);
   const [galeriaAberta, setGaleriaAberta] = useState(null);
@@ -24,23 +20,28 @@ const Trabalhos = () => {
   const [indiceImagem, setIndiceImagem] = useState(0);
   const [curtidas, setCurtidas] = useState({});
 
+  // Evita abrir mais de uma vez quando veio da Home
   const abriuRef = useRef(false);
 
   useEffect(() => {
     const buscarAlbunsPublicos = async () => {
       try {
+        // GET em /api/eventos?include=detalhes retorna todos os eventos,
+        // incluindo a lista de “detalhes” (cada detalhe contém: id, foto, curtidasFotos etc.)
         const { data } = await api.get("/api/eventos/?include=detalhes");
 
+        // Filtra apenas aqueles marcados como “exibirtrabalho” = true e que têm pelo menos 1 foto
         const filtrados = data
-          .filter((a) => a.exibirtrabalho === true && a.detalhes.length > 0 )
+          .filter((a) => a.exibirtrabalho === true && a.detalhes.length > 0)
           .map((a) => ({
             id: a.id,
             titulo: a.nome,
-            categoria: a.descricao,
-            capa: a.detalhes[0]?.foto?.foto || "",
+            categoria: a.descricao || "",
+            capa: a.detalhes[0]?.foto || "",
+            // Monta array de fotos de “detalhes”
             fotos: a.detalhes.map((f) => ({
               id: f.id,
-              url: f.foto?.foto,
+              url: f.foto || "",
             })),
             visualizacoes: a.visualizacoes ?? 0,
             curtidas: a.totalCurtidas ?? 0,
@@ -48,12 +49,13 @@ const Trabalhos = () => {
 
         setEnsaios(filtrados);
 
+        // Extrai cada categoria única (tirando strings vazias) para o filtro
         const unicas = Array.from(
-          new Set(filtrados.map((e) => e.categoria))
+          new Set(filtrados.map((e) => e.categoria).filter((c) => c))
         );
         setCategorias(["Todos", ...unicas]);
 
-        // se veio da Home e ainda não abrimos, já abre direto
+        // Se o usuário veio da Home com um albumId, abra esse álbum na galeria
         if (albumIdDaHome && !abriuRef.current) {
           abriuRef.current = true;
           const en = filtrados.find((e) => e.id === albumIdDaHome);
@@ -67,23 +69,25 @@ const Trabalhos = () => {
     buscarAlbunsPublicos();
   }, [albumIdDaHome]);
 
+  /**
+   * Quando abre a galeria de um ensaio clicado,
+   * registramos uma visualização usando o endpoint:
+   *   POST /api/eventos/view/evento/:evento_id
+   */
   const abrirGaleria = async (ensaio) => {
     try {
-      await api.post(
-        `/api/visualizacoesCurtidas/view/album/${ensaio.id}`
-      );
+      await api.post(`/api/eventos/view/evento/${ensaio.id}`);
     } catch (err) {
       console.error("Falha ao registrar view:", err);
     }
     setGaleriaAberta(ensaio);
   };
 
+  // Filtra a lista de ensaios de acordo com a categoria selecionada (ou “Todos”)
   const ensaiosFiltrados =
     categoriaSelecionada === "Todos"
       ? ensaios
-      : ensaios.filter(
-          (e) => e.categoria === categoriaSelecionada
-        );
+      : ensaios.filter((e) => e.categoria === categoriaSelecionada);
 
   return (
     <div className="font-serif bg-[#0B3727] min-h-screen text-white">
