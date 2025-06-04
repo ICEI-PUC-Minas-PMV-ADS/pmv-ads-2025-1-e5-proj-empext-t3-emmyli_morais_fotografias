@@ -94,14 +94,14 @@ const Evento = () => {
   useEffect(() => {
     const fetchProdutos = async () => {
       try {
-        const response = await api.get("/api/produtos");
+        const response = await api.get(`/api/produtos/evento/${evento.id}`);
         setProdutos(response.data);
       } catch (error) {
         console.error("Erro ao buscar produtos:", error.message);
       }
     };
     fetchProdutos();
-  }, []);
+  }, [evento?.id]);
 
   //  Selecionar automaticamente o primeiro pacote, quando produtos chegam
 

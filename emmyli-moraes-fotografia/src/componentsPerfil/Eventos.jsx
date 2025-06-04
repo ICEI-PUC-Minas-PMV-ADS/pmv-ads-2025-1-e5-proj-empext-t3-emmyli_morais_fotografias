@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import {
-  Image,
   Settings,
   Edit2,
   Plus,
@@ -242,7 +241,6 @@ const Eventos = ({ albumId }) => {
               </div>
 
               <div className="flex justify-around text-[#b1783d] text-2xl">
-                <Image className="cursor-pointer hover:text-[#a76a2b]" />
                 <Settings
                   className="cursor-pointer hover:text-[#a76a2b]"
                   onClick={() => handleAbrirConfiguracoes(eventoAberto)}
