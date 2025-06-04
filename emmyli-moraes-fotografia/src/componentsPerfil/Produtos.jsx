@@ -55,7 +55,7 @@ useEffect(() => {
 
   const buscarProdutos = () => {
     api
-      .get("/api/produtos?")
+      .get("/api/produtos")
       .then((response) => {
         if (Array.isArray(response.data)) {
           setProdutos(response.data);
