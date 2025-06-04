@@ -3,9 +3,9 @@ const https = require('https');
 const fs = require('fs');
 require('dotenv').config();
 
-const BUNNY_STORAGE_NAME = 'emmylifotografias12345';
+const BUNNY_STORAGE_NAME = 'emmylifotografias123456';
 
-const BUNNY_STORAGE_KEY = 'f2b85b69-ab88-4015-addc1647f7de-75f5-4984';
+const BUNNY_STORAGE_KEY = 'f0632ae4-a76c-4751-9430f6544f87-3811-4d5c';
 
 // Agente keep-alive evita handshake TLS a cada requisição
 const keepAliveAgent = new https.Agent({ keepAlive: true });
@@ -48,7 +48,7 @@ const uploadFotoBunnyStorage = async (file) => {
     }
 
     // URL pública via CDN
-    return `https://galeria-cdn-2.b-cdn.net/${fileName}`;
+    return `https://galeria-cdn-3.b-cdn.net/${fileName}`;
   } catch (err) {
     console.error('❌ Erro no upload BunnyCDN:', err.response?.data || err.message);
     throw new Error('Falha ao enviar imagem para BunnyCDN.');
