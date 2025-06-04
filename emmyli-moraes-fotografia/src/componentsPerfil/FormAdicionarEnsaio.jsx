@@ -46,7 +46,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
     }
     if (origem === "cliente" || origem === "publico") {
       const chaveUnica = crypto.randomUUID().slice(0, 8);
-      setUrlAlbum(`http://localhost:5173/album/${chaveUnica}`);
+      setUrlAlbum(`https://emmylifotografias.com.br/album/${chaveUnica}`);
     } else {
       setUrlAlbum("");
     }
@@ -171,7 +171,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
 
       if (origem !== "exibirtrabalho") {
         formData.append("urlevento", urlAlbum);
-      }
+      } 
 
       let data = null;
       if (dadosIniciais?.id) {
@@ -181,7 +181,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
           {
             headers: { "Content-Type": "multipart/form-data" },
           }
-        );
+        );       
         data = response.data;
       } else {
         const response = await api.post("/api/eventos", formData, {

@@ -222,7 +222,7 @@ router.post('/', upload.array('imagens[]'), eventosController.create);
  *       400:
  *         description: Erro ao atualizar evento
  */
-router.put('/:id', eventosController.update);
+router.put('/:id',upload.array('imagens[]'), eventosController.update);
 
 /**
  * @swagger

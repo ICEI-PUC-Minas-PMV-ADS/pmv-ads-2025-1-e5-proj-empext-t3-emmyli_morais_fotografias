@@ -27,7 +27,7 @@ class EventosController extends Api_Controller {
           publico: data.publico,
           exibirtrabalho: data.exibirtrabalho,
           idmarcadagua: data.idmarcadagua,
-          /*categoria_id: data.categoria_id ? Number(data.categoria_id) : null,*/
+          categoria_id: data.categoria_id ? Number(data.categoria_id) : null,
           urlevento: data.urlevento,
         },
         { transaction }
@@ -79,7 +79,6 @@ class EventosController extends Api_Controller {
       if (!evento) {
         return res.status(404).json({ error: "Evento não encontrado" });
       }
-
       // Atualizar os dados do evento
       await evento.update(
         {
