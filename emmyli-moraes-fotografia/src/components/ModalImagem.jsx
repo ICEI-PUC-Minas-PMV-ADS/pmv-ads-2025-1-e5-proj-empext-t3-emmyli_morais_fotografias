@@ -11,9 +11,8 @@ const ModalImagem = ({
   const [curtidasLocais, setCurtidasLocais] = useState({});
 
   useEffect(() => {
-    const carregar = async () => {
+    async function carregarCurtidas() {
       try {
-        // buscar IDs de fotos curtidas pelo IP
         const res = await api.get("/api/visualizacoesCurtidas/curtidas/foto");
         const map = res.data.fotos.reduce(
           (acc, id) => ({ ...acc, [id]: true }),
@@ -23,8 +22,8 @@ const ModalImagem = ({
       } catch (err) {
         console.error("Erro ao carregar curtidas no modal:", err);
       }
-    };
-    carregar();
+    }
+    carregarCurtidas();
   }, []);
 
   useEffect(() => {
@@ -38,19 +37,16 @@ const ModalImagem = ({
 
   if (!imagemAtual) return null;
 
-  // encontra o objeto da foto atual para ler/atualizar contagem
-  const fotoObj = fotos.find((f) => f.id === imagemAtual.id) || {};
+  const fotoObj = fotos.find(f => f.id === imagemAtual.id) || {};
 
   const curtirFoto = async () => {
     const id = imagemAtual.id;
     if (curtidasLocais[id]) return;
-
     try {
       await api.post(`/api/visualizacoesCurtidas/like/foto/${id}`);
-      setCurtidasLocais((prev) => ({ ...prev, [id]: true }));
+      setCurtidasLocais(prev => ({ ...prev, [id]: true }));
       fotoObj.curtidas = (fotoObj.curtidas || 0) + 1;
-      // força re-render atualizando o contador no modal
-      setIndiceImagem((i) => i);
+      setIndiceImagem(i => i);
     } catch (err) {
       console.error("Erro ao curtir foto no modal:", err);
     }
@@ -59,15 +55,13 @@ const ModalImagem = ({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-90 flex justify-center items-center z-50">
       <div className="relative">
-        {/* Imagem principal */}
         <img
           src={imagemAtual.url}
           alt="Imagem ampliada"
           className="max-w-[90vw] max-h-[90vh] object-contain rounded-lg"
-          onError={(e) => (e.currentTarget.src = "/fallback.jpg")}
+          onError={e => (e.currentTarget.src = "/fallback.jpg")}
         />
 
-        {/* Botão Fechar ✖ */}
         <button
           onClick={() => setImagemAtual(null)}
           className="absolute top-2 right-2 text-white text-xl bg-black bg-opacity-30 px-3 py-1 rounded-full hover:bg-opacity-70 transition"
@@ -75,10 +69,9 @@ const ModalImagem = ({
           ✖
         </button>
 
-        {/* Botão Voltar ◀ */}
         <button
           onClick={() =>
-            setIndiceImagem((prev) =>
+            setIndiceImagem(prev =>
               prev > 0 ? prev - 1 : fotos.length - 1
             )
           }
@@ -86,11 +79,9 @@ const ModalImagem = ({
         >
           ◀
         </button>
-
-        {/* Botão Avançar ▶ */}
         <button
           onClick={() =>
-            setIndiceImagem((prev) =>
+            setIndiceImagem(prev =>
               prev < fotos.length - 1 ? prev + 1 : 0
             )
           }
@@ -99,7 +90,6 @@ const ModalImagem = ({
           ▶
         </button>
 
-        {/* Botão Curtir ❤️ + contador */}
         <div className="absolute bottom-4 right-4 flex items-center gap-2">
           <img
             src={

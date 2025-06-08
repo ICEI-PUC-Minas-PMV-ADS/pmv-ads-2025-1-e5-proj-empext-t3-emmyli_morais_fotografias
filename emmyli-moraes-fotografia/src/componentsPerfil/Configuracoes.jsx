@@ -154,7 +154,7 @@ const Configuracoes = ({ albumId }) => {
 
     const fd = new FormData();
     files.forEach((f) => fd.append("fotos", f));
-    fd.append("album_id", albumAberto.id);
+    fd.append("evento_id", albumAberto.id);
 
     try {
       setLoadingUpload(true);

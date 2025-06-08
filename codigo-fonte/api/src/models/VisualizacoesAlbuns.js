@@ -32,12 +32,13 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: false
   });
 
-  VisualizacaoAlbum.associate = (models) => {
-    VisualizacaoAlbum.belongsTo(models.Albuns, {
+  VisualizacaoAlbum.associate = models => {
+    VisualizacaoAlbum.belongsTo(models.Eventos, {
       foreignKey: 'evento_id',
       as: 'evento'
     });
   };
+
 
   return VisualizacaoAlbum;
 };

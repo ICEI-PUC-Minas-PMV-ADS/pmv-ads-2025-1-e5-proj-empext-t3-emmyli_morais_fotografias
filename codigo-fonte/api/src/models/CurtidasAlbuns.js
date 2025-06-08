@@ -25,11 +25,12 @@ module.exports = (sequelize, DataTypes) => {
       field: 'dtinclusao'
     }
   }, {
-    tableName: 'curtidas_album',  
-    timestamps: false
+    tableName: 'curtidas_album',
+    timestamps: false,
+
   });
 
-  CurtidaAlbum.associate = (models) => {
+  CurtidaAlbum.associate = models => {
     CurtidaAlbum.belongsTo(models.Eventos, {
       foreignKey: 'evento_id',
       as: 'evento'

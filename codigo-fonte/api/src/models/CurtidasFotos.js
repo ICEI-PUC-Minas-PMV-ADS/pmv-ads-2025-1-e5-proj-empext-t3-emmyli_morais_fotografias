@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: false
   });
 
-  CurtidaFoto.associate = (models) => {
+  CurtidaFoto.associate = models => {
     CurtidaFoto.belongsTo(models.DetalheEvento, {
       foreignKey: 'id_foto',
       as: 'foto'

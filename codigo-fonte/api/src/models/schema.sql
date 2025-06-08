@@ -129,22 +129,20 @@ CREATE TABLE categorias (
   nome VARCHAR(100) UNIQUE NOT NULL
 );
 
-CREATE TABLE visualizacoes_albuns (
+CREATE TABLE visualizacoes (
   id SERIAL PRIMARY KEY,
-  album_id INT NOT NULL,
-  ip VARCHAR(100),
-  criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (album_id) REFERENCES albuns(id) ON DELETE CASCADE
+  evento_id INT NOT NULL REFERENCES eventos(id) ON DELETE CASCADE,
+  ip_usuario VARCHAR(100) NOT NULL,
+  dtinclusao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE (evento_id, ip_usuario)
 );
 
-
-CREATE TABLE curtidas_albuns (
+CREATE TABLE curtidas_album (
   id SERIAL PRIMARY KEY,
-  album_id INT NOT NULL,
-  ip VARCHAR(100),
-  criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (album_id) REFERENCES albuns(id) ON DELETE CASCADE
-  UNIQUE (album_id, ip)  -- só uma curtida por (album_id, ip)
+  evento_id INT NOT NULL REFERENCES eventos(id) ON DELETE CASCADE,
+  ip_usuario VARCHAR(100) NOT NULL,
+  dtinclusao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE (evento_id, ip_usuario)
 );
 
 CREATE TABLE curtidas_fotos (

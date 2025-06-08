@@ -7,8 +7,16 @@ const BUNNY_STORAGE_NAME = 'emmylifotografias123456';
 
 const BUNNY_STORAGE_KEY = 'f0632ae4-a76c-4751-9430f6544f87-3811-4d5c';
 
+if (!BUNNY_STORAGE_NAME || !BUNNY_STORAGE_KEY) {
+  console.error(
+    '[uploadService] Aviso: BUNNY_STORAGE_NAME ou BUNNY_STORAGE_KEY não definidos em .env'
+  );
+}
+
 // Agente keep-alive evita handshake TLS a cada requisição
 const keepAliveAgent = new https.Agent({ keepAlive: true });
+
+
 
 const uploadFotoBunnyStorage = async (file) => {
   if (!file || (!file.buffer && !file.path) || !file.originalname || !file.mimetype) {
@@ -22,15 +30,26 @@ const uploadFotoBunnyStorage = async (file) => {
     const timestamp = Date.now();
     const safeName  = file.originalname.replace(/\s+/g, '_');
     const fileName  = `${timestamp}_${safeName}`;
-    const url       = `https://br.storage.bunnycdn.com/${BUNNY_STORAGE_NAME}/${fileName}`;
+    const urlUpload       = `https://br.storage.bunnycdn.com/${BUNNY_STORAGE_NAME}/${fileName}`;
 
-    // Prepara corpo e tamanho
-    const data = file.buffer || fs.createReadStream(file.path);
-    const contentLength = file.buffer
-      ? file.buffer.length
-      : (await fs.promises.stat(file.path)).size;
+    
+    let dataStream;
+    let contentLength;
 
-    await axios.put(url, data, {
+    if (file.path) {
+      // diskStorage: faz leitura em streaming do disco
+      dataStream = fs.createReadStream(file.path);
+      contentLength = (await fs.promises.stat(file.path)).size;
+    } else if (file.buffer) {
+      // memoryStorage: usa o buffer inteiro
+      dataStream = file.buffer;
+      contentLength = file.buffer.length;
+    } else {
+      // Nenhum dos dois existe: lança erro
+      throw new Error('O objeto file não possui file.path nem file.buffer.');
+    }
+
+    await axios.put(urlUpload, dataStream, {
       headers: {
         AccessKey:         BUNNY_STORAGE_KEY,
         'Content-Type':    file.mimetype,
@@ -55,17 +74,15 @@ const uploadFotoBunnyStorage = async (file) => {
   }
 };
 
-/**
- * Deleta um arquivo já enviado no Bunny Storage.
- */
+
 const deleteFotoBunnyStorage = async (fileUrl) => {
   if (!fileUrl) throw new Error('URL inválida para deletar.');
   try {
     const parsed   = new URL(fileUrl);
     const filePath = parsed.pathname.replace('/', ''); // extrai nome do arquivo
-    const url      = `https://br.storage.bunnycdn.com/${BUNNY_STORAGE_NAME}/${filePath}`;
+    const urlDelete      = `https://br.storage.bunnycdn.com/${BUNNY_STORAGE_NAME}/${filePath}`;
 
-    await axios.delete(url, {
+    await axios.delete(urlDelete, {
       headers:    { AccessKey: BUNNY_STORAGE_KEY },
       httpAgent:  keepAliveAgent,
       httpsAgent: keepAliveAgent,

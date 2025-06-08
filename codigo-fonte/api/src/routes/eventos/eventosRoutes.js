@@ -1,3 +1,5 @@
+// src/routes/eventos/eventoRoutes.js
+
 const express = require('express');
 const router = express.Router();
 const eventosController = require('../../controllers/enventos/EventosController');
@@ -5,6 +7,10 @@ const eventosController = require('../../controllers/enventos/EventosController'
 const checkFotografo = require('../../middleware/checkFotografo');
 const verifyToken = require('../../middleware/AuthMiddlewareToken');
 const upload = require('../../middleware/UploadImage');
+
+// Obter um evento específico (com contagem de views e curtidas)
+router.get('/', eventosController.getAll);
+
 /**
  * @swagger
  * components:
@@ -18,7 +24,7 @@ const upload = require('../../middleware/UploadImage');
  *       properties:
  *         id:
  *           type: integer
- *           description: Número de identifação do evento
+ *           description: Número de identificação do evento
  *         nome:
  *           type: string
  *           description: Nome do Evento
@@ -27,7 +33,7 @@ const upload = require('../../middleware/UploadImage');
  *           description: Descrição do Evento
  *         data_evento:
  *           type: string
- *           description: Data Evento
+ *           description: Data do Evento
  *         hora_evento:
  *           type: string
  *           description: Hora do Evento
@@ -35,31 +41,26 @@ const upload = require('../../middleware/UploadImage');
  *           type: string
  *           description: Local do Evento
  *         publico:
- *           type: bolean
- *           description: Campo destinado a marcar se evento é publico
+ *           type: boolean
+ *           description: Marca se o evento é público
  *         exibirtrabalho:
- *           type: bolean
- *           description: Eventos que serão exibidos na area de trabalho
+ *           type: boolean
+ *           description: Evento será exibido na área de trabalhos
  *         idmarcadagua:
  *           type: integer
- *           description: identificação da marca dagua utlizada para fotos do envento
+ *           description: ID da marca d’água utilizada nas fotos do evento
  *         categoria_id:
  *           type: integer
- *           description: identificação da categoria 
+ *           description: ID da categoria
  *         urlevento:
  *           type: string
- *           description: Url para acesso de um album, criado quando o evento é público
+ *           description: "URL gerada para acesso ao álbum (ex.: https://emmylifotografias.com.br/album/abcd1234)"
  *         detalhes:
  *           type: array
  *           description: Lista de fotos (detalhes) do evento
- *           $ref: '#/components/schemas/DetalheEvento'
- */
-
-
-/**
- * @swagger
- * components:
- *   schemas:
+ *           items:
+ *             $ref: '#/components/schemas/DetalheEvento'
+ *
  *     DetalheEvento:
  *       type: object
  *       required:
@@ -69,16 +70,16 @@ const upload = require('../../middleware/UploadImage');
  *       properties:
  *         id:
  *           type: integer
- *           description: Número de identifação da foto do Evento
+ *           description: ID do detalhe (foto) do evento
  *         evento_id:
  *           type: integer
- *           description: Identificação do Evento
+ *           description: ID do evento ao qual a foto pertence
  *         foto:
  *           type: string
- *           description: Url da Foto
+ *           description: URL da foto armazenada no BunnyCDN
  *         ordem:
  *           type: integer
- *           description: ordenação das fotos
+ *           description: Ordenação das fotos no álbum
  */
 
 /**
@@ -90,9 +91,9 @@ const upload = require('../../middleware/UploadImage');
 
 /**
  * @swagger
- * /api/eventos/:
+ * /api/eventos:
  *   get:
- *     summary: Retorna a lista dos Eventos
+ *     summary: Retorna a lista de eventos
  *     tags: [Eventos]
  *     parameters:
  *       - in: query
@@ -123,26 +124,26 @@ const upload = require('../../middleware/UploadImage');
  *         name: group
  *         schema:
  *           type: string
- *         description: GroupBy(separados por vírgula)
- *         example: 
+ *         description: Campos de agrupamento (separados por vírgula)
+ *         example:
  *       - in: query
  *         name: filters
+ *         style: deepObject
+ *         explode: true
  *         schema:
  *           type: object
  *           additionalProperties:
  *             type: string
- *         style: deepObject
- *         explode: true
- *         description: Filtros adicionais para a busca testes abaixo... Exemplo de envio URL `filters[hora_evento]=horaevento&filters[local]=local`
+ *         description: "Filtros adicionais para a busca. Exemplo: filters[hora_evento]=18:00&filters[local]=Igreja"
  *       - in: query
  *         name: include
  *         schema:
  *           type: string
- *           example: DetalheEvento
- *         description: |
- *           Incluir associações relacionadas na consulta. Exemplos de associações possíveis:
- *           - `DetalheEvento`: Inclui o detalhe do evento.
- *           - `MarcaDagua`: Inclui a marca dagua ligada ao evento.
+ *           example: detalhes,marcaDagua
+ *         description: >
+ *           Incluir associações relacionadas na consulta. Exemplos:
+ *           - detalhes: inclui as fotos (detalhe_evento).
+ *           - marcaDagua: inclui os dados da marca d’água relacionada.
  *     responses:
  *       200:
  *         description: Sucesso
@@ -153,13 +154,16 @@ const upload = require('../../middleware/UploadImage');
  *               items:
  *                 $ref: '#/components/schemas/Eventos'
  */
+router.get(
+  '/',
+  eventosController.getAll
+);
 
-router.get('/',eventosController.getAll);
 /**
  * @swagger
  * /api/eventos/{id}:
  *   get:
- *     summary: Obtém informações de um evento específico
+ *     summary: Obtém informações de um evento específico (incluindo detalhes e marca d’água)
  *     tags: [Eventos]
  *     parameters:
  *       - in: path
@@ -167,7 +171,7 @@ router.get('/',eventosController.getAll);
  *         schema:
  *           type: integer
  *         required: true
- *         description: Identificação do Evento
+ *         description: ID do evento
  *     responses:
  *       200:
  *         description: Sucesso
@@ -178,24 +182,74 @@ router.get('/',eventosController.getAll);
  *       404:
  *         description: Evento não encontrado
  */
-router.get('/:id', eventosController.getById);
+router.get(
+  '/:id',
+
+  eventosController.getById
+);
+
 /**
  * @swagger
  * /api/eventos:
  *   post:
- *     summary: Cria um novo usuário
+ *     summary: Cria um novo evento (com campos textuais e possíveis fotos)
  *     tags: [Eventos]
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
- *             $ref: '#/components/schemas/Eventos'
+ *             type: object
+ *             properties:
+ *               nome:
+ *                 type: string
+ *                 description: Nome do evento
+ *               descricao:
+ *                 type: string
+ *                 description: Descrição do evento
+ *               data_evento:
+ *                 type: string
+ *                 description: Data do evento (YYYY-MM-DD)
+ *               hora_evento:
+ *                 type: string
+ *                 description: Hora do evento (HH:MM)
+ *               local:
+ *                 type: string
+ *                 description: Local do evento
+ *               publico:
+ *                 type: boolean
+ *                 description: Marca se o evento é público
+ *               exibirtrabalho:
+ *                 type: boolean
+ *                 description: Evento será exibido na área de trabalhos
+ *               idmarcadagua:
+ *                 type: integer
+ *                 description: ID da marca d’água a ser aplicada
+ *               categoria_id:
+ *                 type: integer
+ *                 description: ID da categoria (opcional)
+ *               urlevento:
+ *                 type: string
+ *                 description: "URL gerada para acesso ao álbum (ex.: https://emmylifotografias.com.br/album/abcd1234)"
+ *               fotos:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *                 description: Arquivos de imagem a serem adicionados ao evento
  *     responses:
  *       201:
  *         description: Evento criado com sucesso
+ *       400:
+ *         description: Dados inválidos ou incompletos
  */
-router.post('/', upload.array('imagens[]'), eventosController.create);
+router.post(
+  '/',
+  verifyToken,
+  checkFotografo,
+  upload.array('fotos'),
+  eventosController.create
+);
 
 /**
  * @swagger
@@ -209,20 +263,55 @@ router.post('/', upload.array('imagens[]'), eventosController.create);
  *         schema:
  *           type: integer
  *         required: true
- *         description: Identificação do evento
+ *         description: ID do evento
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
- *             $ref: '#/components/schemas/Eventos'
+ *             type: object
+ *             properties:
+ *               nome:
+ *                 type: string
+ *               descricao:
+ *                 type: string
+ *               data_evento:
+ *                 type: string
+ *               hora_evento:
+ *                 type: string
+ *               local:
+ *                 type: string
+ *               publico:
+ *                 type: boolean
+ *               exibirtrabalho:
+ *                 type: boolean
+ *               idmarcadagua:
+ *                 type: integer
+ *               categoria_id:
+ *                 type: integer
+ *               urlevento:
+ *                 type: string
+ *               fotos:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *                 description: (Opcional) Novas fotos para adicionar ao evento
  *     responses:
  *       200:
  *         description: Evento atualizado com sucesso
  *       400:
- *         description: Erro ao atualizar evento
+ *         description: Dados inválidos ou incompletos
+ *       404:
+ *         description: Evento não encontrado
  */
-router.put('/:id',upload.array('imagens[]'), eventosController.update);
+router.put(
+  '/:id',
+  verifyToken,
+  checkFotografo,
+  upload.array('fotos'),
+  eventosController.update
+);
 
 /**
  * @swagger
@@ -236,18 +325,54 @@ router.put('/:id',upload.array('imagens[]'), eventosController.update);
  *         schema:
  *           type: integer
  *         required: true
- *         description: Identificação do evento *       
+ *         description: ID do evento
  *     responses:
  *       200:
  *         description: Evento deletado com sucesso
- *       400:
- *         description: Erro ao deletar evento
+ *       404:
+ *         description: Evento não encontrado
  */
-router.delete('/:id', eventosController.delete);
+router.delete(
+  '/:id',
+  verifyToken,
+  checkFotografo,
+  eventosController.delete
+);
 
-router.put('/:id/primeira_imagem', eventosController.updateFirstImage)
-
-// Rota específica para pegar perfil do usuário
-//router.get('/:id/perfil', usuariosController.getProfile);
+/**
+ * @swagger
+ * /api/eventos/{id}/primeira_imagem:
+ *   put:
+ *     summary: Atualiza qual será a primeira imagem (capa) de um evento
+ *     tags: [Eventos]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID do evento
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               detalheId:
+ *                 type: integer
+ *                 description: ID do detalhe_evento (foto) a ser promovida a primeira
+ *     responses:
+ *       204:
+ *         description: Ordem das imagens atualizada com sucesso (sem conteúdo)
+ *       404:
+ *         description: Evento ou detalhe não encontrado
+ */
+router.put(
+  '/:id/primeira_imagem',
+  verifyToken,
+  checkFotografo,
+  eventosController.updateFirstImage
+);
 
 module.exports = router;

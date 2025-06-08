@@ -1,41 +1,39 @@
 'use strict';
 
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  async up (queryInterface, Sequelize) {
     await queryInterface.createTable('curtidas_album', {
       id: {
         type: Sequelize.INTEGER,
-        autoIncrement: true,
         primaryKey: true,
+        autoIncrement: true,
         allowNull: false
       },
-      album_id: {
+      evento_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: {
-          model: 'albuns',
-          key: 'id'
-        },
+        references: { model: 'eventos', key: 'id' },
         onDelete: 'CASCADE'
       },
       ip_usuario: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(100),
         allowNull: false
       },
       dtinclusao: {
         type: Sequelize.DATE,
-        defaultValue: Sequelize.fn('NOW')
+        allowNull: false,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
     });
-
     await queryInterface.addConstraint('curtidas_album', {
-      fields: ['album_id', 'ip_usuario'],
+      fields: ['evento_id', 'ip_usuario'],
       type: 'unique',
-      name: 'curtida_unica_album_por_ip'
+      name: 'unique_curtida_evento_por_ip'
     });
   },
 
-  async down(queryInterface, Sequelize) {
+  async down (queryInterface, Sequelize) {
+    await queryInterface.removeConstraint('curtidas_album', 'unique_curtida_evento_por_ip');
     await queryInterface.dropTable('curtidas_album');
   }
 };

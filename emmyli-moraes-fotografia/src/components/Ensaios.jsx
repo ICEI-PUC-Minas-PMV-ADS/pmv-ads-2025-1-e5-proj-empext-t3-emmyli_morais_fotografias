@@ -1,31 +1,40 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { api } from "../services/api";
+// novo: import do ícone de olho
+import { FaEye } from "react-icons/fa";
 
 const Ensaios = ({ ensaiosFiltrados, abrirGaleria, curtidas, setCurtidas }) => {
-  const [curtidosAlbuns, setCurtidosAlbuns] = useState({});
+  const [curtidosEventos, setCurtidosEventos] = useState({});
 
   useEffect(() => {
-    const carregarCurtidos = async () => {
+    async function carregarCurtidas() {
       try {
-        const res = await api.get("/api/visualizacoesCurtidas/curtidas/album");
-        const marcados = res.data.albuns.reduce((acc, id) => ({ ...acc, [id]: true }), {});
-        setCurtidosAlbuns(marcados);
-      } catch (err) {
-        console.error("Erro ao carregar curtidas de álbuns:", err);
+        const res = await api.get("/api/visualizacoesCurtidas/curtidas/evento");
+        const map = res.data.eventos.reduce(
+          (acc, id) => ({ ...acc, [id]: true }),
+          {}
+        );
+        setCurtidosEventos(map);
+      } catch (error) {
+        console.error("Erro ao carregar curtidas de eventos:", error);
       }
-    };
-    carregarCurtidos();
+    }
+    carregarCurtidas();
   }, []);
 
-  const curtirAlbum = async (albumId) => {
-    if (curtidosAlbuns[albumId]) return;
 
+  const curtirEvento = async (eventoId, e) => {
+    e.stopPropagation();
+    if (curtidosEventos[eventoId]) return;
     try {
-      await api.post(`/api/visualizacoesCurtidas/like/evento/${albumId}`);
-      setCurtidosAlbuns(prev => ({ ...prev, [albumId]: true }));
-      setCurtidas(prev => ({ ...prev, [albumId]: (prev[albumId] || 0) + 1 }));
+      await api.post(`/api/visualizacoesCurtidas/like/evento/${eventoId}`);
+      setCurtidosEventos(prev => ({ ...prev, [eventoId]: true }));
+      setCurtidas(prev => ({
+        ...prev,
+        [eventoId]: (prev[eventoId] || 0) + 1
+      }));
     } catch (err) {
-      console.error("Erro ao curtir álbum:", err.response?.data || err.message);
+      console.error("Erro ao curtir evento:", err);
     }
   };
 
@@ -35,12 +44,14 @@ const Ensaios = ({ ensaiosFiltrados, abrirGaleria, curtidas, setCurtidas }) => {
         <div
           key={ensaio.id}
           className="relative bg-[#E8E6E0] rounded-2xl shadow-xl cursor-pointer hover:scale-105 transform mx-auto w-[90%] max-w-[600px]"
-          onClick={() => abrirGaleria(ensaio)}
+          onClick={() => {
+            abrirGaleria(ensaio);
+          }}
         >
           <img
             src={ensaio.capa}
             alt={ensaio.titulo}
-            onError={(e) => (e.currentTarget.src = "/fallback.jpg")}
+            onError={e => (e.currentTarget.src = "/fallback.jpg")}
             className="w-full h-48 sm:h-56 md:h-64 lg:h-72 object-cover rounded-t-2xl"
           />
 
@@ -50,21 +61,24 @@ const Ensaios = ({ ensaiosFiltrados, abrirGaleria, curtidas, setCurtidas }) => {
           </div>
 
           <div className="absolute top-2 right-2 flex gap-2 items-center">
-            <span className="text-white">👁 {ensaio.visualizacoes}</span>
+            {/* ícone de olho corrigido */}
+            <span className="flex items-center gap-1 text-white text-lg">
+              <FaEye className="w-5 h-5" />
+              {ensaio.visualizacoes}
+            </span>
             <img
               src={
-                curtidosAlbuns[ensaio.id]
+                curtidosEventos[ensaio.id]
                   ? "/icons/coracao-vermelho.svg"
                   : "/icons/coracao-branco.svg"
               }
               alt="Curtir"
               className="w-6 h-6 cursor-pointer hover:scale-110 transition"
-              onClick={(e) => {
-                e.stopPropagation();
-                curtirAlbum(ensaio.id);
-              }}
+              onClick={e => curtirEvento(ensaio.id, e)}
             />
-            <span className="text-white">{curtidas[ensaio.id] || ensaio.curtidas}</span>
+            <span className="text-white text-lg">
+              {curtidas[ensaio.id] || ensaio.curtidas}
+            </span>
           </div>
         </div>
       ))}

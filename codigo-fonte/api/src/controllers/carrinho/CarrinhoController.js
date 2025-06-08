@@ -6,6 +6,24 @@ class CarrinhoController extends Api_Controller {
     super('Carrinho');
   }
 
+  // Sobrescrevemos o getAll para filtrar por usuario_id e/ou evento_id
+  async getAll(req, res) {
+    try {
+      const where = {};
+      if (req.query.usuario_id) where.usuario_id = req.query.usuario_id;
+      if (req.query.evento_id)  where.evento_id  = req.query.evento_id;
+
+      const lista = await Carrinho.findAll({
+        where,
+        order: [["dtinclusao", "DESC"]],
+      });
+      return res.json(lista);
+    } catch (error) {
+      console.error("Erro ao listar carrinhos:", error);
+      return res.status(500).json({ error: "Erro ao listar carrinhos" });
+    }
+  }
+
   async create(req, res) {
     try {
       const { usuario_id, evento_id, descricao, preco_unitario, quantidade, total, fotos } = req.body;

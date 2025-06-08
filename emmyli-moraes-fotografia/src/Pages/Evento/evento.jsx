@@ -46,7 +46,7 @@ const Evento = () => {
       const payload = parseJwt(token);
       setUsuarioInfo(payload);
     } catch {
-      // se token inválido ou expirado, não setamos nada
+      // se token inválido ou expirado.
     }
   }, []);
 
@@ -68,7 +68,7 @@ const Evento = () => {
         const response = await api.get("/api/eventos", {
           params: {
             filters: {
-              urlevento: `https://emmylifotografias.com.br/album/${id}`,
+              urlevento: `http://localhost:5173/album/${id}`,
             },
             include: "detalhes,marcaDagua",
           },
@@ -81,6 +81,8 @@ const Evento = () => {
         }
       } catch (error) {
         console.error("Erro ao buscar evento:", error.message);
+        setMensagem('Erro ao carregar evento.');
+        setTipoMensagem('erro');
       } finally {
         setLoading(false);
       }
@@ -92,6 +94,7 @@ const Evento = () => {
 
   useEffect(() => {
     const fetchProdutos = async () => {
+      if (!evento?.id) return;
       try {
         const response = await api.get(`/api/produtos/evento/${evento.id}`);
         setProdutos(response.data);
@@ -132,7 +135,7 @@ const Evento = () => {
       }
     };
     carregarComentarios();
-  }, [indiceImagemAtual, comentario]);
+  }, [indiceImagemAtual, comentario, fotos]);
 
   //  BLOQUEIO “PrintScreen” e “Ctrl+P / ⌘+P” (bloqueio de impressão)
 
@@ -141,9 +144,7 @@ const Evento = () => {
       // “PrintScreen” ou keyCode 44
       if (e.key === "PrintScreen" || e.keyCode === 44) {
         e.preventDefault?.();
-        try {
-          navigator.clipboard.writeText("");
-        } catch {}
+
         setIsSnipping(true);
       }
       // Bloquear Ctrl+P / ⌘+P (impressão de página)
@@ -151,23 +152,18 @@ const Evento = () => {
         e.preventDefault?.();
       }
       // Apertou Shift → embaçar todas as imagens
-      if (e.key === "Shift") {
+      if (e.key === "Shift"|| e.key === 'Meta') {
         setIsSnipping(true);
       }
-      // Apertou Windows/Meta → embaçar todas as imagens
-      if (e.key === "Meta") {
-        setIsSnipping(true);
-      }
+
     };
 
     // 2) Ao soltar Shift ou Meta, removemos o blur (se não houver outro motivo ativo)
     const handleKeyUp = (e) => {
-      if (e.key === "Shift") {
+      if (e.key === 'Shift' || e.key === 'Meta') {
         setIsSnipping(false);
       }
-      if (e.key === "Meta") {
-        setIsSnipping(false);
-      }
+
     };
 
     // 3) Quando a aba fica oculta (“hidden”), embaçamos
@@ -187,6 +183,7 @@ const Evento = () => {
     const onFocus = () => {
       setIsSnipping(false);
     };
+    
 
     document.addEventListener("keydown", handleKeyDown);
     document.addEventListener("keyup", handleKeyUp);
@@ -206,7 +203,7 @@ const Evento = () => {
   //  Bloquear clique-direito em todo o container principal
   const handleContextMenu = (e) => {
     e.preventDefault();
-    setIsSnipping(true);
+    
   };
 
   //  Funções para navegar entre as imagens no modo “zoom”

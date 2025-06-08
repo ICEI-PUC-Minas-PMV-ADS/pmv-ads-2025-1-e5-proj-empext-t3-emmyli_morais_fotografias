@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const FotoController = require('../../controllers/foto/FotoController');
+const verifyToken = require('../../middleware/AuthMiddlewareToken');
 const UploadImagem = require('../../middleware/UploadImage');
 
 
@@ -50,7 +51,7 @@ const UploadImagem = require('../../middleware/UploadImage');
  *       400:
  *         description: Erro ao criar Foto
  */
-router.post('/adicionar', UploadImagem.array('fotos'), FotoController.adicionar);
+router.post('/adicionar', verifyToken, UploadImagem.array('fotos'), FotoController.adicionar);
 
 /**
  * @swagger
@@ -73,6 +74,6 @@ router.post('/adicionar', UploadImagem.array('fotos'), FotoController.adicionar)
  *       500:
  *         description: Erro interno
  */
-router.delete('/:id', FotoController.delete);
+router.delete('/:id', verifyToken, FotoController.delete);
 
 module.exports = router;

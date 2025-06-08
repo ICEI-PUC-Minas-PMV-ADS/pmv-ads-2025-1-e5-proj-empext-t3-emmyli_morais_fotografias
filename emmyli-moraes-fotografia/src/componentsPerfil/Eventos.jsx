@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import FormAdicionarEnsaio from "./FormAdicionarEnsaio";
 import { api } from "../services/api";
+import ShareUrlModal from "./ShareUrlModal";
 
 const Eventos = ({ albumId }) => {
   // --- Estados principais ---
@@ -35,6 +36,8 @@ const Eventos = ({ albumId }) => {
 
   // Estado para alternar entre as abas “privado” e “publico”
   const [abaEventos, setAbaEventos] = useState("privado");
+
+  const [shareModal, setShareModal] = useState({ open: false, url: "" });
 
   const handleAbrirConfiguracoes = (evento) => {
     setEventoSelecionado(evento);
@@ -138,7 +141,7 @@ const Eventos = ({ albumId }) => {
 
     const formData = new FormData();
     arquivos.forEach((file) => formData.append("fotos", file));
-    formData.append("album_id", eventoAberto.id);
+    formData.append("evento_id", eventoAberto.id);
 
     try {
       setLoadingUpload(true);
@@ -435,10 +438,23 @@ const Eventos = ({ albumId }) => {
                             setMostrarConfirmacaoAlbum(true);
                             setMenuAberto(null);
                           }}
-                          className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-100"
+                          className="flex items-center  text-sm gap-2 px-2 py-2 font-semibold text-red-600 hover:text-red-800 whitespace-nowrap"
                         >
                           <Trash size={14} />
                           Excluir
+                        </button>
+
+                        {/* Botão Compartilhar URL */}
+
+                        <button
+                        onClick={(e) => {
+                        e.stopPropagation();
+                        setMenuAberto(null);
+                        setShareModal({ open: true, url: item.urlevento });
+                        }}
+                        className="flex items-center text-sm gap-2 px-2 py-2 font-semibold text-blue-600 hover:text-blue-800 whitespace-nowrap"
+                        >
+                          🔗 Compartilhar URL
                         </button>
                       </div>
                     )}
@@ -606,6 +622,12 @@ const Eventos = ({ albumId }) => {
           </div>
         </div>
       )}
+
+      <ShareUrlModal
+        isOpen={shareModal.open}
+        url={shareModal.url}
+        onClose={() => setShareModal({ open: false, url: "" })}
+      />
     </div>
   );
 };

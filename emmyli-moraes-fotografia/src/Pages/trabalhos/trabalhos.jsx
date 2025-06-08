@@ -76,7 +76,7 @@ const Trabalhos = () => {
    */
   const abrirGaleria = async (ensaio) => {
     try {
-      await api.post(`/api/eventos/view/evento/${ensaio.id}`);
+      await api.post(`/api/visualizacoesCurtidas/view/evento/${ensaio.id}`);
     } catch (err) {
       console.error("Falha ao registrar view:", err);
     }

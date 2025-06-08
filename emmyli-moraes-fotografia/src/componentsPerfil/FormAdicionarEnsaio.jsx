@@ -46,7 +46,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
     }
     if (origem === "cliente" || origem === "publico") {
       const chaveUnica = crypto.randomUUID().slice(0, 8);
-      setUrlAlbum(`https://emmylifotografias.com.br/album/${chaveUnica}`);
+      setUrlAlbum(`http://localhost:5173/album/${chaveUnica}`);
     } else {
       setUrlAlbum("");
     }
@@ -108,7 +108,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
     const nome = novaCategoria.trim();
     if (!nome) return;
     try {
-      const res = await api.post("/categorias", { nome });
+      const res = await api.post("/api/categorias", { nome });
       // adiciona ao estado e seleciona automaticamente
       setCategoriasPersonalizadas((prev) => [...prev, res.data]);
       setCategoria(res.data.nome);
@@ -121,7 +121,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
 
   const handleDeleteCategoria = async (id) => {
     try {
-      await api.delete(`/categorias/${id}`);
+      await api.delete(`/api/categorias/${id}`);
       setCategoriasPersonalizadas((prev) =>
         prev.filter((c) => c.id !== id)
       );
@@ -153,7 +153,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
 
       const formData = new FormData();
       imagens.forEach((img) => {
-        formData.append("imagens[]", img);
+        formData.append("fotos", img);
       });
 
       formData.append("nome", titulo);

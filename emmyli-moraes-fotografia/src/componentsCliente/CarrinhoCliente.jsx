@@ -179,9 +179,11 @@ const CarrinhoCliente = () => {
                 </tr>
               </thead>
               <tbody>
-                {carrinhoInfo.map((carrinho, idx) => (
+                {carrinhoInfo.map((carrinho) => (
                   <>
-                    <tr className="border-b bg-gray-50 hover:bg-gray-200 transition-all">
+                    <tr 
+                    key={carrinho.id}
+                    className="border-b bg-gray-50 hover:bg-gray-200 transition-all">
                       <td className="py-4 px-6 text-center">
                         <input
                           type="checkbox"
