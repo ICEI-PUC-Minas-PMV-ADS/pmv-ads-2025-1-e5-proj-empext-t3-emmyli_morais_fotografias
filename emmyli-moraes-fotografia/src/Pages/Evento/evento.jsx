@@ -5,6 +5,7 @@ import { FaCommentDots, FaTrash } from "react-icons/fa";
 import Modal from "../../components/Modal";
 import { parseJwt } from "../../utils/jwtUtils";
 import { useAuth } from "../../context/authContext";
+import Cookies from 'js-cookie';
 
 const Evento = () => {
   const { id } = useParams();
@@ -224,6 +225,7 @@ const Evento = () => {
 
   const handleComprar = async () => {
     if (!user?.token?.informacao) {
+      Cookies.set('eventURL', window.location.pathname, { expires: 1 }); // expira em 1 dia
       navigate("/cadastro");
       return;
     }

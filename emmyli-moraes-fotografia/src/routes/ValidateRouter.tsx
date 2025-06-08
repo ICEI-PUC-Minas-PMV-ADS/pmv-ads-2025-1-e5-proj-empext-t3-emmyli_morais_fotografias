@@ -1,6 +1,7 @@
 import { useAuth } from "../context/authContext";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import React from "react";
+import Cookies from 'js-cookie';
 
 interface IsValidRouteProps {
     isFotografo?: boolean,
@@ -10,12 +11,18 @@ interface IsValidRouteProps {
 
 export const IsValidRouter = ({ isAnon, isCliente, isFotografo }: IsValidRouteProps) => {
     const { user } = useAuth();
+    const eventURL = Cookies.get('eventURL');
+    const navigate = useNavigate();
 
     if (isAnon) {
         if (user.token) {
-            if (user.perfil?.toLowerCase() === 'cliente')
+            if (user.perfil?.toLowerCase() === 'cliente') {
+                if (eventURL && eventURL.startsWith('/')) {
+                    navigate(eventURL);
+                    return null;
+                }
                 return <Navigate to={'/PerfilCliente'} />;
-
+            }
             if (user.perfil?.toLowerCase() === 'fotografo')
                 return <Navigate to={'/Perfil'} />
         }
