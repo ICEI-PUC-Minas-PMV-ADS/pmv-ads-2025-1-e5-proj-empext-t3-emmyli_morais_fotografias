@@ -11,6 +11,8 @@ import {
 import FormAdicionarEnsaio from "./FormAdicionarEnsaio";
 import { api } from "../services/api";
 import ShareUrlModal from "./ShareUrlModal";
+import ImageFocusSelector from "../components/ImageFocusSelector";
+import MenuFlutuante from "../components/MenuFlutuante"
 
 const Eventos = ({ albumId }) => {
   // --- Estados principais ---
@@ -21,6 +23,7 @@ const Eventos = ({ albumId }) => {
   const [imagemSelecionada, setImagemSelecionada] = useState(null);
   const [indiceSelecionado, setIndiceSelecionado] = useState(null);
   const [menuAberto, setMenuAberto] = useState(null);
+  const [menuPosicao, setMenuPosicao] = useState({ top: 0, left: 0 });
   const inputRef = useRef();
   const [mensagem, setMensagem] = useState("");
   const [tipoMensagem, setTipoMensagem] = useState("");
@@ -49,8 +52,6 @@ const Eventos = ({ albumId }) => {
     setEventoSelecionado(null);
   };
 
-  
-  
   useEffect(() => {
     buscarEventos();
   }, [albumId]);
@@ -80,28 +81,34 @@ const Eventos = ({ albumId }) => {
       // Inclui "detalhes" para pegar as fotos em evento.detalhes
       const response = await api.get("/api/eventos?include=detalhes");
 
-      
       const eventosFormatados = response.data
         .filter((ev) => ev.exibirtrabalho !== true)
-        .map((evento) => ({
-          id: evento.id,
-          nome: evento.nome,
-          descricao: evento.descricao || "",
-          data_evento: evento.data_evento || "",
-          hora_evento: evento.hora_evento || "",
-          local: evento.local || "",
-          publico: evento.publico === true, 
-          exibirtrabalho: evento.exibirtrabalho === true,
-          idmarcadagua: evento.idmarcadagua || "",
-          urlevento: evento.urlevento || "",
-          fotos:
-            evento.detalhes?.map((f) => ({
+        .map((evento) => {
+          const primeiraFoto = evento.detalhes?.[0];
+          return {
+            id: evento.id,
+            nome: evento.nome,
+            descricao: evento.descricao || "",
+            data_evento: evento.data_evento || "",
+            hora_evento: evento.hora_evento || "",
+            local: evento.local || "",
+            publico: evento.publico === true,
+            exibirtrabalho: evento.exibirtrabalho === true,
+            idmarcadagua: evento.idmarcadagua || "",
+            urlevento: evento.urlevento || "",
+            fotos: evento.detalhes?.map((f) => ({
               id_foto: f.id,
               url: f.foto,
+              focoX: f.focoX ?? 50,
+              focoY: f.focoY ?? 50,
             })) || [],
-          imagem: evento.detalhes?.[0]?.foto || "",
-          data: new Date(evento.dtinclusao).toLocaleDateString("pt-BR") || "",
-        }));
+            imagem: primeiraFoto?.foto || "",
+            focusX: primeiraFoto?.focoX ?? 50,
+            focusY: primeiraFoto?.focoY ?? 50,
+            data: new Date(evento.dtinclusao).toLocaleDateString("pt-BR") || "",
+          };
+        });
+
 
       setGalerias(eventosFormatados);
 
@@ -202,6 +209,20 @@ const Eventos = ({ albumId }) => {
     }
   };
 
+  // Editor de Foco da Imagem
+  const [mostrarEditorFoco, setMostrarEditorFoco] = useState(false);
+  const [fotoParaEditarFoco, setFotoParaEditarFoco] = useState(null);
+
+  const abrirEditorFoco = (foto) => {
+    setFotoParaEditarFoco(foto);
+    setMostrarEditorFoco(true);
+  };
+
+  const fecharEditorFoco = () => {
+    setFotoParaEditarFoco(null);
+    setMostrarEditorFoco(false);
+  };
+
   return (
     <div className="relative p-4 sm:p-6 font-serif bg-[#F9F9F9] min-h-screen">
       {loadingUpload && (
@@ -236,7 +257,10 @@ const Eventos = ({ albumId }) => {
                   <img
                     src={eventoAberto.imagem}
                     alt="Capa"
-                    className="w-full h-full object-cover object-top rounded-xl"
+                    className="w-full h-full object-cover rounded-xl"
+                    style={{
+                      objectPosition: `${eventoAberto.focusX ?? 50}% ${eventoAberto.focusY ?? 50}%`
+                    }}
                   />
                 ) : (
                   <div className="text-center text-gray-400 p-8">Sem capa</div>
@@ -248,7 +272,20 @@ const Eventos = ({ albumId }) => {
                   className="cursor-pointer hover:text-[#a76a2b]"
                   onClick={() => handleAbrirConfiguracoes(eventoAberto)}
                 />
-                <Edit2 className="cursor-pointer hover:text-[#a76a2b]" />
+                <Edit2
+                  className="cursor-pointer hover:text-[#a76a2b]"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const fotoCapa = eventoAberto.fotos?.find(
+                      (foto) => foto.url === eventoAberto.imagem
+                    );
+                    if (fotoCapa) {
+                      abrirEditorFoco(fotoCapa);
+                    } else {
+                      handleErro("Imagem de capa não encontrada na lista de fotos.");
+                    }
+                  }}
+                />
               </div>
             </div>
 
@@ -291,8 +328,9 @@ const Eventos = ({ albumId }) => {
                 {fotosVisuais.map((foto, idx) => (
                   <div
                     key={idx}
-                    className="relative break-inside-avoid overflow-hidden rounded-xl shadow transform transition-transform duration-200 hover:scale-105 group"
+                    className="relative break-inside-avoid overflow-visible rounded-xl shadow transform transition-transform duration-200 hover:scale-105 group"
                   >
+                    {/* IMAGEM */}
                     <img
                       src={foto.url}
                       alt={`Foto ${idx + 1}`}
@@ -302,27 +340,36 @@ const Eventos = ({ albumId }) => {
                         setIndiceSelecionado(idx);
                       }}
                     />
-                    <div className="absolute top-2 right-2 z-10">
+
+                    {/* BOTÃO DE MENU */}
+                    <div className="absolute top-2 right-2 z-20">
                       <button
                         className="text-white bg-black bg-opacity-50 p-1 rounded-full hover:bg-opacity-70"
                         onClick={(e) => {
                           e.stopPropagation();
+                          const rect = e.currentTarget.getBoundingClientRect();
+                          setMenuPosicao({
+                            top: rect.bottom + window.scrollY, // ou top: rect.top + window.scrollY + alturaBotao
+                            left: rect.left + window.scrollX - 160 + 18, // ajuste a posição horizontal (largura do menu)
+                          });
                           toggleMenu(`foto-${idx}`);
                         }}
                       >
                         <MoreVertical size={18} />
                       </button>
+
+                      {/* MENU FLUTUANTE */}
                       {menuAberto === `foto-${idx}` && (
-                        <div className="absolute right-0 mt-2 bg-white border border-gray-300 rounded shadow-md animate-fade-in">
+                        <MenuFlutuante position={menuPosicao}>
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              api.put(
-                                `/api/eventos/${eventoAberto.id}/primeira_imagem`,
-                                { detalheId: foto.id_foto }
-                              );
+                              api.put(`/api/eventos/${eventoAberto.id}/primeira_imagem`, {
+                                detalheId: foto.id_foto,
+                              });
                               eventoAberto.imagem = foto.url;
                               setEventoAberto({ ...eventoAberto });
+                              setMenuAberto(null);
                             }}
                             className="flex w-full items-center gap-2 px-4 py-2 text-green-600 hover:bg-green-100 whitespace-nowrap"
                           >
@@ -334,13 +381,14 @@ const Eventos = ({ albumId }) => {
                               e.stopPropagation();
                               setFotoParaExcluir({ id_foto: foto.id_foto, idx });
                               setMostrarConfirmacao(true);
+                              setMenuAberto(null);
                             }}
                             className="flex w-full items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-100 whitespace-nowrap"
                           >
                             <Trash size={16} />
                             Excluir
                           </button>
-                        </div>
+                        </MenuFlutuante>
                       )}
                     </div>
                   </div>
@@ -386,21 +434,19 @@ const Eventos = ({ albumId }) => {
           <div className="flex border-b mb-6">
             <button
               onClick={() => setAbaEventos("privado")}
-              className={`px-4 py-2 font-semibold transition ${
-                abaEventos === "privado"
-                  ? "border-b-4 border-[#c09b2d] text-[#c09b2d]"
-                  : "text-gray-500 hover:text-[#c09b2d]"
-              }`}
+              className={`px-4 py-2 font-semibold transition ${abaEventos === "privado"
+                ? "border-b-4 border-[#c09b2d] text-[#c09b2d]"
+                : "text-gray-500 hover:text-[#c09b2d]"
+                }`}
             >
               Privados
             </button>
             <button
               onClick={() => setAbaEventos("publico")}
-              className={`ml-4 px-4 py-2 font-semibold transition ${
-                abaEventos === "publico"
-                  ? "border-b-4 border-[#c09b2d] text-[#c09b2d]"
-                  : "text-gray-500 hover:text-[#c09b2d]"
-              }`}
+              className={`ml-4 px-4 py-2 font-semibold transition ${abaEventos === "publico"
+                ? "border-b-4 border-[#c09b2d] text-[#c09b2d]"
+                : "text-gray-500 hover:text-[#c09b2d]"
+                }`}
             >
               Públicos
             </button>
@@ -447,12 +493,12 @@ const Eventos = ({ albumId }) => {
                         {/* Botão Compartilhar URL */}
 
                         <button
-                        onClick={(e) => {
-                        e.stopPropagation();
-                        setMenuAberto(null);
-                        setShareModal({ open: true, url: item.urlevento });
-                        }}
-                        className="flex items-center text-sm gap-2 px-2 py-2 font-semibold text-blue-600 hover:text-blue-800 whitespace-nowrap"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setMenuAberto(null);
+                            setShareModal({ open: true, url: item.urlevento });
+                          }}
+                          className="flex items-center text-sm gap-2 px-2 py-2 font-semibold text-blue-600 hover:text-blue-800 whitespace-nowrap"
                         >
                           🔗 Compartilhar URL
                         </button>
@@ -619,6 +665,42 @@ const Eventos = ({ albumId }) => {
                 Excluir
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/*  Modal de Ediição de Foco  */}
+      {mostrarEditorFoco && fotoParaEditarFoco && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-xl p-6 w-auto max-w-full relative shadow-xl">
+            <button
+              onClick={fecharEditorFoco}
+              className="absolute top-2 right-2 text-gray-500 hover:text-black"
+            >
+              ✕
+            </button>
+            <ImageFocusSelector
+              imageUrl={fotoParaEditarFoco.url}
+              onSave={(foco) => {
+                api.put(`/api/eventos/foco/${fotoParaEditarFoco.id_foto}`, {
+                  focoX: foco.x,
+                  focoY: foco.y,
+                })
+                  .then(() => {
+                    setEventoAberto((prev) => ({
+                      ...prev,
+                      focusX: foco.x,
+                      focusY: foco.y,
+                    }));
+                    handleSucesso("Foco atualizado com sucesso!");
+                    fecharEditorFoco();
+                  })
+                  .catch(() => {
+                    handleErro("Erro ao salvar foco.");
+                  });
+                fecharEditorFoco();
+              }}
+            />
           </div>
         </div>
       )}
