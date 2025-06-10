@@ -6,12 +6,15 @@ import {
   ArrowLeft,
   Trash,
   MoreVertical,
+  Star,
 } from "lucide-react";
 import ImageUploader from "../components/ImageUploader";
 import { api } from "../services/api";
 import { FaStar } from "react-icons/fa";
 import Modal from "../components/Modal";
 import FormAdicionarEnsaio from "../componentsPerfil/FormAdicionarEnsaio";
+import ImageFocusSelector from "../components/ImageFocusSelector";
+import MenuFlutuante from "../components/MenuFlutuante"
 
 const Configuracoes = ({ albumId }) => {
 
@@ -25,6 +28,7 @@ const Configuracoes = ({ albumId }) => {
   const [fotosVisuais, setFotosVisuais] = useState([]);
   const [loadingUpload, setLoadingUpload] = useState(false);
   const [menuAberto, setMenuAberto] = useState(null);
+  const [menuPosicao, setMenuPosicao] = useState({ top: 0, left: 0 });
 
 
   const [feedbacks, setFeedbacks] = useState([]);
@@ -66,25 +70,34 @@ const Configuracoes = ({ albumId }) => {
     try {
       const { data } = await api.get("/api/eventos?include=detalhes");
 
-      
+
       const trabalhos = data
         .filter((evento) => evento.exibirtrabalho === true)
-        .map((evento) => ({
-          id: evento.id,
-          nome: evento.nome,
-          
-          descricao: evento.descricao || "",
-          exibirtrabalho: evento.exibirtrabalho || false,
-          fotos:
-            evento.detalhes?.map((f) => ({
-              url: f.foto,
+        .map((evento) => {
+          const primeiraFoto = evento.detalhes?.[0];
+          return {
+            id: evento.id,
+            nome: evento.nome,
+            descricao: evento.descricao || "",
+            data_evento: evento.data_evento || "",
+            hora_evento: evento.hora_evento || "",
+            local: evento.local || "",
+            publico: evento.publico === true,
+            exibirtrabalho: evento.exibirtrabalho === true,
+            idmarcadagua: evento.idmarcadagua || "",
+            urlevento: evento.urlevento || "",
+            fotos: evento.detalhes?.map((f) => ({
               id_foto: f.id,
+              url: f.foto,
+              focoX: f.focoX ?? 50,
+              focoY: f.focoY ?? 50,
             })) || [],
-          imagem: evento.detalhes?.[0]?.foto || "",
-          data: evento.dtinclusao
-            ? new Date(evento.dtinclusao).toLocaleDateString("pt-BR")
-            : "",
-        }));
+            imagem: primeiraFoto?.foto || "",
+            focusX: primeiraFoto?.focoX ?? 50,
+            focusY: primeiraFoto?.focoY ?? 50,
+            data: new Date(evento.dtinclusao).toLocaleDateString("pt-BR") || "",
+          };
+        });
 
       setGalerias(trabalhos);
     } catch (error) {
@@ -164,7 +177,7 @@ const Configuracoes = ({ albumId }) => {
       const fotosAtualizadas = [...fotosVisuais, ...novasFotos];
       setFotosVisuais(fotosAtualizadas);
 
-  
+
       setAlbumAberto((prev) => ({
         ...prev,
         fotos: fotosAtualizadas,
@@ -213,7 +226,7 @@ const Configuracoes = ({ albumId }) => {
     setMenuAberto(null);
   };
 
-  
+
   const confirmarExcluirAlbum = async () => {
     setMostrarConfirmacaoAlbum(false);
     try {
@@ -271,6 +284,20 @@ const Configuracoes = ({ albumId }) => {
       });
   };
 
+  // Editor de Foco da Imagem
+  const [mostrarEditorFoco, setMostrarEditorFoco] = useState(false);
+  const [fotoParaEditarFoco, setFotoParaEditarFoco] = useState(null);
+
+  const abrirEditorFoco = (foto) => {
+    setFotoParaEditarFoco(foto);
+    setMostrarEditorFoco(true);
+  };
+
+  const fecharEditorFoco = () => {
+    setFotoParaEditarFoco(null);
+    setMostrarEditorFoco(false);
+  };
+
   return (
     <div className="p-6 font-serif min-h-screen bg-gray-100">
       <h1 className="text-2xl font-bold text-[#c09b2d] border-b-2 border-[#c09b2d] pb-4 mb-12">
@@ -281,29 +308,27 @@ const Configuracoes = ({ albumId }) => {
         {["marca_dagua", "trabalhos", "feedbacks"].map((aba) => (
           <button
             key={aba}
-            className={`ml-4 px-4 py-2 font-semibold transition ${
-              abaAtiva === aba
-                ? "border-b-4 border-[#c09b2d] text-[#c09b2d]"
-                : "text-gray-500 hover:text-[#c09b2d]"
-            }`}
+            className={`ml-4 px-4 py-2 font-semibold transition ${abaAtiva === aba
+              ? "border-b-4 border-[#c09b2d] text-[#c09b2d]"
+              : "text-gray-500 hover:text-[#c09b2d]"
+              }`}
             onClick={() => setAbaAtiva(aba)}
           >
             {aba === "marca_dagua"
               ? "Marca d'água"
               : aba === "trabalhos"
-              ? "Trabalhos"
-              : "Feedbacks"}
+                ? "Trabalhos"
+                : "Feedbacks"}
           </button>
         ))}
       </div>
 
       {mensagem && (
         <div
-          className={`border px-4 py-3 rounded-md mb-6 ${
-            tipoMensagem === "sucesso"
-              ? "bg-green-100 border-green-400 text-green-700"
-              : "bg-red-100 border-red-400 text-red-700"
-          }`}
+          className={`border px-4 py-3 rounded-md mb-6 ${tipoMensagem === "sucesso"
+            ? "bg-green-100 border-green-400 text-green-700"
+            : "bg-red-100 border-red-400 text-red-700"
+            }`}
         >
           {mensagem}
         </div>
@@ -363,7 +388,7 @@ const Configuracoes = ({ albumId }) => {
                 <div className="p-4 text-center">
                   <h3 className="text-xl font-semibold text-[#252525]">{g.nome}</h3>
 
-                 
+
                   <p className="text-sm text-gray-500 italic mt-1">{g.descricao}</p>
 
                   <p className="text-sm text-[#c09b2d] mt-2">
@@ -400,6 +425,9 @@ const Configuracoes = ({ albumId }) => {
                     src={albumAberto.imagem}
                     alt="Capa"
                     className="w-full h-full object-cover rounded-2xl"
+                    style={{
+                      objectPosition: `${albumAberto.focusX ?? 50}% ${albumAberto.focusY ?? 50}%`
+                    }}
                   />
                 ) : (
                   <div className="text-center text-gray-400 p-8">Sem capa</div>
@@ -410,7 +438,20 @@ const Configuracoes = ({ albumId }) => {
                   className="cursor-pointer hover:text-[#a76a2b]"
                   onClick={() => handleAbrirEdicao(albumAberto)}
                 />
-                <Edit2 className="cursor-pointer hover:text-[#a76a2b]" />
+                <Edit2
+                  className="cursor-pointer hover:text-[#a76a2b]"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const fotoCapa = albumAberto.fotos?.find(
+                      (foto) => foto.url === albumAberto.imagem
+                    );
+                    if (fotoCapa) {
+                      abrirEditorFoco(fotoCapa);
+                    } else {
+                      handleErro("Imagem de capa não encontrada na lista de fotos.");
+                    }
+                  }}
+                />
               </div>
             </div>
 
@@ -437,8 +478,9 @@ const Configuracoes = ({ albumId }) => {
                 {fotosVisuais.map((foto, idx) => (
                   <div
                     key={idx}
-                    className="relative break-inside-avoid overflow-hidden rounded-2xl shadow transform hover:scale-105 transition group"
+                    className="relative break-inside-avoid overflow-visible rounded-xl shadow transform transition-transform duration-200 hover:scale-105 group"
                   >
+                    {/* IMAGEM */}
                     <img
                       src={foto.url}
                       alt={`Foto ${idx + 1}`}
@@ -448,28 +490,54 @@ const Configuracoes = ({ albumId }) => {
                         setImagemSelecionada(foto.url);
                       }}
                     />
-                    <div className="absolute top-2 right-2 z-10">
+
+                    {/* BOTÃO DE MENU */}
+                    <div className="absolute top-2 right-2 z-20">
                       <button
                         className="text-white bg-black bg-opacity-50 p-1 rounded-full hover:bg-opacity-70"
                         onClick={(e) => {
                           e.stopPropagation();
+                          const rect = e.currentTarget.getBoundingClientRect();
+                          setMenuPosicao({
+                            top: rect.bottom + window.scrollY, // ou top: rect.top + window.scrollY + alturaBotao
+                            left: rect.left + window.scrollX - 160 + 18, // ajuste a posição horizontal (largura do menu)
+                          });
                           toggleMenu(`foto-${idx}`);
                         }}
                       >
                         <MoreVertical size={18} />
+
+                        {/* MENU FLUTUANTE */}
                       </button>
                       {menuAberto === `foto-${idx}` && (
-                        <div className="absolute right-0 mt-2 bg-white border rounded shadow-md z-20">
+                        <MenuFlutuante position={menuPosicao}>
                           <button
-                            className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-100"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              api.put(`/api/eventos/${albumAberto.id}/primeira_imagem`, {
+                                detalheId: foto.id_foto
+                              });
+                              albumAberto.imagem = foto.url;
+                              setAlbumAberto({ ...albumAberto });
+                              setMenuAberto(null);
+                            }}
+                            className="flex w-full items-center gap-2 px-4 py-2 text-green-600 hover:bg-green-100 whitespace-nowrap"
+                          >
+                            <Star size={16} />
+                            Definir Capa
+                          </button>
+                          <button
+                            className="flex w-full items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-100 whitespace-nowrap"
                             onClick={(e) => {
                               e.stopPropagation();
                               solicitarExcluirFoto(foto.id_foto, idx);
+                              setMenuAberto(null);
                             }}
                           >
-                            <Trash size={16} /> Excluir
+                            <Trash size={16} />
+                            Excluir
                           </button>
-                        </div>
+                        </MenuFlutuante>
                       )}
                     </div>
                   </div>
@@ -725,6 +793,43 @@ const Configuracoes = ({ albumId }) => {
           }}
         />
       )}
+
+      {/*  Modal de Ediição de Foco  */}
+      {mostrarEditorFoco && fotoParaEditarFoco && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-xl p-6 w-auto max-w-full relative shadow-xl">
+            <button
+              onClick={fecharEditorFoco}
+              className="absolute top-2 right-2 text-gray-500 hover:text-black"
+            >
+              ✕
+            </button>
+            <ImageFocusSelector
+              imageUrl={fotoParaEditarFoco.url}
+              onSave={(foco) => {
+                api.put(`/api/eventos/foco/${fotoParaEditarFoco.id_foto}`, {
+                  focoX: foco.x,
+                  focoY: foco.y,
+                })
+                  .then(() => {
+                    setAlbumAberto((prev) => ({
+                      ...prev,
+                      focusX: foco.x,
+                      focusY: foco.y,
+                    }));
+                    handleSucesso("Foco atualizado com sucesso!");
+                    fecharEditorFoco();
+                  })
+                  .catch(() => {
+                    handleErro("Erro ao salvar foco.");
+                  });
+                fecharEditorFoco();
+              }}
+            />
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
