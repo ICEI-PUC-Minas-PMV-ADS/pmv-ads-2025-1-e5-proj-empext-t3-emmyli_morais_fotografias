@@ -11,6 +11,8 @@ import { AuthClientRoutes } from "./routes/auth.cliente.routes";
 import { AnonRoutes } from "./routes/anon.routes";
 import Evento from "./Pages/Evento/evento";
 
+import NotFound from "./Pages/NotFound";
+
 const App = () => {
 
 
@@ -37,6 +39,8 @@ const App = () => {
           </ Route>
 
           <Route path="/album/:id" element={<Evento />} />
+
+          <Route path="*" element={<NotFound />} />
 
         </Routes>
       </AuthProvider>
