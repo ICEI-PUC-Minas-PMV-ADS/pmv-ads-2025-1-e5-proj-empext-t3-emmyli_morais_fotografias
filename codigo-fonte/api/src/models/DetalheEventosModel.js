@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
         as: 'evento'
       });
 
-       // ← curtidas de foto
+      // ← curtidas de foto
       DetalheEvento.hasMany(models.CurtidaFoto, {
         foreignKey: 'id_foto',
         as: 'curtidasFotos',
@@ -36,9 +36,17 @@ module.exports = (sequelize, DataTypes) => {
     foto: {
       type: DataTypes.TEXT,
       allowNull: false
-    },    
+    },
     ordem: {
       type: DataTypes.INTEGER
+    },
+    focoX: {
+      type: DataTypes.DECIMAL(5, 2),
+      defaultValue: 50.00
+    },
+    focoY: {
+      type: DataTypes.DECIMAL(5, 2),
+      defaultValue: 50.00
     },
     dtinclusao: {
       type: DataTypes.DATE,
