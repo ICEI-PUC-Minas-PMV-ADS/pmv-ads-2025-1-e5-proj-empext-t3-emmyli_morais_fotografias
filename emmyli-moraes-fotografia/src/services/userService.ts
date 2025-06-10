@@ -23,6 +23,11 @@ export const cadastrarUsuario = async (dados: Usuario) => {
   }
 };
 
+export const getMinhaConta = async () => {
+  const { data } = await api.get("/api/myAccount");
+  return data;
+};
+
 export const buscaTodosUsuarios = async () => {
   try {
     const response = await api.get("/api/usuarios");

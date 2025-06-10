@@ -1,85 +1,126 @@
 import React, { ChangeEvent, MouseEvent, useEffect, useState } from "react";
-import { editarMinhaConta } from "../../services/userService";
+import { editarMinhaConta, getMinhaConta } from "../../services/userService";
+import { useAuth } from "../../context/authContext";
 import InputPassword from "../../components/InputPassword";
 import UserAvatar from "../../components/UserAvatar";
 
 const PerfilCliente = () => {
   const [formData, setFormData] = useState({
-    nome: localStorage.getItem("nome")!,
-    email: localStorage.getItem("email")!,
-    login: localStorage.getItem("login")!,
+    nome: "",
+    email: "",
+    login: "",
     senha: "",
     confirmarSenha: "",
+    telefone: "",
   });
 
-
-  const [nome, setNome] = useState(localStorage.getItem("nome")!)
-  const [email, setEmail] = useState(localStorage.getItem("email")!)
+  const { update } = useAuth();
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
   useEffect(() => {
-    if (error) {
-      const timer = setTimeout(() => {
-        setError(null);
-      }, 10000);
+    const fetchDados = async () => {
+      try {
+        const usuario = await getMinhaConta();
+        setFormData({
+          nome: usuario.nome,
+          email: usuario.email,
+          login: usuario.login,
+          telefone: usuario.telefone || "",
+          senha: "",
+          confirmarSenha: "",
+        });
+        setNome(usuario.nome);
+        setEmail(usuario.email);
+      } catch (err) {
+        setError("Erro ao carregar dados do usuário.");
+        console.error(err);
+      }
+    };
 
+    fetchDados();
+  }, []);
+
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => setError(null), 10000);
       return () => clearTimeout(timer);
     }
   }, [error]);
 
   useEffect(() => {
     if (success) {
-      const timer = setTimeout(() => {
-        setSuccess(null);
-      }, 5000);
-
+      const timer = setTimeout(() => setSuccess(null), 5000);
       return () => clearTimeout(timer);
     }
   }, [success]);
 
-
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e!.target!.name]: e!.target.value });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleClick = async (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!formData.nome.trim() || !formData.email.trim() || !formData.login.trim()) {
-      setError("Por favor, preencha todos os campos obrigatórios.");
-      return;
-    }
+  if (!formData.nome.trim() || !formData.email.trim() || !formData.login.trim()) {
+    setError("Por favor, preencha todos os campos obrigatórios.");
+    return;
+  }
 
-    if (formData.senha !== formData.confirmarSenha) {
-      setError("As senhas não coincidem.");
-      return;
-    }
+  if (formData.senha !== formData.confirmarSenha) {
+    setError("As senhas não coincidem.");
+    return;
+  }
 
-    try {
-      const payload = {
-        nome: formData.nome,
-        email: formData.email,
-        login: formData.login,
-        senha: formData.senha,
-      };
+  try {
+    const payload = {
+      nome: formData.nome,
+      email: formData.email,
+      login: formData.login,
+      senha: formData.senha,
+      telefone: formData.telefone,
+    };
 
-      await editarMinhaConta(payload);
-      setError(null);
-      setSuccess("Usuário alterado com sucesso!");
+    await editarMinhaConta(payload);
+    setError(null);
+    setSuccess("Usuário alterado com sucesso!");
 
-      localStorage.setItem('nome', formData.nome);
-      localStorage.setItem('login', formData.login);
-      localStorage.setItem('email', formData.email);
+    setNome(formData.nome);
+    setEmail(formData.email);
 
-      setNome(formData.nome)
-      setEmail(formData.email)
+    // Pega o usuário atualizado com ID incluso
+    const usuarioAtualizado = await getMinhaConta();
 
-    } catch (error) {
-      const msg = error.response?.data?.error || "Erro ao editar usuário.";
-      setError(msg);
-    }
-  };
+    // Atualiza contexto com todos os dados necessários
+    update({
+      usuario: {
+        id: usuarioAtualizado.id,
+        nome: usuarioAtualizado.nome,
+        email: usuarioAtualizado.email,
+        login: usuarioAtualizado.login,
+        perfil: usuarioAtualizado.perfil,
+      },
+      token: {
+        informacao: localStorage.getItem("informacaoToken")!,
+        expiresIn: Math.floor(
+          (new Date(localStorage.getItem("dataExpiracaoToken")!).getTime() - Date.now()) / 1000
+        ),
+      },
+      refreshToken: {
+        informacao: localStorage.getItem("informacaoRefreshToken")!,
+        expiresIn: Math.floor(
+          (new Date(localStorage.getItem("dataExpiracaoRefreshToken")!).getTime() - Date.now()) / 1000
+        ),
+      },
+    });
+
+  } catch (error) {
+    const msg = error.response?.data?.error || "Erro ao editar usuário.";
+    setError(msg);
+  }
+};
 
   return (
     <div className="font-serif bg-[#F9F9F9] mt-[20px] mb-[20px] min-h-screen py-10 px-4">
@@ -148,6 +189,19 @@ const PerfilCliente = () => {
             className="w-full p-2.5 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-yellow-500 transition placeholder-red-300"
           />
         </div>
+
+        <div>
+          <label className="block mb-1 font-medium text-gray-700">Telefone:</label>
+          <input
+            type="text"
+            name="telefone"
+            placeholder="(xx) xxxxx-xxxx"
+            value={formData.telefone}
+            onChange={handleChange}
+            className="w-full p-2.5 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"
+          />
+        </div>
+
         <div className="w-full md:w-1/3">
           <label className="block mb-1 font-medium text-gray-700">Senha:</label>
           {/* Campo de Senha */}
@@ -162,7 +216,7 @@ const PerfilCliente = () => {
       </div>
 
       <button onClick={handleClick} className="mt-6 bg-green-800 hover:bg-green-700 transition text-white px-6 py-2 rounded-xl">
-        Salvar
+        Salvar Alterações
       </button>
     </div>
   );

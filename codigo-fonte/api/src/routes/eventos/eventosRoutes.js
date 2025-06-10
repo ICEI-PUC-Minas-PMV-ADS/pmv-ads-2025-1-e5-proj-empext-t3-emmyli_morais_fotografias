@@ -375,4 +375,11 @@ router.put(
   eventosController.updateFirstImage
 );
 
+router.put(
+  '/foco/:detalheId',
+  verifyToken,
+  checkFotografo,
+  eventosController.definirFoco
+);
+
 module.exports = router;

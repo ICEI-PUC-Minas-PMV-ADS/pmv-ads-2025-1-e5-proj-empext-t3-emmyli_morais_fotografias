@@ -31,7 +31,7 @@ class EventosController extends Api_Controller {
           {
             model: DetalheEvento,
             as: 'detalhes',
-            attributes: ['id','foto','ordem','dtinclusao','dtalteracao'],
+            attributes: ['id', 'foto', 'ordem', 'focoX', 'focoY', 'dtinclusao', 'dtalteracao'],
             include: [
               {
                 model: CurtidaFoto,
@@ -53,11 +53,14 @@ class EventosController extends Api_Controller {
           {
             model: MarcaDagua,
             as: 'marcaDagua',
-            attributes: ['id','imagem']
+            attributes: ['id', 'imagem']
           }
         ],
-        order: [['dtinclusao','DESC']],
-        logging: false  // suprime log pesado de COUNT
+        order: [
+          ['dtinclusao', 'DESC'],
+          [{ model: DetalheEvento, as: 'detalhes' }, 'ordem', 'ASC']
+        ],
+        logging: false
       });
 
       // transforma cada instância em objeto plain e injeta os contadores
@@ -66,12 +69,12 @@ class EventosController extends Api_Controller {
 
         // contagens
         const visualizacoes = e.visualizacoesAlbuns.length;
-        const curtidasAlbum  = e.curtidasAlbuns.length;
-        const curtidasFotos  = e.detalhes.reduce(
+        const curtidasAlbum = e.curtidasAlbuns.length;
+        const curtidasFotos = e.detalhes.reduce(
           (sum, det) => sum + (det.curtidasFotos?.length || 0),
           0
         );
-        const totalCurtidas  = curtidasAlbum + curtidasFotos;
+        const totalCurtidas = curtidasAlbum + curtidasFotos;
 
         // não expomos os arrays crus
         delete e.visualizacoesAlbuns;
@@ -104,13 +107,17 @@ class EventosController extends Api_Controller {
           {
             model: DetalheEvento,
             as: 'detalhes',
+            attributes: ['id', 'foto', 'ordem', 'dtinclusao', 'focoX', 'focoY', 'dtalteracao'],
             include: [
-              { model: CurtidaFoto,   as: 'curtidasFotos',    attributes: ['id'] }
+              { model: CurtidaFoto, as: 'curtidasFotos', attributes: ['id'] }
             ]
           },
           { model: VisualizacaoAlbum, as: 'visualizacoesAlbuns', attributes: ['id'] },
-          { model: CurtidaAlbum,      as: 'curtidasAlbuns',      attributes: ['id'] },
-          { model: MarcaDagua,        as: 'marcaDagua',          attributes: ['id','imagem'] }
+          { model: CurtidaAlbum, as: 'curtidasAlbuns', attributes: ['id'] },
+          { model: MarcaDagua, as: 'marcaDagua', attributes: ['id', 'imagem'] }
+        ],
+        order: [
+          [{ model: DetalheEvento, as: 'detalhes' }, 'ordem', 'ASC']
         ]
       });
       if (!evento) {
@@ -118,29 +125,29 @@ class EventosController extends Api_Controller {
       }
 
       // contagens
-      const qtdVis   = evento.visualizacoesAlbuns.length;
-      const qtdAlb   = evento.curtidasAlbuns.length;
+      const qtdVis = evento.visualizacoesAlbuns.length;
+      const qtdAlb = evento.curtidasAlbuns.length;
       const qtdFotos = evento.detalhes.reduce(
         (sum, det) => sum + (det.curtidasFotos?.length || 0),
         0
       );
 
       return res.status(200).json({
-        id:             evento.id,
-        nome:           evento.nome,
-        descricao:      evento.descricao,
-        data_evento:    evento.data_evento,
-        hora_evento:    evento.hora_evento,
-        local:          evento.local,
-        publico:        evento.publico,
+        id: evento.id,
+        nome: evento.nome,
+        descricao: evento.descricao,
+        data_evento: evento.data_evento,
+        hora_evento: evento.hora_evento,
+        local: evento.local,
+        publico: evento.publico,
         exibirtrabalho: evento.exibirtrabalho,
-        urlevento:      evento.urlevento,
-        marcaDagua:     evento.marcaDagua,   // { id, imagem }
-        detalhes:       evento.detalhes,     // cada detalhe já traz suas curtidasFotos
-        visualizacoes:  qtdVis,
-        curtidasAlbum:  qtdAlb,
-        curtidasFotos:  qtdFotos,
-        totalCurtidas:  qtdAlb + qtdFotos
+        urlevento: evento.urlevento,
+        marcaDagua: evento.marcaDagua,   // { id, imagem }
+        detalhes: evento.detalhes,     // cada detalhe já traz suas curtidasFotos
+        visualizacoes: qtdVis,
+        curtidasAlbum: qtdAlb,
+        curtidasFotos: qtdFotos,
+        totalCurtidas: qtdAlb + qtdFotos
       });
     } catch (erro) {
       console.error('Erro ao buscar evento:', erro);
@@ -150,22 +157,22 @@ class EventosController extends Api_Controller {
 
   // === POST /api/eventos ===
   async create(req, res) {
-    const data  = req.body;
+    const data = req.body;
     const files = req.files;
     const transaction = await sequelize.transaction();
 
     try {
       const novoEvento = await Eventos.create({
-        nome:           data.nome,
-        descricao:      data.descricao,
-        data_evento:    data.data_evento,
-        hora_evento:    data.hora_evento,
-        local:          data.local,
-        publico:        data.publico,
+        nome: data.nome,
+        descricao: data.descricao,
+        data_evento: data.data_evento,
+        hora_evento: data.hora_evento,
+        local: data.local,
+        publico: data.publico,
         exibirtrabalho: data.exibirtrabalho,
-        idmarcadagua:   data.idmarcadagua,
-        categoria_id:   data.categoria_id ? Number(data.categoria_id) : null,
-        urlevento:      data.urlevento
+        idmarcadagua: data.idmarcadagua,
+        categoria_id: data.categoria_id ? Number(data.categoria_id) : null,
+        urlevento: data.urlevento
       }, { transaction });
 
       if (files && files.length > 0) {
@@ -173,12 +180,12 @@ class EventosController extends Api_Controller {
           files.map(async (file, index) => {
             const url = await uploadFotoBunnyStorage(file);
             return {
-              evento_id:     novoEvento.id,
-              foto:          url,
-              tem_marca_agua:true,
-              ordem:         index,
-              dtinclusao:    new Date(),
-              dtalteracao:   new Date()
+              evento_id: novoEvento.id,
+              foto: url,
+              tem_marca_agua: true,
+              ordem: index,
+              dtinclusao: new Date(),
+              dtalteracao: new Date()
             };
           })
         );
@@ -190,7 +197,7 @@ class EventosController extends Api_Controller {
       const eventoComDetalhes = await Eventos.findByPk(novoEvento.id, {
         include: [
           { model: DetalheEvento, as: 'detalhes' },
-          { model: MarcaDagua,    as: 'marcaDagua', attributes: ['id','imagem'] }
+          { model: MarcaDagua, as: 'marcaDagua', attributes: ['id', 'imagem'] }
         ]
       });
       return res.status(201).json(eventoComDetalhes);
@@ -204,8 +211,8 @@ class EventosController extends Api_Controller {
   // === PUT /api/eventos/:id ===
   async update(req, res) {
     const eventoId = req.params.id;
-    const data      = req.body;
-    const files     = req.files;
+    const data = req.body;
+    const files = req.files;
     const transaction = await sequelize.transaction();
 
     try {
@@ -215,16 +222,16 @@ class EventosController extends Api_Controller {
       }
 
       await evento.update({
-        nome:           data.nome,
-        descricao:      data.descricao,
-        data_evento:    data.data_evento,
-        hora_evento:    data.hora_evento,
-        local:          data.local,
-        publico:        data.publico,
+        nome: data.nome,
+        descricao: data.descricao,
+        data_evento: data.data_evento,
+        hora_evento: data.hora_evento,
+        local: data.local,
+        publico: data.publico,
         exibirtrabalho: data.exibirtrabalho,
-        idmarcadagua:   data.idmarcadagua,
-        categoria_id:   data.categoria_id ? Number(data.categoria_id) : null,
-        urlevento:      data.urlevento
+        idmarcadagua: data.idmarcadagua,
+        categoria_id: data.categoria_id ? Number(data.categoria_id) : null,
+        urlevento: data.urlevento
       }, { transaction });
 
       if (files && files.length > 0) {
@@ -235,12 +242,12 @@ class EventosController extends Api_Controller {
           files.map(async (file, idx) => {
             const url = await uploadFotoBunnyStorage(file);
             return {
-              evento_id:    eventoId,
-              foto:         url,
-              tem_marca_agua:true,
-              ordem:        idx,
-              dtinclusao:   new Date(),
-              dtalteracao:  new Date()
+              evento_id: eventoId,
+              foto: url,
+              tem_marca_agua: true,
+              ordem: idx,
+              dtinclusao: new Date(),
+              dtalteracao: new Date()
             };
           })
         );
@@ -254,7 +261,7 @@ class EventosController extends Api_Controller {
       const atualizado = await Eventos.findByPk(eventoId, {
         include: [
           { model: DetalheEvento, as: 'detalhes' },
-          { model: MarcaDagua,    as: 'marcaDagua', attributes: ['id','imagem'] }
+          { model: MarcaDagua, as: 'marcaDagua', attributes: ['id', 'imagem'] }
         ]
       });
       return res.status(200).json(atualizado);
@@ -268,9 +275,9 @@ class EventosController extends Api_Controller {
   // === PUT /api/eventos/:id/primeira_imagem ===
   async updateFirstImage(req, res) {
     try {
-      const eventoId  = req.params.id;
+      const eventoId = req.params.id;
       const { detalheId } = req.body;
-      const evento    = await Eventos.findByPk(eventoId, {
+      const evento = await Eventos.findByPk(eventoId, {
         include: [{ model: DetalheEvento, as: 'detalhes' }]
       });
       if (!evento) {
@@ -296,6 +303,27 @@ class EventosController extends Api_Controller {
       console.error('Erro ao atualizar ordem dos detalhes:', error);
       return res.status(500).json({ error: 'Erro interno no servidor' });
     }
+  }
+
+  async definirFoco(req, res) {
+    const { detalheId } = req.params;
+    const { focoX, focoY } = req.body;
+
+    if (
+      isNaN(focoX) || focoX < 0 || focoX > 100 ||
+      isNaN(focoY) || focoY < 0 || focoY > 100
+    ) {
+      return res.status(400).json({ error: 'focoX e focoY devem estar entre 0 e 100' });
+    }
+
+    const detalhe = await DetalheEvento.findByPk(detalheId);
+    if (!detalhe) return res.status(404).json({ error: 'Detalhe não encontrado' });
+
+    detalhe.focoX = focoX;
+    detalhe.focoY = focoY;
+    await detalhe.save();
+
+    return res.json({ sucesso: true });
   }
 }
 

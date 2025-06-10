@@ -142,7 +142,7 @@ const notificarNovoAlbum = factoryMiddlewareNotification(
     (req) => {
         return {
             topico: "Album",
-            acao: `Novo album criado para ${req.nome}`, // TODO: trocar idusuario por nome que vem do token
+            acao: `Novo album criado para ${req.nome}`,
             local_acao: "Albuns"
         }
     }
