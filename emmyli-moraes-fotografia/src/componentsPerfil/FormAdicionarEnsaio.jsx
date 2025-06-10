@@ -46,7 +46,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
     }
     if (origem === "cliente" || origem === "publico") {
       const chaveUnica = crypto.randomUUID().slice(0, 8);
-      setUrlAlbum(`http://localhost:5173/album/${chaveUnica}`);
+      setUrlAlbum(`https://emmylifotografias.com.br/api/api/album/${chaveUnica}`);
     } else {
       setUrlAlbum("");
     }

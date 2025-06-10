@@ -69,7 +69,7 @@ const Evento = () => {
         const response = await api.get("/api/eventos", {
           params: {
             filters: {
-              urlevento: `http://localhost:5173/album/${id}`,
+              urlevento: `https://emmylifotografias.com.br/api/api/album/${id}`,
             },
             include: "detalhes,marcaDagua",
           },
