@@ -1,29 +1,23 @@
 message: Please cite this software using these metadata.
-title:
+title: Emmyli Moraes Fotografia
 authors:
-  - family-names: 
-    given-names: 
-  - family-names: 
-    given-names: 
-  - family-names: 
-    given-names: 
-  - family-names: 
-    given-names: 
-  - family-names: 
-    given-names: 
-  - family-names: 
-    given-names: 
+  - family-names: Sena
+    given-names: Bárbara Fernandes
+  - family-names: Silva
+    given-names: Gleyston Guimaraes
+  - family-names: Agnes Costa Bosco
+    given-names: Adriel 
+  - family-names: De souza
+    given-names: Rafael Cassiano Januário
   - name-suffix: Professor
     affiliation: PUC Minas
-    family-names: 
-    given-names: 
-  - name-suffix: Professor
-    affiliation: PUC Minas
-    family-names: 
-    given-names: 
+    family-names: da Costa
+    given-names: José Wilson
 keywords:
-  - 
-  - 
-repository-code: 
+  - Fotografia
+  - Fotos
+  - Plataforma
+  - Vendas
+repository-code: https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2025-1-e5-proj-empext-t3-emmyli_morais_fotografias
 version: 1.0.0
-date-released: 2023-10-31
+date-released: 2025-06-22
