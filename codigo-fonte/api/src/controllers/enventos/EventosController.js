@@ -157,9 +157,9 @@ class EventosController extends Api_Controller {
 
   // === POST /api/eventos ===
   async create(req, res) {
-    const data = req.body;
-    const files = req.files;
-    const transaction = await sequelize.transaction();
+  const data = req.body;
+  const fotos = data.fotos; // agora é um array de URLs
+  const transaction = await sequelize.transaction();
 
     try {
       const novoEvento = await Eventos.create({
@@ -175,22 +175,17 @@ class EventosController extends Api_Controller {
         urlevento: data.urlevento
       }, { transaction });
 
-      if (files && files.length > 0) {
-        const detalhes = await Promise.all(
-          files.map(async (file, index) => {
-            const url = await uploadFotoBunnyStorage(file);
-            return {
-              evento_id: novoEvento.id,
-              foto: url,
-              tem_marca_agua: true,
-              ordem: index,
-              dtinclusao: new Date(),
-              dtalteracao: new Date()
-            };
-          })
-        );
-        await DetalheEvento.bulkCreate(detalhes, { transaction });
-      }
+      if (fotos && fotos.length > 0) {
+      const detalhes = fotos.map((url, index) => ({
+        evento_id: novoEvento.id,
+        foto: url,
+        tem_marca_agua: true,
+        ordem: index,
+        dtinclusao: new Date(),
+        dtalteracao: new Date()
+      }));
+      await DetalheEvento.bulkCreate(detalhes, { transaction });
+    }
 
       await transaction.commit();
 
@@ -200,9 +195,11 @@ class EventosController extends Api_Controller {
           { model: MarcaDagua, as: 'marcaDagua', attributes: ['id', 'imagem'] }
         ]
       });
+
       return res.status(201).json(eventoComDetalhes);
     } catch (error) {
       await transaction.rollback();
+
       console.error('Erro ao criar evento:', error);
       return res.status(500).json({ error: 'Erro ao criar evento' });
     }
@@ -212,7 +209,7 @@ class EventosController extends Api_Controller {
   async update(req, res) {
     const eventoId = req.params.id;
     const data = req.body;
-    const files = req.files;
+    const novasFotos = data.fotos; // Array de URLs das fotos já no BunnyCDN
     const transaction = await sequelize.transaction();
 
     try {
@@ -234,43 +231,49 @@ class EventosController extends Api_Controller {
         urlevento: data.urlevento
       }, { transaction });
 
-      if (files && files.length > 0) {
+      if (Array.isArray(novasFotos) && novasFotos.length > 0) {
         const antigos = await DetalheEvento.findAll({ where: { evento_id: eventoId } });
         for (let d of antigos) await d.destroy({ transaction });
 
-        const novos = await Promise.all(
-          files.map(async (file, idx) => {
-            const url = await uploadFotoBunnyStorage(file);
-            return {
-              evento_id: eventoId,
-              foto: url,
-              tem_marca_agua: true,
-              ordem: idx,
-              dtinclusao: new Date(),
-              dtalteracao: new Date()
-            };
-          })
-        );
-        await DetalheEvento.bulkCreate(novos, { transaction });
-        await transaction.commit();
-        await Promise.all(antigos.map(d => deleteFotoBunnyStorage(d.foto)));
-      } else {
-        await transaction.commit();
+        // (Opcional) Remove do BunnyCDN – cuidado, só apague se cada foto for única!
+      for (let d of antigos) {
+        try {
+          // deleteFotoBunnyStorage deve estar implementado para funcionar só se não houver outras referências a mesma foto
+          await deleteFotoBunnyStorage(d.foto);
+        } catch (err) {
+          console.error('Erro ao deletar foto antiga do BunnyCDN:', err);
+        }
       }
 
-      const atualizado = await Eventos.findByPk(eventoId, {
-        include: [
-          { model: DetalheEvento, as: 'detalhes' },
-          { model: MarcaDagua, as: 'marcaDagua', attributes: ['id', 'imagem'] }
-        ]
-      });
-      return res.status(200).json(atualizado);
-    } catch (error) {
-      await transaction.rollback();
-      console.error('Erro ao atualizar evento:', error);
-      return res.status(500).json({ error: 'Erro ao atualizar evento' });
+      // Cadastra novas fotos no banco
+      const detalhesNovos = novasFotos.map((url, idx) => ({
+        evento_id: eventoId,
+        foto: url,
+        tem_marca_agua: true,
+        ordem: idx,
+        dtinclusao: new Date(),
+        dtalteracao: new Date()
+      }));
+      await DetalheEvento.bulkCreate(detalhesNovos, { transaction });
     }
+
+    await transaction.commit();
+
+    // Busca o evento já atualizado para retornar ao frontend
+    const atualizado = await Eventos.findByPk(eventoId, {
+      include: [
+        { model: DetalheEvento, as: 'detalhes' },
+        { model: MarcaDagua, as: 'marcaDagua', attributes: ['id', 'imagem'] }
+      ]
+    });
+    return res.status(200).json(atualizado);
+
+  } catch (error) {
+    await transaction.rollback();
+    console.error('Erro ao atualizar evento:', error);
+    return res.status(500).json({ error: 'Erro ao atualizar evento' });
   }
+}
 
   // === PUT /api/eventos/:id/primeira_imagem ===
   async updateFirstImage(req, res) {

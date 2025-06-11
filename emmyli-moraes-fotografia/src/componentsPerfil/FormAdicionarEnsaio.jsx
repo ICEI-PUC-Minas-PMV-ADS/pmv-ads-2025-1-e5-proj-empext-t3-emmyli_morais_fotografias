@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { api } from "../services/api";
 import ModalPacote from "../componentsPerfil/ModalPacote";
+import { uploadDiretoBunny } from '../utils/uploadBunny';
 
 const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
   const [abaAtiva, setAbaAtiva] = useState("informacoes");
@@ -148,50 +149,42 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
   const handleSubmit = (e) => e.preventDefault();
 
   const handleAvancar = async () => {
-    try {
-      setLoading(true);
+  try {
+    setLoading(true);
 
-      const formData = new FormData();
-      imagens.forEach((img) => {
-        formData.append("fotos", img);
-      });
+    // 1. Upload das imagens direto para BunnyCDN
+    const urls = [];
+    for (let img of imagens) {
+      const url = await uploadDiretoBunny(img);
+      urls.push(url);
+    }
 
-      formData.append("nome", titulo);
-      // Aqui enviamos “descricao” como o nome da categoria
-      formData.append("descricao", categoria);
-      formData.append("data_evento", dataEvento);
-      formData.append("hora_evento", horaEvento);
-      formData.append("local", localEvento);
-      formData.append("publico", origem === "publico");
-      formData.append("exibirtrabalho", origem === "exibirtrabalho");
+    // 2. Monta o objeto para enviar ao backend
+    const payload = {
+      nome: titulo,
+      descricao: categoria,
+      data_evento: dataEvento,
+      hora_evento: horaEvento,
+      local: localEvento,
+      publico: origem === "publico",
+      exibirtrabalho: origem === "exibirtrabalho",
+      idmarcadagua: marcaSelecionada,
+      urlevento: urlAlbum,
+      fotos: urls, // URLs das imagens já no BunnyCDN
+    };
 
-      if (origem !== "exibirtrabalho" && marcaSelecionada) {
-        formData.append("idmarcadagua", marcaSelecionada);
-      }
+    // 3. Cria ou atualiza evento e captura o ID retornado
+    let eventoId = null;
+    if (dadosIniciais?.id) {
+      const response = await api.put(`/api/eventos/${dadosIniciais.id}`, payload);
+      eventoId = response.data.id;
+    } else {
+      const response = await api.post("/api/eventos", payload);
+      eventoId = response.data.id;
+    }
 
-      if (origem !== "exibirtrabalho") {
-        formData.append("urlevento", urlAlbum);
-      } 
-
-      let data = null;
-      if (dadosIniciais?.id) {
-        const response = await api.put(
-          `/api/eventos/${dadosIniciais.id}`,
-          formData,
-          {
-            headers: { "Content-Type": "multipart/form-data" },
-          }
-        );       
-        data = response.data;
-      } else {
-        const response = await api.post("/api/eventos", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-        data = response.data;
-      }
-
-      // Vincular produtos selecionados (se houver)
-      const eventoId = data.id;
+    // 4. Vincula produtos selecionados, se houver
+    if (produtosSelecionados.length > 0) {
       const vincularProdutos = produtosSelecionados.map((produtoId) =>
         api.post("/api/EventoProduto", {
           eventoId,
@@ -199,15 +192,17 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
         })
       );
       await Promise.all(vincularProdutos);
-
-      onSave?.("Álbum criado com sucesso!");
-      onClose();
-    } catch (err) {
-      handleErro("Erro ao criar ensaio! " + err);
-    } finally {
-      setLoading(false);
     }
-  };
+
+    // 5. Sucesso!
+    onSave?.("Álbum criado com sucesso!");
+    onClose();
+  } catch (err) {
+    handleErro("Erro ao criar ensaio! " + err);
+  } finally {
+    setLoading(false);
+  }
+};
 
   // Buscar lista de produtos quando abrir o modal de pacote
   useEffect(() => {
