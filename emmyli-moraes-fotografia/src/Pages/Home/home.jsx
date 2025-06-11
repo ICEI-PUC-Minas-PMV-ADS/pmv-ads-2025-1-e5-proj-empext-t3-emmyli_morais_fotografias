@@ -183,7 +183,7 @@ const Home = () => {
                     src={album.imagem}
                     alt={album.nome}
                     onError={(e) => (e.currentTarget.src = fotografaa)}
-                    className="inline-block hover:scale-105 ease-in-out rounded-full"
+                    className="inline-block hover:scale-105 ease-in-out rounded-full min-h-[400px] object-cover"
                   />
                 </div>
                 <div className="bg-[#E8E6E0] p-4 font-semibold">
