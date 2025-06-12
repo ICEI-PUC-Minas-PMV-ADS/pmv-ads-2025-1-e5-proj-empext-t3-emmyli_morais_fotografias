@@ -168,10 +168,22 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
       local: localEvento,
       publico: origem === "publico",
       exibirtrabalho: origem === "exibirtrabalho",
-      idmarcadagua: marcaSelecionada,
-      urlevento: urlAlbum,
+
       fotos: urls, // URLs das imagens já no BunnyCDN
     };
+
+    if (origem !== "exibirtrabalho") {
+      payload.urlevento = urlAlbum;
+
+      if (marcaSelecionada && marcaSelecionada !== "") {
+        payload.idmarcadagua = parseInt(marcaSelecionada, 10);
+      } else {
+        payload.idmarcadagua = null;
+      }
+    } else {
+      payload.idmarcadagua = null; // Força null quando exibirtrabalho
+      payload.urlevento = null;    // também força null
+    }
 
     // 3. Cria ou atualiza evento e captura o ID retornado
     let eventoId = null;

@@ -26,8 +26,7 @@ const Trabalhos = () => {
   useEffect(() => {
     const buscarAlbunsPublicos = async () => {
       try {
-        // GET em /api/eventos?include=detalhes retorna todos os eventos,
-        // incluindo a lista de “detalhes” (cada detalhe contém: id, foto, curtidasFotos etc.)
+
         const { data } = await api.get("/api/eventos/?include=detalhes");
 
         // Filtra apenas aqueles marcados como “exibirtrabalho” = true e que têm pelo menos 1 foto
@@ -69,11 +68,7 @@ const Trabalhos = () => {
     buscarAlbunsPublicos();
   }, [albumIdDaHome]);
 
-  /**
-   * Quando abre a galeria de um ensaio clicado,
-   * registramos uma visualização usando o endpoint:
-   *   POST /api/eventos/view/evento/:evento_id
-   */
+
   const abrirGaleria = async (ensaio) => {
     try {
       await api.post(`/api/visualizacoesCurtidas/view/evento/${ensaio.id}`);

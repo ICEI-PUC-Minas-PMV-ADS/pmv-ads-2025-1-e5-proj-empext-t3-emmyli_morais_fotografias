@@ -328,6 +328,7 @@ class EventosController extends Api_Controller {
 
     return res.json({ sucesso: true });
   }
+
 }
 
 module.exports = new EventosController();
