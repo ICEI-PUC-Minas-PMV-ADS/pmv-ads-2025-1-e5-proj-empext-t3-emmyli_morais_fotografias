@@ -153,7 +153,7 @@ const Evento = () => {
         e.preventDefault?.();
       }
       // Apertou Shift → embaçar todas as imagens
-      if (e.key === "Shift"|| e.key === 'Meta') {
+      if (e.key === "Shift" || e.key === 'Meta') {
         setIsSnipping(true);
       }
 
@@ -184,7 +184,7 @@ const Evento = () => {
     const onFocus = () => {
       setIsSnipping(false);
     };
-    
+
 
     document.addEventListener("keydown", handleKeyDown);
     document.addEventListener("keyup", handleKeyUp);
@@ -204,7 +204,7 @@ const Evento = () => {
   //  Bloquear clique-direito em todo o container principal
   const handleContextMenu = (e) => {
     e.preventDefault();
-    
+
   };
 
   //  Funções para navegar entre as imagens no modo “zoom”
@@ -341,13 +341,19 @@ const Evento = () => {
         {/* BANNER E BOTÃO “VER GALERIA” */}
 
         <div className="relative mb-8 border-b-2 border-[#c09b2d]">
-          {fotos && fotos[0] && (
-            <img
-              className="w-full h-screen object-cover opacity-40"
-              alt="Capa do evento"
-              src={fotos[0].foto}
-            />
-          )}
+          {fotos.length > 0 && (() => {
+            const capa = fotos.find((f) => f.ordem === 0) || fotos[0];
+            return (
+              <img
+                className="w-full h-screen object-cover opacity-40"
+                alt="Capa do evento"
+                src={capa.foto}
+                style={{
+                  objectPosition: `${capa.focoX ?? 50}% ${capa.focoY ?? 50}%`,
+                }}
+              />
+            );
+          })()}
           <div className="absolute inset-0 flex items-center justify-center">
             {evento?.nome && (
               <h1 className="text-white text-3xl font-bold text-center px-4">

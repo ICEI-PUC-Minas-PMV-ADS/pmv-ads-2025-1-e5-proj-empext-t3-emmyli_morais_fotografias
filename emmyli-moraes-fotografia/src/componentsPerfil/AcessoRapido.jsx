@@ -35,17 +35,19 @@ const AcessoRapido = ({ setPage }) => {
         const status = a.exibirtrabalho
           ? "Exibição"
           : a.publico
-          ? "Público"
-          : "Privado";
+            ? "Público"
+            : "Privado";
 
         return {
-          id:        a.id,
-          nome:      a.nome,
-          data:      new Date(a.dtinclusao).toLocaleDateString("pt-BR"),
+          id: a.id,
+          nome: a.nome,
+          data: new Date(a.dtinclusao).toLocaleDateString("pt-BR"),
           status,
-          imagens:   a.detalhes.length,
+          imagens: a.detalhes.length,
           favoritos: a.curtidasAlbum ?? 0,
-          imagem:    a.detalhes[0]?.foto || "",
+          imagem: a.detalhes[0]?.foto || "",
+          focusX: a.detalhes[0]?.focoX ?? 50,
+          focusY: a.detalhes[0]?.focoY ?? 50,
         };
       });
 
@@ -86,18 +88,20 @@ const AcessoRapido = ({ setPage }) => {
                     src={colecao.imagem}
                     alt={colecao.nome}
                     className="w-20 h-20 min-w-[5rem] object-cover rounded-md mr-4 flex-shrink-0"
+                    style={{
+                      objectPosition: `${colecao.focusX ?? 50}% ${colecao.focusY ?? 50}%`,
+                    }}
                   />
                   <div className="flex-1">
                     <div className="flex justify-between items-center">
                       <h3 className="font-semibold text-sm">{colecao.nome}</h3>
                       <span
-                        className={`text-xs font-bold px-2 py-1 rounded ${
-                          colecao.status === "Público"
-                            ? "bg-green-500 text-white"
-                            : colecao.status === "Exibição"
+                        className={`text-xs font-bold px-2 py-1 rounded ${colecao.status === "Público"
+                          ? "bg-green-500 text-white"
+                          : colecao.status === "Exibição"
                             ? "bg-blue-500 text-white"
                             : "bg-red-500 text-white"
-                        }`}
+                          }`}
                       >
                         {colecao.status}
                       </span>

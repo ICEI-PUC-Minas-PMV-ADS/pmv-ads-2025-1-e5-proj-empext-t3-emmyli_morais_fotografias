@@ -84,7 +84,7 @@ export default function ImageFocusSelector({
         <img
           src={imageUrl}
           alt="Imagem de capa"
-          className="w-full h-auto object-cover"
+          className="w-full h-auto object-cover max-w-[800px] max-h-[500px] mx-auto"
           style={{ objectPosition: `${focus.x}% ${focus.y}%` }}
         />
         <div

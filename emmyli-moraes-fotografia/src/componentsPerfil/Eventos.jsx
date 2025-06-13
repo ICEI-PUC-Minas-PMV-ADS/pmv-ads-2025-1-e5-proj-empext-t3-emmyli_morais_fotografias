@@ -512,6 +512,9 @@ const Eventos = ({ albumId }) => {
                         src={item.imagem}
                         alt={item.nome}
                         className="w-full h-full object-cover"
+                        style={{
+                          objectPosition: `${item.focusX ?? 50}% ${item.focusY ?? 50}%`,
+                        }}
                       />
                     ) : (
                       <span className="text-gray-400">Sem imagem</span>
@@ -669,10 +672,10 @@ const Eventos = ({ albumId }) => {
         </div>
       )}
 
-      {/*  Modal de Ediição de Foco  */}
+      {/*  Modal de Edição de Foco  */}
       {mostrarEditorFoco && fotoParaEditarFoco && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-xl p-6 w-auto max-w-full relative shadow-xl">
+          <div className="bg-white rounded-xl p-6 w-auto max-w-full max-h-[90vh] overflow-y-auto relative shadow-xl">
             <button
               onClick={fecharEditorFoco}
               className="absolute top-2 right-2 text-gray-500 hover:text-black"
