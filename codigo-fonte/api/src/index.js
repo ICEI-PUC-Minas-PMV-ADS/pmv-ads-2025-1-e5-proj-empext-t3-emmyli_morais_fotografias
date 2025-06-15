@@ -18,6 +18,7 @@ const pagamentoRoutes = require('./routes/pagamento/pagamentoRoutes');
 const webhookRoutes = require('./routes/webhook/WebhookRoutes');
 const comprasRoutes = require('./routes/compras/comprasRoutes');
 const notificacaoRoutes = require('./routes/notificacao/notificacaoRoutes');
+const albumFotosRoutes = require('./routes/album/albumFotosRoutes');
 
 const setupSwagger = require('./swagger');
 
@@ -126,6 +127,9 @@ app.use('/api/webhook', webhookRoutes);
 
 //Notificações
 app.use('/api/notificacao', notificacaoRoutes);
+
+//AlbumFotos
+app.use('/api/albumFotos', albumFotosRoutes);
 
 app.listen(port, () => {
   console.log(`Servidor rodando em http://localhost:${port}`);

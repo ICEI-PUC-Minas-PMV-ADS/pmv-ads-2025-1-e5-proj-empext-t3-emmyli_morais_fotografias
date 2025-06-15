@@ -61,6 +61,7 @@ const getAll = async (req, res) => {
       nome:      album.nome,
       descricao: album.descricao,
       origem:    album.origem,
+      downloadfoto: album.downloadfoto,
       dtinclusao:album.dtinclusao,
       usuario:   album.usuario,
       fotos:     album.fotos
@@ -103,7 +104,7 @@ const getById = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    const { nome, descricao, usuario_id, origem } = req.body;
+    const { nome, descricao, usuario_id, origem, downloadfoto } = req.body;
     const imagens = req.files;
 
     if (!nome || !usuario_id || !descricao || !imagens || imagens.length === 0) {
@@ -116,6 +117,7 @@ const create = async (req, res) => {
       descricao,
       usuario_id,
       origem: origem || 'cliente',
+      downloadfoto: downloadfoto || false,
       dtinclusao: new Date(),
       dtalteracao: new Date()
     });
@@ -154,26 +156,101 @@ const create = async (req, res) => {
   }
 };
 
+const createAdmin = async (req, res) => {
+  try {
+    const { nome, descricao, usuario_id, origem, downloadfoto } = req.body;
+    const imagens = req.files;
+
+    if (!nome || !usuario_id || !descricao || !imagens || imagens.length === 0) {
+      return res.status(400).json({ error: 'Dados incompletos: nome, descrição, usuário e imagens são obrigatórios.' });
+    }
+
+    // Cria o álbum
+    const novoAlbum = await Albuns.create({
+      nome,
+      descricao,
+      usuario_id,
+      origem: origem || 'admin',
+      downloadfoto: downloadfoto || false,
+      dtinclusao: new Date(),
+      dtalteracao: new Date()
+    });
+
+    // Faz o upload das imagens e monta os registros para AlbumFotos
+    const albunsFotosData = await Promise.all(
+      imagens.map(async (file) => {
+        const url = await uploadFotoBunnyStorage(file);
+
+        return {
+          album_id: novoAlbum.id,
+          foto_url: url,
+          origem: 'admin',
+          dtinclusao: new Date(),
+          dtalteracao: new Date()
+        };
+      })
+    );
+
+    // Cria os registros na tabela album_fotos
+    await AlbumFotos.bulkCreate(albunsFotosData);
+
+    return res.status(201).json({ mensagem: 'Álbum criado com sucesso!', album: novoAlbum });
+  } catch (err) {
+    console.error('Erro ao criar álbum (admin):', err);
+    return res.status(500).json({ error: 'Erro ao criar álbum. Tente novamente.' });
+  }
+};
+
+
+
 
 const update = async (req, res) => {
   const { id } = req.params;
-  const { nome, descricao } = req.body;
+  const { nome, descricao, downloadfoto } = req.body;
+  const arquivos = req.files || [];
 
   try {
     const album = await Albuns.findByPk(id);
-    if (!album) return res.status(404).json({ error: 'Álbum não encontrado' });
+    if (!album) {
+      return res.status(404).json({ error: 'Álbum não encontrado' });
+    }
 
+    console.log('Atualizando álbum:', id);
+    // Atualiza os dados do álbum
     album.nome = nome || album.nome;
     album.descricao = descricao || album.descricao;
+    album.downloadfoto = downloadfoto ?? album.downloadfoto;
     album.dtalteracao = new Date();
+    const response = await album.save();
+    console.log('files:', arquivos);
+    console.log('Álbum atualizado:', response);
+    // Envia novas fotos para Bunny e salva na AlbumFotos
+    const novasFotos = await Promise.all(
+      arquivos.map(async (file) => {
+        const url = await uploadFotoBunnyStorage(file); // deve retornar a URL da imagem
+            console.log('URL da foto enviada:', url);
 
-    await album.save();
-    res.json({ message: 'Álbum atualizado com sucesso', album });
+        return AlbumFotos.create({
+          album_id: id,
+          foto_url: url, // salva a URL retornada da Bunny
+        });
+      })
+    );
+
+    res.json({
+      message: 'Álbum atualizado com sucesso',
+      album,
+      novasFotos,
+    });
   } catch (error) {
-    console.error('Erro ao atualizar álbum:', error);
-    res.status(500).json({ error: 'Erro ao atualizar álbum', details: error.message });
+    console.error('Erro ao atualizar álbum (fluxo 2 com Bunny):', error);
+    res.status(500).json({
+      error: 'Erro ao atualizar álbum',
+      details: error.message,
+    });
   }
 };
+
 
 
 const deleteAlbum = async (req, res) => {
@@ -196,7 +273,6 @@ const deleteAlbum = async (req, res) => {
     await Promise.all(album.fotos.map(async af => {
       if (af.foto?.foto) {
         await deleteFotoBunnyStorage(af.foto.foto);
-        await DetalheEvento.destroy({ where: { id: af.foto.id } });
       }
     }));
 
@@ -214,6 +290,7 @@ module.exports = {
   getAll,
   getById,
   create,
+  createAdmin,
   update,
   delete: deleteAlbum
 };

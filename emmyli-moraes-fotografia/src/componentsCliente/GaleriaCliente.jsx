@@ -13,6 +13,7 @@ const GaleriaCliente = () => {
   const [albumAberto, setAlbumAberto] = useState(null);
   const [menuAberto, setMenuAberto] = useState(null);
   const [fotosVisuais, setFotosVisuais] = useState([]);
+  const [download, setDownload] = useState(false);
   //  Zoom de imagem
   const [imagemSelecionada, setImagemSelecionada] = useState(null);
   const [indiceSelecionado, setIndiceSelecionado] = useState(0);
@@ -31,26 +32,49 @@ const GaleriaCliente = () => {
     fetchAlbuns();
   }, [usuarioInfo]);
 
+  useEffect(() => {
+    if (!albumAberto) return;
+    setDownload(albumAberto.downloadfoto);
+    console.log("Album aberto:", albumAberto);
+  }, [albumAberto]);
+
   const fetchAlbuns = async () => {
     try {
       const response = await api.get("/api/albuns", {
         params: {
-            usuario_id: `${usuarioInfo?.idusuario}`,
+          usuario_id: `${usuarioInfo?.idusuario}`,
         },
       });
 
-      const albunsFormatados = response.data.map((album) => ({
-        id: album.id,
-        nome: album.nome,
-        descricao: album.descricao || "",
-        fotos:
-          album.fotos?.map((f) => ({
-            id_foto: f.id_foto,
-            url: f.foto.foto,
-          })) || [],
-        imagem: album.fotos?.[0]?.foto || "",
-        data: new Date(album.dtinclusao).toLocaleDateString("pt-BR") || "",
-      }));
+      const albunsFormatados = response.data.map((album) => {
+        const fotosFormatadas =
+          album.fotos?.map((f) => {
+            // Fluxo 1: tem detalhe_evento associado
+            if (f.id_foto && f.foto) {
+              return {
+                id_foto: f.id_foto,
+                url: f.foto.foto,
+              };
+            }
+
+            // Fluxo 2: imagem enviada direto, sem detalhe_evento
+            return {
+              id_foto: null,
+              url: f.foto_url || "",
+            };
+          }) || [];
+
+        return {
+          id: album.id,
+          nome: album.nome,
+          descricao: album.descricao || "",
+          usuario: album.usuario?.nome || "Desconhecido",
+          downloadfoto: album.downloadfoto,
+          fotos: fotosFormatadas,
+          imagem: fotosFormatadas[0]?.url || "",
+          data: new Date(album.dtinclusao).toLocaleDateString("pt-BR") || "",
+        };
+      });
 
       setAlbunsComprados(albunsFormatados);
     } catch (error) {
@@ -202,12 +226,14 @@ const GaleriaCliente = () => {
             <div className="flex-1">
               <div className="flex justify-between items-center mb-8 border-b-2 border-[#c09b2d] pb-2">
                 <h2 className="text-2xl text-[#b1783d] font-bold">Fotos</h2>
-                <button
-                  onClick={baixarFotosIndividualmente}
-                  className="bg-[#c09b2d] text-white px-4 py-2 rounded-xl hover:bg-[#a88325] transition font-semibold shadow"
-                >
-                  Baixar todas as fotos
-                </button>
+                {download === true && (
+                  <button
+                    onClick={baixarFotosIndividualmente}
+                    className="bg-[#c09b2d] text-white px-4 py-2 rounded-xl hover:bg-[#a88325] transition font-semibold shadow"
+                  >
+                    Baixar todas as fotos
+                  </button>
+                )}
               </div>
               <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
                 {fotosVisuais.map((foto, idx) => (
@@ -233,7 +259,7 @@ const GaleriaCliente = () => {
       )}
 
       {/*  Modal de Zoom de Imagem  */}
-      {imagemSelecionada && (
+      {imagemSelecionada && download === true && (
         <div
           className="fixed inset-0 bg-black bg-opacity-90 flex justify-center items-center z-50"
           onClick={() => setImagemSelecionada(null)}

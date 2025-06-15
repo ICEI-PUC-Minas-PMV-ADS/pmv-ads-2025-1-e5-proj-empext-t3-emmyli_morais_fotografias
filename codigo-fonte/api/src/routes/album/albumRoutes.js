@@ -149,6 +149,7 @@ const notificarNovoAlbum = factoryMiddlewareNotification(
 )
 
 router.post('/', [verifyToken, notificarNovoAlbum], upload.array('fotos'), albunsController.create);
+router.post('/createAdmin', verifyToken, upload.array('fotos'), albunsController.createAdmin);
 
 /**
  * @swagger
@@ -177,7 +178,7 @@ router.post('/', [verifyToken, notificarNovoAlbum], upload.array('fotos'), albun
  *       500:
  *         description: Erro ao atualizar Album
  */
-router.put('/:id', verifyToken, albunsController.update);
+router.put('/:id', upload.array('fotos'), verifyToken, albunsController.update);
 
 
 /**

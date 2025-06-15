@@ -56,7 +56,8 @@ const webhookHandler = async (req, res) => {
 
       const fotosParaAlbum = carrinho.fotos.map((item) => ({
         album_id: album.id,
-        id_foto: item.id_foto
+        id_foto: item.id_foto,
+        origem: "evento",
       }));
 
       await AlbumFotos.bulkCreate(fotosParaAlbum);
