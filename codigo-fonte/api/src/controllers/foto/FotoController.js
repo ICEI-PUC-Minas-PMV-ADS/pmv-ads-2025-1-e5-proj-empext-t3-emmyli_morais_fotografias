@@ -4,65 +4,70 @@ const { uploadFotoBunnyStorage, deleteFotoBunnyStorage } = require('../../servic
 class FotoController {
 
    
-  async adicionar(req, res) {
+   async adicionar(req, res) {
     try {
-      //  1. Extrai "evento_id" em vez de "album_id" 
       const { evento_id } = req.body;
-      const arquivos = req.files; // Multer array('fotos')
-
-      // Validação básica 
-      if (!evento_id || !Array.isArray(arquivos) || arquivos.length === 0) {
-        return res.status(400).json({ error: 'Dados incompletos para adicionar fotos ao evento.' });
+      const arquivos = req.files;
+      if (!evento_id || !arquivos?.length) {
+        return res.status(400).json({
+          error: 'Dados incompletos para adicionar fotos ao evento.',
+        });
       }
-
-      //  Prepara Promises de upload em paralelo 
-
       const uploadPromises = arquivos.map((file) =>
-        uploadFotoBunnyStorage(file).catch((err) => {
-          console.error('[FotoController] Erro no upload de arquivo:', file.originalname, err);
-          return null; // Marca como "falha"
-        })
+        uploadFotoBunnyStorage(file).catch(() => null)
       );
-
-      //  Aguarda todos os uploads
-      const uploadedUrls = await Promise.all(uploadPromises);
-
-      //  Filtra somente as URLs que não retornaram null 
-      
-      const successfulUploads = uploadedUrls
-        .map((url, idx) => ({ url, file: arquivos[idx] }))
-        .filter((item) => item.url !== null);
-
-      // Se nenhum upload deu certo, retorne erro:
-      if (successfulUploads.length === 0) {
-        return res.status(500).json({ error: 'Nenhum upload de imagem foi bem-sucedido.' });
+      const uploaded = await Promise.all(uploadPromises);
+      const successful = uploaded
+        .map((url, i) => ({ url, file: arquivos[i] }))
+        .filter((x) => x.url);
+      if (!successful.length) {
+        return res.status(500).json({ error: 'Nenhum upload funcionou.' });
       }
-
-      //  Prepara array de objetos para bulkCreate 
-      const rowsToInsert = successfulUploads.map((item, index) => ({
-        evento_id:  Number(evento_id),
-        foto:       item.url,
+      const rows = successful.map((u, idx) => ({
+        evento_id: Number(evento_id),
+        foto: u.url,
         tem_marca_agua: true,
-        ordem:        index,
+        ordem: idx,
         dtinclusao: new Date(),
         dtalteracao: new Date(),
       }));
-
-      //  Insere todas as linhas de uma vez no banco 
-      const detalhesCriados = await DetalheEvento.bulkCreate(rowsToInsert, { returning: true });
-
-      //  Retorna todas as URLs geradas com sucesso 
-      const finalFotos = detalhesCriados.map((inst) => ({
-        id_foto: inst.id,
-        url:     inst.foto,
+      const created = await DetalheEvento.bulkCreate(rows, { returning: true });
+      const fotos = created.map((c) => ({
+        id_foto: c.id,
+        url: c.foto,
       }));
-
-      return res.status(201).json({ fotos: finalFotos });
-    } catch (error) {
-      console.error('[FotoController] Erro interno ao adicionar fotos:', error);
+      return res.status(201).json({ fotos });
+    } catch (err) {
+      console.error('[FotoController] adicionar:', err);
       return res.status(500).json({ error: 'Erro interno ao adicionar fotos.' });
     }
   }
+
+  // **NOVO** persiste apenas URLs já hospedadas na Bunny
+  async adicionarUrls(req, res) {
+    const { evento_id, urls } = req.body;
+    if (!evento_id || !Array.isArray(urls) || !urls.length) {
+      return res.status(400).json({
+        error: 'Informe evento_id e um array de URLs.',
+      });
+    }
+    try {
+      const fotosCriadas = [];
+      for (const url of urls) {
+        const det = await DetalheEvento.create({
+          evento_id,
+          foto: url,
+          ordem: 0,
+        });
+        fotosCriadas.push({ id_foto: det.id, url: det.foto });
+      }
+      return res.status(201).json({ fotos: fotosCriadas });
+    } catch (err) {
+      console.error('[FotoController] adicionarUrls:', err);
+      return res.status(500).json({ error: 'Falha ao persistir URLs.' });
+    }
+  }
+
 
   //Remove uma foto de um evento (detalhe_eventos) pelo ID do registro.
   async delete(req, res) {

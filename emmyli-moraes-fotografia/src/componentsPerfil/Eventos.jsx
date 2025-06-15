@@ -13,6 +13,7 @@ import { api } from "../services/api";
 import ShareUrlModal from "./ShareUrlModal";
 import ImageFocusSelector from "../components/ImageFocusSelector";
 import MenuFlutuante from "../components/MenuFlutuante"
+import { uploadDiretoBunny } from "../utils/uploadBunny";
 
 const Eventos = ({ albumId }) => {
   // --- Estados principais ---
@@ -142,28 +143,30 @@ const Eventos = ({ albumId }) => {
     setTipoMensagem("");
   };
 
-  const handleAdicionarFotos = async (event) => {
-    const arquivos = Array.from(event.target.files);
-    if (!arquivos.length) return;
-
-    const formData = new FormData();
-    arquivos.forEach((file) => formData.append("fotos", file));
-    formData.append("evento_id", eventoAberto.id);
+  // === NOVO FLOW DE UPLOAD ===
+  const handleAdicionarFotos = async (e) => {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+    setLoadingUpload(true);
 
     try {
-      setLoadingUpload(true);
-      const response = await api.post("/api/fotos/adicionar", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      // 1) Upload direto à BunnyCDN
+      const urls = await Promise.all(files.map((f) => uploadDiretoBunny(f)));
 
-      setFotosVisuais((prev) => [...prev, ...response.data.urls]);
+      // 2) Persistir apenas as URLs no seu back-end
+      const { data } = await api.post("/api/fotos/adicionar-urls", {
+        evento_id: eventoAberto.id,
+        urls,
+      });
+      // data.fotos: [{ id_foto, url }, ...]
+      setFotosVisuais((prev) => [...prev, ...data.fotos]);
       handleSucesso(
-        arquivos.length > 1
+        files.length > 1
           ? "Fotos adicionadas com sucesso!"
           : "Foto adicionada com sucesso!"
       );
-    } catch (error) {
-      console.error("Erro ao enviar imagens:", error.response?.data || error.message);
+    } catch (err) {
+      console.error("Erro ao enviar imagens:", err);
       handleErro("Erro ao enviar imagens.");
     } finally {
       setLoadingUpload(false);

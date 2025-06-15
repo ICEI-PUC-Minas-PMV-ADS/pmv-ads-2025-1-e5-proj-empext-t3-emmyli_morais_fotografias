@@ -16,6 +16,8 @@ import FormAdicionarEnsaio from "../componentsPerfil/FormAdicionarEnsaio";
 import ImageFocusSelector from "../components/ImageFocusSelector";
 import MenuFlutuante from "../components/MenuFlutuante"
 
+import { uploadDiretoBunny } from "../utils/uploadBunny";
+
 const Configuracoes = ({ albumId }) => {
 
   const [abaAtiva, setAbaAtiva] = useState(albumId ? "trabalhos" : "marca_dagua");
@@ -161,36 +163,28 @@ const Configuracoes = ({ albumId }) => {
   };
 
 
+  // === NOVO FLOW DE UPLOAD ===
   const handleAdicionarFotos = async (e) => {
     const files = Array.from(e.target.files);
     if (!files.length) return;
-
-    const fd = new FormData();
-    files.forEach((f) => fd.append("fotos", f));
-    fd.append("evento_id", albumAberto.id);
+    setLoadingUpload(true);
 
     try {
-      setLoadingUpload(true);
-      const response = await api.post("/api/fotos/adicionar", fd);
-      const novasFotos = response.data.urls;
-
-      const fotosAtualizadas = [...fotosVisuais, ...novasFotos];
-      setFotosVisuais(fotosAtualizadas);
-
-
+      // 1) upload direto
+      const urls = await Promise.all(files.map((f) => uploadDiretoBunny(f)));
+      // 2) persiste URLs
+      const { data } = await api.post("/api/fotos/adicionar-urls", {
+        evento_id: albumAberto.id,
+        urls,
+      });
+      setFotosVisuais((prev) => [...prev, ...data.fotos]);
+      // atualiza objeto do álbum
       setAlbumAberto((prev) => ({
         ...prev,
-        fotos: fotosAtualizadas,
+        fotos: [...prev.fotos, ...data.fotos],
       }));
-
-      handleSucesso(
-        files.length > 1
-          ? "Fotos adicionadas com sucesso!"
-          : "Foto adicionada com sucesso!"
-      );
     } catch (err) {
-      console.error("Erro ao enviar imagens:", err.response?.data || err.message);
-      handleErro("Erro ao enviar imagens.");
+      console.error("Erro ao enviar imagens:", err);
     } finally {
       setLoadingUpload(false);
     }
@@ -380,6 +374,9 @@ const Configuracoes = ({ albumId }) => {
                       src={g.imagem}
                       alt={g.nome}
                       className="w-full h-full object-cover rounded-t-2xl"
+                      style={{
+                        objectPosition: `${g.focusX ?? 50}% ${g.focusY ?? 50}%`
+                      }}
                     />
                   ) : (
                     <div className="text-center text-gray-400 p-8">Sem capa</div>

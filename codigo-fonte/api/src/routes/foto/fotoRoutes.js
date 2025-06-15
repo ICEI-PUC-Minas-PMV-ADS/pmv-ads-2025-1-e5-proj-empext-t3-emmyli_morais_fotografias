@@ -53,6 +53,13 @@ const UploadImagem = require('../../middleware/UploadImage');
  */
 router.post('/adicionar', verifyToken, UploadImagem.array('fotos'), FotoController.adicionar);
 
+// **NOVA ROTA** para receber só URLs já hospedadas
+router.post(
+  '/adicionar-urls',
+  verifyToken,
+  FotoController.adicionarUrls
+);
+
 /**
  * @swagger
  * /api/fotos/{id}:
