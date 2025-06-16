@@ -37,6 +37,8 @@ const Trabalhos = () => {
             titulo: a.nome,
             categoria: a.descricao || "",
             capa: a.detalhes[0]?.foto || "",
+            focusX: a.detalhes[0]?.focoX ?? 50,
+            focusY: a.detalhes[0]?.focoY ?? 50,
             // Monta array de fotos de “detalhes”
             fotos: a.detalhes.map((f) => ({
               id: f.id,

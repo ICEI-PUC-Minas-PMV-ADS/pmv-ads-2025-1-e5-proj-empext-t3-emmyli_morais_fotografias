@@ -50,6 +50,9 @@ const Ensaios = ({ ensaiosFiltrados, abrirGaleria, curtidas, setCurtidas }) => {
         >
           <img
             src={ensaio.capa}
+            style={{
+              objectPosition: `${ensaio.focusX ?? 50}% ${ensaio.focusY ?? 50}%`,
+            }}
             alt={ensaio.titulo}
             onError={e => (e.currentTarget.src = "/fallback.jpg")}
             className="w-full h-48 sm:h-56 md:h-64 lg:h-72 object-cover rounded-t-2xl"
