@@ -1,7 +1,7 @@
 {
-    "host": "sandbox.smtp.mailtrap.io",
+    "host": "smtp.gmail.com",
     "port": "587",
-    "user": "13e49e6a5b764e",
-    "pass": "16372a86ae1259",
-    "from": "teste@teste.com"
+    "user": "emmylimoraesfotografias@gmail.com",
+    "pass": "cgynbmvbzfrwwqgh",
+    "from": "Emmyli Moraes <emmylimoraesfotografias@gmail.com>"
 }

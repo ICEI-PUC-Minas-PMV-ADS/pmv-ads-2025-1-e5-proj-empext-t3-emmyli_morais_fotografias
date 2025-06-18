@@ -62,7 +62,7 @@ const sendResetPasswordEmail = (token, nome, email) => {
 const sendContatoEmail = (nome, email, telefone, mensagem) => {
     const html = renderTemplate('contato', { nome, email, telefone, mensagem });
     sendEmail({
-        to: 'EmmyliEmail@EmmyliDominio.com',
+        to: 'emmylimoraesfotografias@gmail.com',
         replyTo: email,
         subject: 'Contato pelo Site',
         html,

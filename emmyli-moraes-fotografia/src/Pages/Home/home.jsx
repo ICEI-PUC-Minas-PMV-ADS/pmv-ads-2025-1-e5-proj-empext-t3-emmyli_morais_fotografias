@@ -179,7 +179,7 @@ const Home = () => {
                 className="bg-[#E8E6E0] shadow-md rounded-full overflow-hidden flex flex-col cursor-pointer w-[350px] h-[600px]" // Tamanho fixo para o container
                 onClick={() => abrirNoTrabalhos(album.id)}
               >
-                <div className="w-full h-[400px] overflow-hidden rounded-full">
+                <div className="w-full h-[500px] overflow-hidden rounded-full">
                   {" "}
                   {/* Container da imagem com altura fixa */}
                   <img
