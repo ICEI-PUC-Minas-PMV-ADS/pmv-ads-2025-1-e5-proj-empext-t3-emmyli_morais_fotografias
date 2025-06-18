@@ -4,7 +4,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import MenuNav from "../../components/MenuNav";
-import {  api } from "../../services/api";
+import { api } from "../../services/api";
 import fotografaa from "../../img/fotografaa.jpg";
 import fotografaaaa from "../../img/fotografaaaa.jpg";
 import { FaStar } from "react-icons/fa";
@@ -26,7 +26,8 @@ const Home = () => {
           .filter((a) => a.exibirtrabalho === true && a.detalhes.length > 0)
           .sort(
             (a, b) =>
-              new Date(b.dtinclusao).getTime() - new Date(a.dtinclusao).getTime()
+              new Date(b.dtinclusao).getTime() -
+              new Date(a.dtinclusao).getTime()
           )
           .slice(0, 4)
           .map((a) => ({
@@ -175,15 +176,17 @@ const Home = () => {
           {recentes.map((album) => (
             <div key={album.id} className="p-4">
               <div
-                className="bg-[#E8E6E0] shadow-md rounded-full overflow-hidden flex flex-col cursor-pointer"
+                className="bg-[#E8E6E0] shadow-md rounded-full overflow-hidden flex flex-col cursor-pointer w-[350px] h-[600px]" // Tamanho fixo para o container
                 onClick={() => abrirNoTrabalhos(album.id)}
               >
-                <div className="w-full">
+                <div className="w-full h-[400px] overflow-hidden rounded-full">
+                  {" "}
+                  {/* Container da imagem com altura fixa */}
                   <img
                     src={album.imagem}
                     alt={album.nome}
                     onError={(e) => (e.currentTarget.src = fotografaa)}
-                    className="inline-block hover:scale-105 ease-in-out rounded-full min-h-[400px] object-cover"
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                   />
                 </div>
                 <div className="bg-[#E8E6E0] p-4 font-semibold">
@@ -229,7 +232,9 @@ const Home = () => {
                       <p className="flex items-center mt-2 justify-center">
                         {Array.from(
                           { length: depoimento.satisfacao },
-                          (_, i) => <FaStar key={i} color="#c09b2d" />
+                          (_, i) => (
+                            <FaStar key={i} color="#c09b2d" />
+                          )
                         )}
                       </p>
                     </span>
@@ -261,44 +266,44 @@ const Home = () => {
         </div>
 
         <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {resultados.length > 0 ? (
-            resultados.map((evento) => {
-              // Usa a primeira foto como capa (thumbnail)
-              const capa = evento.detalhes?.[0]?.foto || fotografaa;
-              // Formata data de inclusão (dtinclusao) em pt-BR
-              const dataFormatada = new Date(evento.dtinclusao).toLocaleDateString(
-                "pt-BR"
-              );
-              return (
-                <a
-                  key={evento.id}
-                  href={evento.urlevento}
-                  className="bg-white rounded-2xl shadow-md overflow-hidden transform hover:scale-105 transition cursor-pointer"
-                >
-                  {/* Imagem de capa em tamanho menor */}
-                  <div className="w-full h-40 bg-gray-100 overflow-hidden">
-                    <img
-                      src={capa}
-                      alt={`Capa de ${evento.nome}`}
-                      className="w-full h-full object-cover rounded-t-2xl"
-                      onError={(e) => (e.currentTarget.src = fotografaa)}
-                    />
-                  </div>
-                  {/* Informações abaixo da imagem */}
-                  <div className="p-4 text-center">
-                    <h3 className="text-lg font-semibold text-[#252525]">
-                      {evento.nome}
-                    </h3>
-                    <p className="text-[#c09b2d] text-xs mt-2">{dataFormatada}</p>
-                  </div>
-                </a>
-              );
-            })
-          ) : (
-            busca && (
-              <p className="text-[#a0a0a0] mt-4">Nenhum evento encontrado.</p>
-            )
-          )}
+          {resultados.length > 0
+            ? resultados.map((evento) => {
+                // Usa a primeira foto como capa (thumbnail)
+                const capa = evento.detalhes?.[0]?.foto || fotografaa;
+                // Formata data de inclusão (dtinclusao) em pt-BR
+                const dataFormatada = new Date(
+                  evento.dtinclusao
+                ).toLocaleDateString("pt-BR");
+                return (
+                  <a
+                    key={evento.id}
+                    href={evento.urlevento}
+                    className="bg-white rounded-2xl shadow-md overflow-hidden transform hover:scale-105 transition cursor-pointer"
+                  >
+                    {/* Imagem de capa em tamanho menor */}
+                    <div className="w-full h-40 bg-gray-100 overflow-hidden">
+                      <img
+                        src={capa}
+                        alt={`Capa de ${evento.nome}`}
+                        className="w-full h-full object-cover rounded-t-2xl"
+                        onError={(e) => (e.currentTarget.src = fotografaa)}
+                      />
+                    </div>
+                    {/* Informações abaixo da imagem */}
+                    <div className="p-4 text-center">
+                      <h3 className="text-lg font-semibold text-[#252525]">
+                        {evento.nome}
+                      </h3>
+                      <p className="text-[#c09b2d] text-xs mt-2">
+                        {dataFormatada}
+                      </p>
+                    </div>
+                  </a>
+                );
+              })
+            : busca && (
+                <p className="text-[#a0a0a0] mt-4">Nenhum evento encontrado.</p>
+              )}
         </div>
       </section>
     </div>

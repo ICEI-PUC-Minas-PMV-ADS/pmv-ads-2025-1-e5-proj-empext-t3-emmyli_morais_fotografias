@@ -158,14 +158,13 @@ const create = async (req, res) => {
 
 const createAdmin = async (req, res) => {
   try {
-    const { nome, descricao, usuario_id, origem, downloadfoto } = req.body;
-    const imagens = req.files;
+    const { nome, descricao, usuario_id, origem, downloadfoto, urls } = req.body;
 
-    if (!nome || !usuario_id || !descricao || !imagens || imagens.length === 0) {
-      return res.status(400).json({ error: 'Dados incompletos: nome, descrição, usuário e imagens são obrigatórios.' });
+    if (!nome || !usuario_id || !descricao || !urls || !Array.isArray(urls) || urls.length === 0) {
+      return res.status(400).json({ error: 'Dados incompletos: nome, descrição, usuário e pelo menos uma URL são obrigatórios.' });
     }
 
-    // Cria o álbum
+    // 1. Cria o álbum
     const novoAlbum = await Albuns.create({
       nome,
       descricao,
@@ -176,22 +175,15 @@ const createAdmin = async (req, res) => {
       dtalteracao: new Date()
     });
 
-    // Faz o upload das imagens e monta os registros para AlbumFotos
-    const albunsFotosData = await Promise.all(
-      imagens.map(async (file) => {
-        const url = await uploadFotoBunnyStorage(file);
+    // 2. Salva as URLs como fotos do álbum
+    const albunsFotosData = urls.map((url) => ({
+      album_id: novoAlbum.id,
+      foto_url: url,
+      origem: 'admin',
+      dtinclusao: new Date(),
+      dtalteracao: new Date(),
+    }));
 
-        return {
-          album_id: novoAlbum.id,
-          foto_url: url,
-          origem: 'admin',
-          dtinclusao: new Date(),
-          dtalteracao: new Date()
-        };
-      })
-    );
-
-    // Cria os registros na tabela album_fotos
     await AlbumFotos.bulkCreate(albunsFotosData);
 
     return res.status(201).json({ mensagem: 'Álbum criado com sucesso!', album: novoAlbum });
@@ -201,13 +193,9 @@ const createAdmin = async (req, res) => {
   }
 };
 
-
-
-
 const update = async (req, res) => {
   const { id } = req.params;
-  const { nome, descricao, downloadfoto } = req.body;
-  const arquivos = req.files || [];
+  const { nome, descricao, downloadfoto, urls } = req.body;
 
   try {
     const album = await Albuns.findByPk(id);
@@ -215,27 +203,27 @@ const update = async (req, res) => {
       return res.status(404).json({ error: 'Álbum não encontrado' });
     }
 
-    console.log('Atualizando álbum:', id);
     // Atualiza os dados do álbum
     album.nome = nome || album.nome;
     album.descricao = descricao || album.descricao;
     album.downloadfoto = downloadfoto ?? album.downloadfoto;
     album.dtalteracao = new Date();
-    const response = await album.save();
-    console.log('files:', arquivos);
-    console.log('Álbum atualizado:', response);
-    // Envia novas fotos para Bunny e salva na AlbumFotos
-    const novasFotos = await Promise.all(
-      arquivos.map(async (file) => {
-        const url = await uploadFotoBunnyStorage(file); // deve retornar a URL da imagem
-            console.log('URL da foto enviada:', url);
+    await album.save();
 
-        return AlbumFotos.create({
-          album_id: id,
-          foto_url: url, // salva a URL retornada da Bunny
-        });
-      })
-    );
+    let novasFotos = [];
+
+    // Se vieram novas URLs (novas fotos), adiciona na album_fotos
+    if (Array.isArray(urls) && urls.length > 0) {
+      const fotosParaCriar = urls.map((url) => ({
+        album_id: id,
+        foto_url: url,
+        origem: 'admin',
+        dtinclusao: new Date(),
+        dtalteracao: new Date(),
+      }));
+
+      novasFotos = await AlbumFotos.bulkCreate(fotosParaCriar, { returning: true });
+    }
 
     res.json({
       message: 'Álbum atualizado com sucesso',
@@ -243,15 +231,13 @@ const update = async (req, res) => {
       novasFotos,
     });
   } catch (error) {
-    console.error('Erro ao atualizar álbum (fluxo 2 com Bunny):', error);
+    console.error('Erro ao atualizar álbum:', error);
     res.status(500).json({
       error: 'Erro ao atualizar álbum',
       details: error.message,
     });
   }
 };
-
-
 
 const deleteAlbum = async (req, res) => {
   const { id } = req.params;

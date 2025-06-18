@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, use } from "react";
 import { Plus, ArrowLeft, Trash, MoreVertical } from "lucide-react";
 import FormAdicionarAlbum from "./FormAdicionarAlbum";
 import { api } from "../services/api";
+import { uploadDiretoBunny } from "../utils/uploadBunny";
 
 const Albuns = () => {
   const [galerias, setGalerias] = useState([]);
@@ -110,34 +111,40 @@ const Albuns = () => {
     const arquivos = Array.from(event.target.files);
     if (!arquivos.length) return;
 
-    const formData = new FormData();
-    arquivos.forEach((file) => formData.append("fotos", file));
-    formData.append("album_id", albumAberto.id);
+    setLoadingUpload(true);
 
     try {
-      setLoadingUpload(true);
-      const response = await api.put(
-        `/api/albuns/${albumAberto.id}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+      // 1. Faz o upload BunnyCDN
+      const urls = await Promise.all(
+        arquivos.map(async (file) => {
+          if (file instanceof File) {
+            return await uploadDiretoBunny(file);
+          }
+          return null;
+        })
       );
 
-      const novasFotos = Array.isArray(response.data.fotos)
-        ? response.data.fotos.map((f) => ({
-            id_foto: f.id_foto || f.id || null,
-            url:
-              typeof f.foto_url === "string" && f.foto_url
-                ? f.foto_url
-                : f.foto?.foto || "",
-            comentarios: f.foto?.comentarios || [],
-          }))
-        : [];
+      const urlsValidas = urls.filter((url) => url);
+
+      if (urlsValidas.length === 0) {
+        handleErro("Nenhuma foto válida para upload.");
+        return;
+      }
+
+      // 2. Faz o PUT enviando as URLs
+      const response = await api.put(`/api/albuns/${albumAberto.id}`, {
+        urls: urlsValidas,
+      });
+
+      // 3. Atualiza o estado local com as novas fotos recebidas
+      const novasFotos = response.data.novasFotos.map((f) => ({
+        id_foto: f.id_foto || f.id || null,
+        url: f.foto_url || "",
+        comentarios: [],
+      }));
 
       setFotosVisuais((prev) => [...prev, ...novasFotos]);
+
       handleSucesso(
         arquivos.length > 1
           ? "Fotos adicionadas com sucesso!"

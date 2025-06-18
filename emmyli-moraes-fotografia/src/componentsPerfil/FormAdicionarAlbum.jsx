@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { api } from "../services/api";
 import ModalPacote from "../componentsPerfil/ModalPacote";
+import { uploadDiretoBunny } from "../utils/uploadBunny";
 
 const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
   const [abaAtiva, setAbaAtiva] = useState("informacoes");
@@ -77,40 +78,37 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
     try {
       setLoading(true);
 
-      const formData = new FormData();
-
-      imagens.forEach((img) => {
-        if (img instanceof File) {
-          formData.append("fotos", img); // campos esperados no backend
-        }
-      });
-
-      formData.append("usuario_id", usuarioSelecionado.id);
-      formData.append("nome", titulo);
-      formData.append("descricao", titulo);
-      formData.append("origem", "admin");
-      formData.append("downloadfoto", download);
-
-      console.log(
-        ("Enviando dados do formulário:",
-        {
-          usuario_id: usuarioSelecionado.id,
-          nome: titulo,
-          descricao: titulo,
-          origem: "admin",
-          downloadfoto: download,
-          fotos: imagens.map((img) => img.name), // apenas os nomes dos arquivos
+      // 1. Primeiro faz o upload de todas as imagens direto pro BunnyCDN
+      const urls = await Promise.all(
+        imagens.map(async (img) => {
+          if (img instanceof File) {
+            return await uploadDiretoBunny(img);
+          }
+          return null;
         })
       );
 
-      const response = await api.post("/api/albuns/createAdmin", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      // 2. Filtra possíveis nulls (se houver)
+      const urlsValidas = urls.filter((url) => url);
+
+      // 3. Monta o payload apenas com dados e as URLs
+      const payload = {
+        usuario_id: usuarioSelecionado.id,
+        nome: titulo,
+        descricao: titulo,
+        origem: "admin",
+        downloadfoto: download,
+        urls: urlsValidas,
+      };
+
+      // 4. Envia apenas os dados e URLs para o backend
+      await api.post("/api/albuns/createAdmin", payload);
 
       onSave?.("Álbum salvo com sucesso!");
       onClose();
     } catch (err) {
-      handleErro("Erro ao salvar álbum: " + err.message || err);
+      console.error("Erro ao salvar álbum:", err);
+      handleErro("Erro ao salvar álbum: " + (err.message || err));
     } finally {
       setLoading(false);
     }
