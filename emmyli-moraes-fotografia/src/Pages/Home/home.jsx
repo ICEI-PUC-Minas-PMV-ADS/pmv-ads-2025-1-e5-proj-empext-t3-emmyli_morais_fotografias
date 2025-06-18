@@ -78,16 +78,20 @@ const Home = () => {
     autoplaySpeed: 4000,
     responsive: [
       {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: Math.min(2, recentes.length),
-        },
+        // até 1024px de largura, mostra no máximo 2
+      breakpoint: 1024,
+      settings: {
+        slidesToShow: Math.min(2, recentes.length),
+        infinite: recentes.length > Math.min(2, recentes.length)
+      },
       },
       {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: Math.min(1, recentes.length),
-        },
+        // até 768px de largura, mostra 1
+      breakpoint: 768,
+      settings: {
+        slidesToShow: 1,
+        infinite: recentes.length > 1
+      },
       },
     ],
   };
@@ -176,10 +180,10 @@ const Home = () => {
           {recentes.map((album) => (
             <div key={album.id} className="p-4">
               <div
-                className="bg-[#E8E6E0] shadow-md rounded-full overflow-hidden flex flex-col cursor-pointer w-[350px] h-[600px]" // Tamanho fixo para o container
+                className="bg-[#E8E6E0] shadow-md rounded-full overflow-hidden flex flex-col cursor-pointer max-w-[250px] mx-auto aspect-[1/2]" // Tamanho fixo para o container
                 onClick={() => abrirNoTrabalhos(album.id)}
               >
-                <div className="w-full h-[500px] overflow-hidden rounded-full">
+                <div className="w-full h-[400px] overflow-hidden rounded-full">
                   {" "}
                   {/* Container da imagem com altura fixa */}
                   <img
