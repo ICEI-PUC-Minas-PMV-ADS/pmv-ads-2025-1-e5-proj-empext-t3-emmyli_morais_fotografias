@@ -322,7 +322,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
                     <button
                       type="button"
                       onClick={() => setMostrarModalCategoria(true)}
-                      className="p-1 border rounded-full text-[#c09b2d] hover:bg-[#c09b2d] hover:text-white"
+                      className="rounded-full w-8 h-8 flex items-center justify-center p-2 mb-2 border-2 border-[#c09b2d] text-[#c09b2d] hover:bg-[#c09b2d] hover:text-white transition"
                     >
                       <Plus size={15} />
                     </button>
@@ -345,21 +345,23 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
                 {/* Modal para adicionar / deletar categorias */}
                 {mostrarModalCategoria && (
                   <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-xl px-6 py-5 w-full max-w-sm shadow-xl font-serif">
-                      <h2 className="text-[#b1783d] text-xl font-bold mb-4">
+                    <div className="bg-[#f2eee6] rounded-xl shadow-lg p-8 w-full max-w-md relative">
+                      <div className="flex justify-center items-center border-b border-[#b1783d] pb-3 mb-2">
+                      <h2 className="text-3xl text-[#b1783d]">
                         Categorias
                       </h2>
+                      </div>
                       <div className="flex gap-2 mb-4">
                         <input
                           type="text"
                           placeholder="Nova categoria"
                           value={novaCategoria}
                           onChange={(e) => setNovaCategoria(e.target.value)}
-                          className="flex-1 p-2 border border-gray-300 rounded"
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                         />
                         <button
                           onClick={handleAddCategoria}
-                          className="bg-[#c09b2d] text-white px-4 rounded"
+                          className="bg-[#d4a531] hover:bg-[#c9a029] text-white font-bold px-4 py-2 rounded-md"
                           type="button"
                         >
                           <Plus size={16} />
@@ -385,7 +387,7 @@ const FormAdicionarEnsaio = ({ onClose, onSave, dadosIniciais }) => {
                       <div className="flex justify-end mt-4">
                         <button
                           onClick={() => setMostrarModalCategoria(false)}
-                          className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+                          className="bg-[#d4a531] hover:bg-[#c9a029] text-white font-bold px-6 py-2 rounded-md"
                           type="button"
                         >
                           Fechar
