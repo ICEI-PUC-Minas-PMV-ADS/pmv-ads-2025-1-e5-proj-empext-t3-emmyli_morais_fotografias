@@ -3,6 +3,7 @@ import { parseJwt } from "../utils/jwtUtils";
 import { api } from "../services/api";
 import { ArrowLeft, Download } from "lucide-react";
 
+
 const GaleriaCliente = () => {
   const [loading, setLoading] = useState(false);
   const [abaAtiva, setAbaAtiva] = useState("fotos_compradas");
@@ -17,6 +18,53 @@ const GaleriaCliente = () => {
   //  Zoom de imagem
   const [imagemSelecionada, setImagemSelecionada] = useState(null);
   const [indiceSelecionado, setIndiceSelecionado] = useState(0);
+
+  const [isSnipping, setIsSnipping] = useState(false);
+
+  useEffect(() => {
+  const handleKeyDown = (e) => {
+    if (e.key === "PrintScreen" || e.keyCode === 44) {
+      e.preventDefault?.();
+      setIsSnipping(true);
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "p") {
+      e.preventDefault?.();
+      setIsSnipping(true);
+    }
+    if (e.key === "Shift" || e.key === "Meta") {
+      setIsSnipping(true);
+    }
+  };
+
+  const handleKeyUp = (e) => {
+    if (["Shift", "Meta"].includes(e.key)) {
+      setIsSnipping(false);
+    }
+  };
+
+  const onVisibilityChange = () => {
+    setIsSnipping(document.visibilityState === "hidden");
+  };
+
+  const onBlur = () => setIsSnipping(true);
+  const onFocus = () => setIsSnipping(false);
+
+  document.addEventListener("keydown", handleKeyDown);
+  document.addEventListener("keyup", handleKeyUp);
+  document.addEventListener("visibilitychange", onVisibilityChange);
+  window.addEventListener("blur", onBlur);
+  window.addEventListener("focus", onFocus);
+
+  return () => {
+    document.removeEventListener("keydown", handleKeyDown);
+    document.removeEventListener("keyup", handleKeyUp);
+    document.removeEventListener("visibilitychange", onVisibilityChange);
+    window.removeEventListener("blur", onBlur);
+    window.removeEventListener("focus", onFocus);
+  };
+}, []);
+
+const handleContextMenu = (e) => e.preventDefault();
 
   useEffect(() => {
     const fetchUsuarioInfo = () => {
@@ -122,13 +170,17 @@ const GaleriaCliente = () => {
   };
 
   return (
-    <div className="p-6 font-serif min-h-screen bg-gray-100">
-      <h1 className="text-2xl font-bold text-[#c09b2d] border-b-2 border-[#c09b2d] pb-4 mb-12">
-        Galeria
-      </h1>
+
+    <div 
+      onContextMenu={handleContextMenu}
+      className="relative p-4 sm:p-6 font-serif bg-[#F9F9F9] min-h-screen"
+      style={{ filter: isSnipping ? "blur(8px)" : "none", userSelect: "none" }}>
+        <h1 className="text-2xl font-bold text-[#c09b2d] border-b-2 border-[#c09b2d] pb-4 mb-12">
+          Galeria
+        </h1>
 
       {/* Abas */}
-      <div className="flex border-b mb-6">
+      <div className="flex border-b mb-6 ">
         {["fotos_compradas"].map((aba) => (
           <button
             key={aba}
@@ -146,7 +198,7 @@ const GaleriaCliente = () => {
 
       {/* Fotos compradas em cards menores */}
       {abaAtiva === "fotos_compradas" && !albumAberto && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6  ">
           {albunsComprados.length > 0 ? (
             <>
               {albunsComprados.map((g) => (
@@ -167,6 +219,7 @@ const GaleriaCliente = () => {
                         </div>
                       )}
                     </div>
+
                     <div className="p-4 text-center">
                       <h3 className="text-xl font-semibold text-[#252525]">
                         {g.nome}
@@ -193,7 +246,7 @@ const GaleriaCliente = () => {
       {/* Detalhe do álbum (trabalho)  */}
       {abaAtiva === "fotos_compradas" && albumAberto && (
         <>
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex  items-center mb-4 ">
             <button
               onClick={voltar}
               className="flex items-center text-[#c09b2d] hover:underline gap-1"
@@ -202,10 +255,10 @@ const GaleriaCliente = () => {
             </button>
           </div>
 
-          <div className="flex flex-col lg:flex-row gap-8">
+          <div className="flex flex-col lg:flex-row gap-8 ">
             {/* Sidebar do álbum */}
 
-            <div className="bg-white p-4 rounded-2xl shadow-lg max-w-sm w-full lg:min-h-[80vh]">
+            <div className="bg-white p-4 rounded-xl shadow-lg max-w-sm w-full lg:min-h-[80vh]">
               <p className="text-[#c09b2d] text-xl font-bold text-center mb-2">
                 {albumAberto.nome}
               </p>
@@ -214,7 +267,8 @@ const GaleriaCliente = () => {
                   <img
                     src={albumAberto.fotos[0].url}
                     alt="Capa"
-                    className="w-full h-full object-cover rounded-2xl"
+                    className="w-full h-full object-cover object-top rounded-xl"
+                    
                   />
                 ) : (
                   <div className="text-center text-gray-400 p-8">Sem capa</div>
@@ -223,8 +277,8 @@ const GaleriaCliente = () => {
             </div>
 
             {/* Grid de fotos do álbum */}
-            <div className="flex-1">
-              <div className="flex justify-between items-center mb-8 border-b-2 border-[#c09b2d] pb-2">
+            <div className="flex-1 ">
+              <div className="flex justify-between items-center mb-8 border-b-2 border-[#c09b2d] pb-2 ">
                 <h2 className="text-2xl text-[#b1783d] font-bold">Fotos</h2>
                 {download === true && (
                   <button
@@ -235,21 +289,33 @@ const GaleriaCliente = () => {
                   </button>
                 )}
               </div>
-              <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
+              <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4 ">
                 {fotosVisuais.map((foto, idx) => (
                   <div
                     key={idx}
-                    className="relative break-inside-avoid overflow-hidden rounded-2xl shadow transform hover:scale-105 transition group"
+                    className="relative break-inside-avoid transform hover:scale-105 transition group"
                   >
+
+                    {/* Wrapper fixo e responsivo */}
+                    
                     <img
                       src={foto.url}
                       alt={`Foto ${idx + 1}`}
                       className="w-full h-auto object-contain rounded-2xl cursor-pointer"
                       onClick={() => {
-                        setIndiceSelecionado(idx);
-                        setImagemSelecionada(foto.url);
+                        if (download) {
+                          setIndiceSelecionado(idx);
+                          setImagemSelecionada(foto.url);
+                        }
                       }}
                     />
+
+                    
+                    {!download && (
+                      <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center rounded-2xl pointer-events-none">
+                        <span className="text-white text-2xl font-bold">🔒 Bloqueado</span>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
