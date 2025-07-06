@@ -3,9 +3,9 @@ const https = require('https');
 const fs = require('fs');
 require('dotenv').config();
 
-const BUNNY_STORAGE_NAME = 'emmylimoraesfotografias';
+const BUNNY_STORAGE_NAME = 'fotografiasemmylimoraes';
 
-const BUNNY_STORAGE_KEY = 'b78ff764-b54c-4ad5-8e1ebfd1b255-58b5-4e6a';
+const BUNNY_STORAGE_KEY = '254aa3c6-e19f-448d-8c8344cca6e6-55d2-40dc';
 
 if (!BUNNY_STORAGE_NAME || !BUNNY_STORAGE_KEY) {
   console.error(
@@ -67,7 +67,7 @@ const uploadFotoBunnyStorage = async (file) => {
     }
 
     // URL pública via CDN
-    return `https://emmylimoraesfotografias.b-cdn.net/${fileName}`;
+    return `https://fotografiasemmylimoraes.b-cdn.net/${fileName}`;
   } catch (err) {
     console.error('❌ Erro no upload BunnyCDN:', err.response?.data || err.message);
     throw new Error('Falha ao enviar imagem para BunnyCDN.');

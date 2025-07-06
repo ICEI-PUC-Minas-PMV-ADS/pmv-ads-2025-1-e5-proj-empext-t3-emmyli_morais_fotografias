@@ -1,7 +1,7 @@
 // src/utils/uploadBunny.js
 export async function uploadDiretoBunny(file) {
-  const bunnyStorageKey = 'b78ff764-b54c-4ad5-8e1ebfd1b255-58b5-4e6a';
-  const bunnyStorageZone = 'emmylimoraesfotografias';
+  const bunnyStorageKey = '254aa3c6-e19f-448d-8c8344cca6e6-55d2-40dc';
+  const bunnyStorageZone = 'fotografiasemmylimoraes';
   const fileName = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
   const url = `https://br.storage.bunnycdn.com/${bunnyStorageZone}/${fileName}`;
 
@@ -20,5 +20,5 @@ export async function uploadDiretoBunny(file) {
   }
 
   // Retorna a URL pública pelo Pullzone:
-  return `https://emmylimoraesfotografias.b-cdn.net/${fileName}`;
+  return `https://fotografiasemmylimoraes.b-cdn.net/${fileName}`;
 }
