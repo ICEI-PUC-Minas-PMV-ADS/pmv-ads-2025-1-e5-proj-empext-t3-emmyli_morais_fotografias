@@ -545,85 +545,141 @@ const Configuracoes = ({ albumId }) => {
         </>
       )}
 
-
-      {abaAtiva === "feedbacks" && (
-        <div className="overflow-x-auto">
-          <table className="min-w-full border border-gray-200 shadow-md rounded-lg overflow-hidden">
-            <thead className="bg-[#c09b2d]">
-              <tr className="text-sm text-white text-center">
-                <th className="px-4 py-2">Cliente</th>
-                <th className="px-4 py-2">Álbum</th>
-                <th className="px-4 py-2">Feedback</th>
-                <th className="px-4 py-2">Satisfação</th>
-                <th className="px-4 py-2">Exibir na tela inicial</th>
-                <th className="px-4 py-2">Excluir</th>
-              </tr>
-            </thead>
-            <tbody className="text-sm text-gray-800 text-center">
-              {feedbacks.map((feedback) => (
-                <tr
-                  key={feedback.id}
-                  className="border-t border-gray-200 hover:bg-gray-50"
-                >
-                  <td className="px-4 py-2">{feedback.usuario.nome}</td>
-                  <td className="px-4 py-2">{feedback.album.nome}</td>
-                  <td className="px-4 py-2">{feedback.feedback}</td>
-                  <td className="px-4 py-2">
-                    <div className="flex justify-center space-x-1">
-                      {Array.from({ length: feedback.satisfacao }).map((_, i) => (
-                        <FaStar key={i} color="#c09b2d" />
-                      ))}
-                    </div>
-                  </td>
-                  <td className="px-4 py-2">
-                    <label className="mr-4 cursor-pointer">
-                      <input
-                        type="radio"
-                        name={`exibirInicio-${feedback.id}`}
-                        value="true"
-                        checked={feedback.exibirfeedback === true}
-                        onChange={(e) =>
-                          confirmaEditarFeedack(feedback.id, e.target.value)
-                        }
-                      />
-                      Sim
-                    </label>
-                    <label className="mr-4 cursor-pointer">
-                      <input
-                        type="radio"
-                        name={`exibirInicio-${feedback.id}`}
-                        value="false"
-                        checked={feedback.exibirfeedback === false}
-                        onChange={(e) =>
-                          confirmaEditarFeedack(feedback.id, e.target.value)
-                        }
-                      />
-                      Não
-                    </label>
-                  </td>
-                  <td className="px-4 py-2">
-                    <Trash
-                      size={16}
-                      className="text-red-500 cursor-pointer inline-block"
-                      onClick={() => {
-                        setFeedbackIdSelecionado(feedback.id);
-                        setShowModalDeletarFeedback(true);
-                      }}
-                    />
-                  </td>
-                </tr>
+    {abaAtiva === "feedbacks" && (
+  <>
+    {/* Versão mobile: cards */}
+    <div className="block lg:hidden space-y-4">
+      {feedbacks.length > 0 ? (
+        feedbacks.map((feedback) => (
+          <div
+            key={feedback.id}
+            className="bg-white p-4 rounded-xl shadow-md border border-gray-200"
+          >
+            <p className="text-sm"><strong>Cliente:</strong> {feedback.usuario.nome}</p>
+            <p className="text-sm"><strong>Álbum:</strong> {feedback.album.nome}</p>
+            <p className="text-sm"><strong>Feedback:</strong> {feedback.feedback}</p>
+            <p className="text-sm flex items-center gap-1">
+              <strong>Satisfação:</strong>
+              {Array.from({ length: feedback.satisfacao }).map((_, i) => (
+                <FaStar key={i} color="#c09b2d" size={14} />
               ))}
-              {feedbacks.length === 0 && (
-                <tr>
-                  <td colSpan="6" className="text-center text-gray-500 py-4">
-                    Não há feedbacks disponíveis.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+            </p>
+            <div className="text-sm mt-2">
+              <strong>Exibir na tela inicial:</strong><br />
+              <label className="mr-4">
+                <input
+                  type="radio"
+                  name={`exibirInicio-${feedback.id}`}
+                  value="true"
+                  checked={feedback.exibirfeedback === true}
+                  onChange={(e) =>
+                    confirmaEditarFeedack(feedback.id, e.target.value)
+                  }
+                />{" "}
+                Sim
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name={`exibirInicio-${feedback.id}`}
+                  value="false"
+                  checked={feedback.exibirfeedback === false}
+                  onChange={(e) =>
+                    confirmaEditarFeedack(feedback.id, e.target.value)
+                  }
+                />{" "}
+                Não
+              </label>
+            </div>
+            <button
+              className="mt-2 text-red-500 hover:underline text-sm"
+              onClick={() => {
+                setFeedbackIdSelecionado(feedback.id);
+                setShowModalDeletarFeedback(true);
+              }}
+            >
+              <Trash className="inline-block mr-1" size={16} />
+              Excluir
+            </button>
+          </div>
+        ))
+      ) : (
+        <p className="text-center text-gray-500">Não há feedbacks disponíveis.</p>
       )}
+    </div>
+
+    {/* Versão desktop: tabela */}
+    <div className="hidden lg:block overflow-x-auto">
+      <table className="table-auto w-full border border-gray-200 shadow-md rounded-lg overflow-hidden">
+        <thead className="bg-[#c09b2d]">
+          <tr className="text-sm text-white text-center">
+            <th className="px-4 py-2">Cliente</th>
+            <th className="px-4 py-2">Álbum</th>
+            <th className="px-4 py-2">Feedback</th>
+            <th className="px-4 py-2">Satisfação</th>
+            <th className="px-4 py-2">Exibir</th>
+            <th className="px-4 py-2">Excluir</th>
+          </tr>
+        </thead>
+        <tbody className="text-sm text-gray-800 text-center">
+          {feedbacks.map((feedback) => (
+            <tr
+              key={feedback.id}
+              className="border-t border-gray-200 hover:bg-gray-50"
+            >
+              <td className="px-4 py-2">{feedback.usuario.nome}</td>
+              <td className="px-4 py-2">{feedback.album.nome}</td>
+              <td className="px-4 py-2">{feedback.feedback}</td>
+              <td className="px-4 py-2">
+                <div className="flex justify-center space-x-1">
+                  {Array.from({ length: feedback.satisfacao }).map((_, i) => (
+                    <FaStar key={i} color="#c09b2d" />
+                  ))}
+                </div>
+              </td>
+              <td className="px-4 py-2">
+                <label className="mr-4">
+                  <input
+                    type="radio"
+                    name={`exibirInicio-${feedback.id}`}
+                    value="true"
+                    checked={feedback.exibirfeedback === true}
+                    onChange={(e) =>
+                      confirmaEditarFeedack(feedback.id, e.target.value)
+                    }
+                  />{" "}
+                  Sim
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name={`exibirInicio-${feedback.id}`}
+                    value="false"
+                    checked={feedback.exibirfeedback === false}
+                    onChange={(e) =>
+                      confirmaEditarFeedack(feedback.id, e.target.value)
+                    }
+                  />{" "}
+                  Não
+                </label>
+              </td>
+              <td className="px-4 py-2">
+                <Trash
+                  size={16}
+                  className="text-red-500 cursor-pointer inline-block"
+                  onClick={() => {
+                    setFeedbackIdSelecionado(feedback.id);
+                    setShowModalDeletarFeedback(true);
+                  }}
+                />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </>
+)}
 
 
       <Modal

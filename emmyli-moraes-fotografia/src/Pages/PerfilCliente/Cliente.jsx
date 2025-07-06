@@ -41,9 +41,7 @@ const Cliente = () => {
     <div
       className={`
         bg-gray-100 overflow-x-hidden flex flex-col sm:flex-row
-        h-screen
-        sm:overflow-hidden   
-        overflow-auto        
+        h-screen          
       `}
     >
       {/* Menu lateral */}
